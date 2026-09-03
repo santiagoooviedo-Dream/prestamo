@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 //importamos las funciones del modelo
 import {buscarUsuarioPorCorreo,crearUsuario,actualizarCorreoUsuario,cambiarContrasena, buscarUsuarioPorId,crearCodigoRecuperacion, buscarCodigoRecuperacion, actualizarFotoUsuario} from '../models/usuarioModel.js';
 
-//importamos el nodemailer para enviar codigos de recuperacion de contraseña
+//importamos el brave para enviar codigos de recuperacion de contraseña
 import { enviarCodigoRecuperacion } from '../utils/sendEmails.js';
 
 //funcion para registrar un nuevo usuario

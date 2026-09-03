@@ -80,3 +80,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
+
+console.log("¿Existe BREVO_API_KEY?:", !!process.env.BREVO_API_KEY);

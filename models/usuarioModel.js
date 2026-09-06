@@ -22,18 +22,29 @@
 
         return { data, error };
     };
-    //crear un nuevo usuario
-    export const crearUsuario = async (usuario, codigoVerificacion, codigoVerificacionExpiracion) => {
+export const crearUsuario = async (usuario) => {
+
+    console.log('DATOS QUE SE VAN A GUARDAR:', usuario);
+
     const { data, error } = await supabase
         .from('usuarios')
         .insert({
-            usuario,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            correo: usuario.correo,
+            telefono: usuario.telefono,
+            cedula: usuario.cedula,
+            contrasena: usuario.contrasena,
+            rol: usuario.rol,
             isVerified: false,
-            codigoVerificacion,
-            codigoVerificacionExpiracion
+            codigoVerificacion: usuario.codigoVerificacion,
+            codigoVerificacionExpiracion: usuario.codigoVerificacionExpiracion
         })
         .select()
         .single();
+
+    console.log('RESPUESTA SUPABASE:', data);
+    console.log('ERROR SUPABASE:', error);
 
     return { data, error };
 };
@@ -108,3 +119,19 @@
             .single();
         return { data, error };
     };
+// Verificar la cuenta del usuario
+export const verificarUsuario = async (id_usuario) => {
+
+    const { data, error } = await supabase
+        .from('usuarios')
+        .update({
+            isVerified: true,
+            codigoVerificacion: null,
+            codigoVerificacionExpiracion: null
+        })
+        .eq('id_usuario', id_usuario)
+        .select()
+        .single();
+
+    return { data, error };
+};

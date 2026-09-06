@@ -4,56 +4,81 @@ import bcrypt from 'bcrypt';
 //importamos jwt para generar el token
 import jwt from 'jsonwebtoken';
 
-//importamos las funciones del modelo
-import {buscarUsuarioPorCorreo,crearUsuario,actualizarCorreoUsuario,cambiarContrasena, buscarUsuarioPorId,crearCodigoRecuperacion, buscarCodigoRecuperacion, actualizarFotoUsuario} from '../models/usuarioModel.js';
+import { buscarUsuarioPorCorreo, crearUsuario, actualizarCorreoUsuario, cambiarContrasena, buscarUsuarioPorId, crearCodigoRecuperacion, buscarCodigoRecuperacion, actualizarFotoUsuario, verificarUsuario } from '../models/usuarioModel.js';
 
 //importamos el brave para enviar codigos de recuperacion de contraseña
-import { enviarCodigoRecuperacion } from '../utils/sendEmails.js';
+import { enviarCodigoRecuperacion, enviarCodigoVerificacion } from '../utils/sendEmails.js';
 
-//funcion para registrar un nuevo usuario
+// Funcion para registrar un nuevo usuario
 export const registrarUsuario = async (req, res) => {
 
-    const {nombre,apellido, correo,telefono,cedula,contrasena} = req.body;
+    // Obtenemos los datos enviados
+    const { 
+        nombre,
+        apellido,
+        correo,
+        telefono,
+        cedula,
+        contrasena
+    } = req.body;
 
-
-    //verificamos si ningun dato falta
-    if (
-        !nombre || !apellido || !correo || !telefono || !cedula || !contrasena
+    // Verificamos que todos los datos lleguen
+    if ( !nombre || !apellido || !correo || !telefono || !cedula || !contrasena
     ) {
         return res.status(400).json({
-            error: 'Todos los campos son obligatorios'
+            mensaje: 'Todos los campos son obligatorios'
         });
     }
 
-    //buscamos si el correo ya se uso en otra cuenta
-    const { data: usuario } =
+    // Buscamos si el correo ya existe
+    const { data: usuarioExistente, error: errorCorreo } =
         await buscarUsuarioPorCorreo(correo);
 
-
-    //si el correo ya se uso en otra cuenta
-    if (usuario) {
-        return res.status(400).json({
-            error: 'El correo ya esta en uso'
+    // Comprobamos si Supabase tuvo un error
+    if (errorCorreo) {
+        return res.status(500).json({
+            mensaje: 'Error al buscar el correo',
+            error: errorCorreo.message
         });
     }
 
-    //protegemos la contraseña
-    const contraseñasegura =
+    // Si el correo ya esta registrado
+    if (usuarioExistente) {
+        return res.status(400).json({
+            mensaje: 'El correo ya esta en uso'
+        });
+    }
+
+    // Protegemos la contraseña
+    const contrasenaSegura =
         await bcrypt.hash(contrasena, 10);
-    //creamos el usuario usando el modelo
-    const { data, error } = await crearUsuario({
 
-        nombre: nombre,
-        apellido: apellido,
-        correo: correo,
-        telefono: telefono,
-        cedula: cedula,
-        contrasena: contraseñasegura,
-        rol: 'usuario'
+    // Creamos un codigo de 6 numeros
+    const codigo =
+        Math.floor(100000 + Math.random() * 900000).toString();
 
-    });
+    // El codigo sera valido durante 15 minutos
+    const codigoVerificacionExpiracion =
+        new Date(Date.now() + 15 * 60 * 1000);
 
-    //si ocurre un error
+console.log('Código generado:', codigo);
+console.log('Correo:', correo);
+console.log('Expiración:', codigoVerificacionExpiracion);
+        
+
+const { data, error } = await crearUsuario({
+    nombre,
+    apellido,
+    correo,
+    telefono,
+    cedula,
+    contrasena: contrasenaSegura,
+    rol: 'usuario',
+    codigoVerificacion: codigo,
+    codigoVerificacionExpiracion: codigoVerificacionExpiracion
+});
+
+    // Comprobamos si ocurrio un error
     if (error) {
         return res.status(500).json({
             mensaje: 'Error al registrar el usuario',
@@ -61,13 +86,185 @@ export const registrarUsuario = async (req, res) => {
         });
     }
 
-    //usuario creado correctamente
-    res.status(201).json({
-        mensaje: 'Usuario registrado correctamente',
-        usuario: data
+    // Enviamos el codigo por Brevo
+    const resultado =
+        await enviarCodigoVerificacion(
+            correo,
+            nombre,
+            codigo
+        );
+
+    // Si no se pudo enviar el correo
+    if (!resultado.exito) {
+
+        return res.status(500).json({
+            mensaje: 'El usuario fue creado pero no se pudo enviar el codigo',
+            error: resultado.error
+        });
+    }
+
+    // Respondemos
+    return res.status(201).json({
+        mensaje: 'Usuario creado. Revisa tu correo para verificar la cuenta',
+        correo: correo
     });
 };
+// Funcion para solicitar codigo de verificacion para registrarse
+export const solicitarRegistro = async (req, res) => {
 
+    // Obtenemos los datos enviados
+    const {
+        nombre,
+        apellido,
+        correo,
+        telefono,
+        cedula,
+        contrasena
+    } = req.body;
+
+    // Verificamos que todos los datos lleguen
+    if (
+        !nombre || !apellido || !correo || !telefono || !cedula || !contrasena
+    ) {
+        return res.status(400).json({
+            mensaje: 'Todos los campos son obligatorios'
+        });
+    }
+
+    // Buscamos si el correo ya existe
+    const { data: usuarioExistente, error } =
+        await buscarUsuarioPorCorreo(correo);
+
+    // Comprobamos si Supabase tuvo un error
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al buscar el correo',
+            error: error.message
+        });
+    }
+
+    // Si el correo ya existe
+    if (usuarioExistente) {
+        return res.status(400).json({
+            mensaje: 'El correo ya esta registrado'
+        });
+    }
+
+    // Creamos un codigo de 6 numeros
+    const codigo =
+        Math.floor(100000 + Math.random() * 900000).toString();
+
+    // El codigo vence en 15 minutos
+    const expiracion =
+        new Date(Date.now() + 15 * 60 * 1000);
+
+    // Enviamos el codigo utilizando Brevo
+    const resultado =
+        await enviarCodigoVerificacion(
+            correo,
+            nombre,
+            codigo
+        );
+
+    // Comprobamos si Brevo pudo enviar el correo
+    if (!resultado.exito) {
+        return res.status(500).json({
+            mensaje: 'No se pudo enviar el codigo',
+            error: resultado.error
+        });
+    }
+
+    // Respondemos
+    res.status(200).json({
+        mensaje: 'Codigo enviado correctamente',
+        correo: correo
+    });
+};
+// Funcion para verificar el registro mediante el codigo
+export const verificarRegistro = async (req, res) => {
+
+    // Obtenemos los datos
+    const {
+        correo,
+        codigo
+    } = req.body;
+
+    // Verificamos que lleguen
+    if (!correo || !codigo) {
+        return res.status(400).json({
+            mensaje: 'El correo y el codigo son obligatorios'
+        });
+    }
+
+    // Buscamos el usuario
+    const { data: usuario, error } =
+        await buscarUsuarioPorCorreo(correo);
+
+    // Comprobamos si ocurrio un error
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al buscar el usuario',
+            error: error.message
+        });
+    }
+
+    // Comprobamos si existe
+    if (!usuario) {
+        return res.status(404).json({
+            mensaje: 'No se encontro el usuario'
+        });
+    }
+
+    // Comprobamos si ya esta verificado
+    if (usuario.isVerified) {
+        return res.status(400).json({
+            mensaje: 'El usuario ya esta verificado'
+        });
+    }
+
+    // Comprobamos si el codigo ya vencio
+    if (
+        !usuario.codigoVerificacionExpiracion ||
+        new Date() > new Date(usuario.codigoVerificacionExpiracion)
+    ) {
+        return res.status(400).json({
+            mensaje: 'El codigo de verificacion ha expirado'
+        });
+    }
+
+    // Comprobamos si el codigo es correcto
+    if (usuario.codigoVerificacion !== codigo) {
+        return res.status(400).json({
+            mensaje: 'El codigo de verificacion es incorrecto'
+        });
+    }
+
+    // Verificamos el usuario
+    const {
+        data: usuarioVerificado,
+        error: errorVerificacion
+    } = await verificarUsuario(usuario.id_usuario);
+
+    // Comprobamos si ocurrio un error
+    if (errorVerificacion) {
+        return res.status(500).json({
+            mensaje: 'No se pudo verificar la cuenta',
+            error: errorVerificacion.message
+        });
+    }
+
+    // Respondemos
+    return res.status(200).json({
+        mensaje: 'Cuenta verificada correctamente',
+        usuario: {
+            id_usuario: usuarioVerificado.id_usuario,
+            nombre: usuarioVerificado.nombre,
+            apellido: usuarioVerificado.apellido,
+            correo: usuarioVerificado.correo,
+            isVerified: usuarioVerificado.isVerified
+        }
+    });
+};
 //funcion para iniciar sesion
 export const loginUsuario = async (req, res) => {
 

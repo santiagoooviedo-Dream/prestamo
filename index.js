@@ -75,10 +75,15 @@ app.get('/usuarios', async (req, res) => {
 //obtenemos el puerto desde .env
 const PORT = process.env.PORT || 3000;
 
+const { data, error } = await supabase
+    .from('usuarios')
+    .select('*')
+    .limit(1);
+
+console.log('PRUEBA USUARIOS:', data);
+console.log('ERROR USUARIOS:', error);
 
 //iniciamos el servidor
 app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
-
-console.log("¿Existe BREVO_API_KEY?:", !!process.env.BREVO_API_KEY);

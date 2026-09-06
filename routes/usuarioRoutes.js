@@ -1,7 +1,7 @@
 //importamos express para crear las rutas
 import express from 'express';
 //importamos la funcion registrarUsuario del controller usuarioController
-import { registrarUsuario, loginUsuario, cambiarContraseñaUsuario, cambiarCorreoUsuario, solicitarCodigoRecuperacion, verificarCodigoRecuperacion, recuperarContrasena, cambiarFotoUsuario } from '../controllers/usuarioController.js';
+import { registrarUsuario, loginUsuario, cambiarContraseñaUsuario, cambiarCorreoUsuario, solicitarCodigoRecuperacion, verificarCodigoRecuperacion, recuperarContrasena, cambiarFotoUsuario, solicitarRegistro, verificarRegistro } from '../controllers/usuarioController.js';
 //importamos la funcion verificarToken del middleware authMiddleware
 import { verificarToken } from '../middleware/authMiddleware.js';
 //importamos la funcion upload del config cloudinary
@@ -23,6 +23,14 @@ router.post('/registrar', registrarUsuario
 
 //se crea un nuevo usuario 
 );
+
+router.post('/registrar/verificar', solicitarRegistro
+
+//http://localhost:3000/usuarios/registrar/verificar  POST   
+//"correo": ""
+//se envia un codigo de verificacion al correo del usuario para verificar que el correo es valido
+);
+
 
 //ruta para iniciar sesion
 router.post('/login', loginUsuario
@@ -100,6 +108,18 @@ router.put('/foto',
 //seleccionar en el body -> form-data
 //"foto": archivo de imagen
 
+);
+// Ruta para iniciar el registro y enviar el codigo
+router.post('/registrar/verificar-correo',
+    solicitarRegistro
+)
+
+// Ruta para verificar el codigo y completar el registro
+router.post('/registrar/verificar-codigo',
+    verificarRegistro
+
+// POST
+// http://localhost:3000/usuarios/registrar/verificar-codigo
 );
 //ruta protegida que requiere un token valido para acceder
 router.get('/perfil', verificarToken, (req,res) => {

@@ -63,8 +63,6 @@ export const crearPrestamo = async (req, res) => {
     });
 };
 
-
-
 // Funcion para crear las cuotas de un prestamo
 export const crearCuotas = async (req, res) => {
 

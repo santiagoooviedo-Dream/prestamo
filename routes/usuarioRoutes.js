@@ -118,8 +118,11 @@ router.post('/registrar/verificar-correo',
 router.post('/registrar/verificar-codigo',
     verificarRegistro
 
-// POST
-// http://localhost:3000/usuarios/registrar/verificar-codigo
+
+// http://localhost:3000/usuarios/registrar/verificar-codigo     POST
+// "correo": "",
+// "codigo": ""
+
 );
 //ruta protegida que requiere un token valido para acceder
 router.get('/perfil', verificarToken, (req,res) => {

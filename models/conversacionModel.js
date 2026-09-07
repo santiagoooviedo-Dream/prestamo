@@ -10,7 +10,8 @@ export const crearConversacionModel = async (id_usuario) => {
         .from('conversaciones')
         .insert({
             id_usuario: id_usuario,
-            estado: 'abierta'
+            estado: 'abierta',
+            modo : 'bot'
         })
         .select()
         .single();

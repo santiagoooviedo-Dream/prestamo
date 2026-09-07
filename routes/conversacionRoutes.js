@@ -1,7 +1,8 @@
 // Importamos Express
 import express from 'express';
 // Importamos las funciones del controlador
-import { crearConversacion, obtenerMisConversaciones, obtenerConversacionesAdmin, enviarMensaje, obtenerMensajes, cerrarConversacion } from '../controllers/conversacionController.js';
+import { crearConversacion, obtenerMisConversaciones, obtenerConversacionesAdmin, enviarMensaje, obtenerMensajes, cerrarConversacion,   } from '../controllers/conversacionController.js';
+import { chatearConBot, transferirAAdmin} from '../controllers/chatbotController.js'; 
 // Importamos el middleware
 import { verificarToken, verificarAdmin } from '../middleware/authMiddleware.js';
 
@@ -84,6 +85,24 @@ router.put('/:id/cerrar',
 // Esta ruta cambia el estado de la conversacion a "cerrada"
 
 // Exportamos el router
+
+//chat bot
+router.post('/:id/chatbot',
+    verificarToken,
+    chatearConBot
+);
+
+//tranferir a admin
+router.put('/:id/transferir',
+    verificarToken,
+    transferirAAdmin
+);
+
+//cerrar conversacion
+router.put('/:id/cerrar',
+    verificarToken,
+    cerrarConversacion
+);
 
 export default router;
 

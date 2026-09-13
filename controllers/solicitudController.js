@@ -1,21 +1,18 @@
 // Importamos las funciones del modelo de solicitudes
-import {
-    crearSolicitudModel,
-    obtenerSolicitudesPorUsuario,
-    obtenerTodasLasSolicitudes,
-    buscarSolicitudPorId,
-    actualizarEstadoSolicitudModel} from '../models/solicitudModel.js';
-
+import { crearSolicitudModel, obtenerSolicitudesPorUsuario, obtenerTodasLasSolicitudes, buscarSolicitudPorId, actualizarEstadoSolicitudModel } from '../models/solicitudModel.js';
 
 // Importamos el modelo de notificaciones
 import { crearNotificacionModel } from '../models/notificacionModel.js';
 
 // Funcion para crear una nueva solicitud de prestamo
 export const crearSolicitud = async (req, res) => {
+
     // Recibimos los datos enviados por el usuario
     const { monto_solicitado, coutas, motivo } = req.body;
+
     // Obtenemos el ID del usuario desde el token
     const id_usuario = req.usuario.id_usuario;
+
     // Verificamos que todos los datos esten completos
     if (!monto_solicitado || !coutas || !motivo) {
 
@@ -56,9 +53,10 @@ export const crearSolicitud = async (req, res) => {
 export const obtenerSolicitudes = async (req, res) => {
     // Obtenemos el ID desde el token
     const id_usuario = req.usuario.id_usuario;
+
     // Buscamos las solicitudes usando el modelo
-    const { data, error } =
-        await obtenerSolicitudesPorUsuario(id_usuario);
+    const { data, error } = await obtenerSolicitudesPorUsuario(id_usuario);
+
     // Si ocurre un error
     if (error) {
         return res.status(500).json({
@@ -68,7 +66,6 @@ export const obtenerSolicitudes = async (req, res) => {
     }
     // Enviamos las solicitudes encontradas
     res.status(200).json({
-
         solicitud: data
     });
 
@@ -134,10 +131,7 @@ export const actualizarEstadoSolicitud = async (req, res) => {
     }
 
     // Actualizamos el estado usando el modelo
-    const {
-        data,
-        error
-    } = await actualizarEstadoSolicitudModel(
+    const {data, error} = await actualizarEstadoSolicitudModel(
         id_solicitud,
         estado
     );
@@ -173,7 +167,6 @@ export const actualizarEstadoSolicitud = async (req, res) => {
 
     });
 
-
     // Comprobamos si ocurrio un error
     if (errorNotificacion) {
         return res.status(500).json({
@@ -182,7 +175,6 @@ export const actualizarEstadoSolicitud = async (req, res) => {
             error: errorNotificacion.message
         });
     }
-
 
     // Respondemos con la solicitud y la notificacion
     res.status(200).json({

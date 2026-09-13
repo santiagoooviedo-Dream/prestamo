@@ -109,10 +109,6 @@ router.put('/foto',
 //"foto": archivo de imagen
 
 );
-// Ruta para iniciar el registro y enviar el codigo
-router.post('/registrar/verificar-correo',
-    solicitarRegistro
-)
 
 // Ruta para verificar el codigo y completar el registro
 router.post('/registrar/verificar-codigo',

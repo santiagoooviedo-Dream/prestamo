@@ -21,7 +21,7 @@ router.post('/',
 //    "id_prestamos": 1,
 //    "id_cuota": 2,
 //     "monto": 100000,
-//     "metodo_pago": "transferencia
+//     "metodo_pago": "transferencia"
 
 // Esta ruta permite registrar un pago de un préstamo.
 // El usuario debe iniciar sesión porque la ruta utiliza verificarToken.

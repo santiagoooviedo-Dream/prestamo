@@ -1,44 +1,41 @@
-// Importamos nodemailer
-import nodemailer from 'nodemailer';
-
-// Importamos Brevo
 import { BrevoClient } from '@getbrevo/brevo';
 
-// CORREO PARA RECUPERAR CONTRASEÑA
+const brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
 
-// Creamos el transporte para Gmail
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-    }
-});
-
-
-// Funcion para enviar el codigo de recuperacion
 export const enviarCodigoRecuperacion = async (correo, codigo) => {
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: correo,
-        subject: 'Codigo para recuperar tu contraseña',
-
-        html: `
-            <h2>Recuperacion de contraseña</h2>
-
-            <p>Hola, recibimos una solicitud para recuperar tu contraseña.</p>
-
-            <p>Tu codigo de recuperacion es:</p>
-
-            <h1>${codigo}</h1>
-
-            <p>Este codigo sera utilizado para cambiar tu contraseña.</p>
-        `
-    };
     try {
+          console.log(">>> ENTRANDO A BREVO - RECUPERACION");
+    console.log(">>> EMAIL:", process.env.EMAIL_USER);
+    console.log(">>> BREVO API KEY EXISTE:", !!process.env.BREVO_API_KEY);
+        await brevo.transactionalEmails.sendTransacEmail({
+            subject: 'Codigo para recuperar tu contraseña',
 
-        await transporter.sendMail(mailOptions);
+            sender: {
+                name: process.env.EMAIL_FROM_NAME || 'Prestamo Amigo',
+                email: process.env.EMAIL_USER
+            },
+
+            to: [
+                {
+                    email: correo
+                }
+            ],
+
+            htmlContent: `
+                <h2>Recuperacion de contraseña</h2>
+
+                <p>Hola, recibimos una solicitud para recuperar tu contraseña.</p>
+
+                <p>Tu codigo de recuperacion es:</p>
+
+                <h1>${codigo}</h1>
+
+                <p>Este codigo sera utilizado para cambiar tu contraseña.</p>
+            `
+        });
+
+        console.log('Correo de recuperacion enviado con exito');
 
         return {
             success: true
@@ -54,14 +51,11 @@ export const enviarCodigoRecuperacion = async (correo, codigo) => {
         };
     }
 };
+
 // CORREO PARA VERIFICAR REGISTRO
 
 // Funcion para enviar codigo de verificacion
-export const enviarCodigoVerificacion = async (
-    emailDestino,
-    nombreDestino,
-    codigo
-) => {
+export const enviarCodigoVerificacion = async (emailDestino,nombreDestino,codigo ) => {
     try {
 
         // Creamos el cliente de Brevo
@@ -87,6 +81,7 @@ export const enviarCodigoVerificacion = async (
                         name: nombreDestino
                     }
                 ],
+
                 // Diseño del correo
                 htmlContent: `
         <div style="font-family: Arial, sans-serif; max-width: 500px; margin: 0 auto; padding: 24px; border: 1px solid #f0e6e6; border-radius: 12px; background-color: #ffffff;">
@@ -108,6 +103,7 @@ export const enviarCodigoVerificacion = async (
         </div>
       `
             });
+
         console.log('Correo de verificación enviado con éxito');
 
         return {
@@ -115,17 +111,17 @@ export const enviarCodigoVerificacion = async (
             result: result
         };
 
+    } catch (error) {
 
-} catch (error) {
+        return {
+            exito: false,
+            error: {
+                nombre: error.name,
+                mensaje: error.message,
+                codigo: error.statusCode,
+                respuesta: error.body
+            }
+        };
+    }
+};
 
-    return {
-        exito: false,
-        error: {
-            nombre: error.name,
-            mensaje: error.message,
-            codigo: error.statusCode,
-            respuesta: error.body
-        }
-    };
-  }
-}

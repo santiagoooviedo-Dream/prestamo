@@ -13,18 +13,10 @@ import { enviarCodigoRecuperacion, enviarCodigoVerificacion } from '../utils/sen
 export const registrarUsuario = async (req, res) => {
 
     // Obtenemos los datos enviados
-    const { 
-        nombre,
-        apellido,
-        correo,
-        telefono,
-        cedula,
-        contrasena
-    } = req.body;
+    const { nombre, apellido, correo, telefono, cedula, contrasena} = req.body;
 
     // Verificamos que todos los datos lleguen
-    if ( !nombre || !apellido || !correo || !telefono || !cedula || !contrasena
-    ) {
+    if ( !nombre || !apellido || !correo || !telefono || !cedula || !contrasena) {
         return res.status(400).json({
             mensaje: 'Todos los campos son obligatorios'
         });
@@ -54,18 +46,13 @@ export const registrarUsuario = async (req, res) => {
         await bcrypt.hash(contrasena, 10);
 
     // Creamos un codigo de 6 numeros
-    const codigo =
-        Math.floor(100000 + Math.random() * 900000).toString();
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
 
     // El codigo sera valido durante 15 minutos
     const codigoVerificacionExpiracion =
         new Date(Date.now() + 15 * 60 * 1000);
 
-console.log('Código generado:', codigo);
-console.log('Correo:', correo);
-console.log('Expiración:', codigoVerificacionExpiracion);
         
-
 const { data, error } = await crearUsuario({
     nombre,
     apellido,
@@ -87,8 +74,7 @@ const { data, error } = await crearUsuario({
     }
 
     // Enviamos el codigo por Brevo
-    const resultado =
-        await enviarCodigoVerificacion(
+    const resultado =await enviarCodigoVerificacion(
             correo,
             nombre,
             codigo
@@ -113,14 +99,7 @@ const { data, error } = await crearUsuario({
 export const solicitarRegistro = async (req, res) => {
 
     // Obtenemos los datos enviados
-    const {
-        nombre,
-        apellido,
-        correo,
-        telefono,
-        cedula,
-        contrasena
-    } = req.body;
+    const { nombre, apellido, correo, telefono, cedula, contrasena } = req.body;
 
     // Verificamos que todos los datos lleguen
     if (
@@ -151,16 +130,14 @@ export const solicitarRegistro = async (req, res) => {
     }
 
     // Creamos un codigo de 6 numeros
-    const codigo =
-        Math.floor(100000 + Math.random() * 900000).toString();
+    const codigo =Math.floor(100000 + Math.random() * 900000).toString();
 
     // El codigo vence en 15 minutos
     const expiracion =
         new Date(Date.now() + 15 * 60 * 1000);
 
     // Enviamos el codigo utilizando Brevo
-    const resultado =
-        await enviarCodigoVerificacion(
+    const resultado =await enviarCodigoVerificacion(
             correo,
             nombre,
             codigo
@@ -184,10 +161,7 @@ export const solicitarRegistro = async (req, res) => {
 export const verificarRegistro = async (req, res) => {
 
     // Obtenemos los datos
-    const {
-        correo,
-        codigo
-    } = req.body;
+    const { correo, codigo } = req.body;
 
     // Verificamos que lleguen
     if (!correo || !codigo) {
@@ -240,10 +214,7 @@ export const verificarRegistro = async (req, res) => {
     }
 
     // Verificamos el usuario
-    const {
-        data: usuarioVerificado,
-        error: errorVerificacion
-    } = await verificarUsuario(usuario.id_usuario);
+    const { data: usuarioVerificado, error: errorVerificacion} = await verificarUsuario(usuario.id_usuario);
 
     // Comprobamos si ocurrio un error
     if (errorVerificacion) {
@@ -269,10 +240,7 @@ export const verificarRegistro = async (req, res) => {
 export const loginUsuario = async (req, res) => {
 
     //recibimos los datos
-    const {
-        correo,
-        contrasena
-    } = req.body;
+    const { correo, contrasena } = req.body;
 
     //comprobamos que llegaron
     if (!correo || !contrasena) {
@@ -303,8 +271,7 @@ export const loginUsuario = async (req, res) => {
     }
 
     //comparamos la contraseña
-    const contrasenaCorrecta =
-        await bcrypt.compare(
+    const contrasenaCorrecta =await bcrypt.compare(
             contrasena,
             usuario.contrasena
         );
@@ -522,8 +489,7 @@ export const solicitarCodigoRecuperacion = async (req, res) => {
         });
     }
     // Creamos un codigo de 6 numeros
-    const codigo =
-        Math.floor(100000 + Math.random() * 900000).toString();
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
     // Guardamos el codigo
     const { error: errorCodigo } =
         await crearCodigoRecuperacion(

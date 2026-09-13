@@ -150,9 +150,8 @@ export const chatearConBot = async (req, res) => {
 
         // Instrucciones que tendrá nuestro chatbot
         const systemPrompt = `
-Eres el asistente virtual de una aplicación de préstamos.
-
-responde de manera amistosa y clara, y proporciona información útil a los usuarios.
+                                Eres el asistente virtual de una aplicación de préstamos.
+                                responde de manera amistosa y clara, y proporciona información útil a los usuarios.
 
 Tu función es ayudar a los usuarios con preguntas relacionadas con:
 
@@ -177,7 +176,8 @@ No afirmes que realizaste una acción si realmente no la hiciste.
 
 Si el usuario solicita hablar con una persona,
 indícale que puede solicitar la transferencia a un administrador.
-`;
+`
+;
 
 
         // Enviamos el historial a Groq

@@ -33,7 +33,6 @@ router.get('/',
 // No se envian datos
 // El usuario se obtiene desde el token
 // Esta ruta muestra las conversaciones del usuario que inicio sesion
-// Obtener todas las conversaciones como administrador
 
 router.get('/admin',
     verificarToken,
@@ -90,19 +89,25 @@ router.put('/:id/cerrar',
 router.post('/:id/chatbot',
     verificarToken,
     chatearConBot
+    // http://localhost:3000/conversaciones/1/chatbot  POST
+    // :id = id_conversacion
+    // Body:
+    // {
+    //     "mensaje": "Hola, necesito ayuda con mi prestamo"
+    // }
 );
 
 //tranferir a admin
 router.put('/:id/transferir',
     verificarToken,
     transferirAAdmin
+    // http://localhost:3000/conversaciones/1/transferir  PUT
+    // :id = id_conversacion
+    // No se envia body
+    // Esta ruta cambia el modo de la conversacion a "admin"
 );
 
-//cerrar conversacion
-router.put('/:id/cerrar',
-    verificarToken,
-    cerrarConversacion
-);
+
 
 export default router;
 

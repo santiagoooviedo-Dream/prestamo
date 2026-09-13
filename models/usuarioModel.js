@@ -24,7 +24,6 @@
     };
 export const crearUsuario = async (usuario) => {
 
-    console.log('DATOS QUE SE VAN A GUARDAR:', usuario);
 
     const { data, error } = await supabase
         .from('usuarios')
@@ -42,9 +41,6 @@ export const crearUsuario = async (usuario) => {
         })
         .select()
         .single();
-
-    console.log('RESPUESTA SUPABASE:', data);
-    console.log('ERROR SUPABASE:', error);
 
     return { data, error };
 };

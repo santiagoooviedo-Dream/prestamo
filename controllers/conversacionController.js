@@ -1,5 +1,5 @@
 // Importamos las funciones del modelo
-import { crearConversacionModel,buscarConversacionPorId,obtenerConversacionesUsuario,obtenerTodasConversaciones,actualizarEstadoConversacion,crearMensajeModel,obtenerMensajesConversacion } from '../models/conversacionModel.js';
+import { crearConversacionModel, buscarConversacionPorId, obtenerConversacionesUsuario, obtenerTodasConversaciones, actualizarEstadoConversacion, crearMensajeModel, obtenerMensajesConversacion } from '../models/conversacionModel.js';
 
 // Funcion para crear una nueva conversacion
 export const crearConversacion = async (req, res) => {
@@ -187,10 +187,7 @@ export const obtenerMensajes = async (req, res) => {
     }
 
     // Buscamos los mensajes
-    const {
-        data,
-        error
-    } = await obtenerMensajesConversacion(id_conversacion);
+    const { data, error} = await obtenerMensajesConversacion(id_conversacion);
 
     // Comprobamos si ocurre un error
     if (error) {

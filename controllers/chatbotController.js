@@ -4,18 +4,15 @@ import Groq from 'groq-sdk';
 // Importamos Supabase para consultar y guardar informacion
 import { supabase } from '../config/supabase.js';
 
-
 // Creamos la conexion con Groq
 const groq = new Groq({
     apiKey: process.env.GROQ_API_KEY
 });
 
-
 // Funcion para conversar con el chatbot
 export const chatearConBot = async (req, res) => {
 
     try {
-
         // Obtenemos el id de la conversacion desde la URL
         const id_conversacion = req.params.id;
 
@@ -24,7 +21,6 @@ export const chatearConBot = async (req, res) => {
 
         // Obtenemos el mensaje enviado
         const { mensaje } = req.body;
-
 
         // Verificamos que el usuario haya enviado un mensaje
         if (!mensaje || !mensaje.trim()) {
@@ -35,7 +31,6 @@ export const chatearConBot = async (req, res) => {
 
         }
 
-
         // Buscamos la conversacion
         const { data: conversacion, error: errorConversacion } =
             await supabase
@@ -43,7 +38,6 @@ export const chatearConBot = async (req, res) => {
                 .select('*')
                 .eq('id_conversacion', id_conversacion)
                 .maybeSingle();
-
 
         // Si ocurrio un error
         if (errorConversacion) {
@@ -55,7 +49,6 @@ export const chatearConBot = async (req, res) => {
 
         }
 
-
         // Si no existe la conversacion
         if (!conversacion) {
 
@@ -64,7 +57,6 @@ export const chatearConBot = async (req, res) => {
             });
 
         }
-
 
         // Verificamos que la conversacion pertenezca al usuario
         if (conversacion.id_usuario !== id_usuario) {
@@ -75,7 +67,6 @@ export const chatearConBot = async (req, res) => {
 
         }
 
-
         // Verificamos que la conversacion siga utilizando el bot
         if (conversacion.modo !== 'bot') {
 
@@ -84,7 +75,6 @@ export const chatearConBot = async (req, res) => {
             });
 
         }
-
 
         // Guardamos primero el mensaje del usuario
         const { error: errorMensajeUsuario } = await supabase
@@ -96,7 +86,6 @@ export const chatearConBot = async (req, res) => {
                 remitente: 'usuario'
             });
 
-
         // Si ocurrio un error guardando el mensaje
         if (errorMensajeUsuario) {
 
@@ -107,7 +96,6 @@ export const chatearConBot = async (req, res) => {
 
         }
 
-
         // Obtenemos los mensajes anteriores de la conversacion
         const { data: historial, error: errorHistorial } =
             await supabase
@@ -115,7 +103,6 @@ export const chatearConBot = async (req, res) => {
                 .select('respuesta, remitente, fecha')
                 .eq('id_conversacion', id_conversacion)
                 .order('fecha', { ascending: true });
-
 
         // Verificamos si ocurrio un error
         if (errorHistorial) {
@@ -126,7 +113,6 @@ export const chatearConBot = async (req, res) => {
             });
 
         }
-
 
         // Convertimos nuestro historial al formato que entiende Groq
         const mensajesHistorial = historial.map((mensaje) => {
@@ -139,7 +125,6 @@ export const chatearConBot = async (req, res) => {
                 };
 
             }
-
             return {
                 role: 'assistant',
                 content: mensaje.respuesta
@@ -147,37 +132,36 @@ export const chatearConBot = async (req, res) => {
 
         });
 
-
         // Instrucciones que tendrá nuestro chatbot
         const systemPrompt = `
                                 Eres el asistente virtual de una aplicación de préstamos.
                                 responde de manera amistosa y clara, y proporciona información útil a los usuarios.
 
-Tu función es ayudar a los usuarios con preguntas relacionadas con:
+                                Tu función es ayudar a los usuarios con preguntas relacionadas con:
 
-- Solicitudes de préstamos.
-- Estado de una solicitud.
-- Pagos.
-- Cuotas.
-- Fechas de pago.
-- Información general sobre los préstamos.
-- Funcionamiento de la aplicación.
+                                - Solicitudes de préstamos.
+                                - Estado de una solicitud.
+                                - Cuotas.
+                                - Pagos.
+                                - Información general sobre los préstamos.
+                                - Fechas de pago.
+                                
+                                - Funcionamiento de la aplicación.
+                                
+                                Responde de manera clara, sencilla y amable.
+                                que no tengas disponible.
+                                No inventes información sobre préstamos, pagos o solicitudes
 
-Responde de manera clara, sencilla y amable.
-
-No inventes información sobre préstamos, pagos o solicitudes
-que no tengas disponible.
-
-Si el usuario necesita realizar una acción que solamente
-puede hacer un administrador, indícale que puede solicitar
-la atención de un administrador.
-
-No afirmes que realizaste una acción si realmente no la hiciste.
-
-Si el usuario solicita hablar con una persona,
-indícale que puede solicitar la transferencia a un administrador.
-`
-;
+                                puede hacer un administrador, indícale que puede solicitar
+                                Si el usuario necesita realizar una acción que solamente
+                                
+                                la atención de un administrador.
+                                
+                                No afirmes que realizaste una acción si realmente no la hiciste.
+                                indícale que puede solicitar la transferencia a un administrador.
+                                Si el usuario solicita hablar con una persona,
+                                ;
+                                `
 
 
         // Enviamos el historial a Groq
@@ -200,12 +184,10 @@ indícale que puede solicitar la transferencia a un administrador.
 
         });
 
-
         // Obtenemos la respuesta de Groq
         const respuestaTexto =
             completion.choices[0]?.message?.content ||
             'No pude generar una respuesta.';
-
 
         // Guardamos la respuesta del bot en nuestra tabla mensajes
         const { data: mensajeBot, error: errorMensajeBot } =
@@ -220,7 +202,6 @@ indícale que puede solicitar la transferencia a un administrador.
                 .select()
                 .single();
 
-
         // Verificamos si ocurrio un error
         if (errorMensajeBot) {
 
@@ -231,14 +212,11 @@ indícale que puede solicitar la transferencia a un administrador.
 
         }
 
-
         // Enviamos la respuesta al frontend
         return res.status(200).json({
 
             mensaje: 'Respuesta generada correctamente',
-
             respuesta: respuestaTexto,
-
             mensajeBot: mensajeBot
 
         });

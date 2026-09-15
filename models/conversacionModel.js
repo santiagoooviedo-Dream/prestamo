@@ -2,7 +2,6 @@
 // Importamos Supabase
 import { supabase } from "../config/supabase.js";
 
-
 // Crear una nueva conversacion
 export const crearConversacionModel = async (id_usuario) => {
 
@@ -45,7 +44,6 @@ export const obtenerConversacionesUsuario = async (id_usuario) => {
     return { data, error };
 };
 
-
 // Obtener todas las conversaciones
 export const obtenerTodasConversaciones = async () => {
 
@@ -56,7 +54,6 @@ export const obtenerTodasConversaciones = async () => {
 
     return { data, error };
 };
-
 
 // Actualizar el estado de una conversacion
 export const actualizarEstadoConversacion = async (
@@ -76,14 +73,8 @@ export const actualizarEstadoConversacion = async (
     return { data, error };
 };
 
-
 // Crear un mensaje
-export const crearMensajeModel = async (
-    id_usuario,
-    id_conversacion,
-    respuesta,
-    remitente
-) => {
+export const crearMensajeModel = async (id_usuario, id_conversacion,respuesta,remitente) => {
 
     const { data, error } = await supabase
         .from('mensajes')
@@ -98,7 +89,6 @@ export const crearMensajeModel = async (
 
     return { data, error };
 };
-
 
 // Obtener los mensajes de una conversacion
 export const obtenerMensajesConversacion = async (id_conversacion) => {

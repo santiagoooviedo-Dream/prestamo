@@ -1,8 +1,6 @@
-
 //importamos las funciones del modelo
 
 import { buscarSolicitudPorId,crearPrestamoModel,buscarPrestamoPorId,crearCuotasModel} from "../models/prestamoModel.js";
-
 
 // Funcion para crear un prestamo a partir de una solicitud aceptada
 export const crearPrestamo = async (req, res) => {
@@ -30,8 +28,7 @@ export const crearPrestamo = async (req, res) => {
     }
 
     // Calculamos una cuota mensual sencilla
-    const cuotaMensual =
-        solicitud.monto_solicitado / solicitud.coutas;
+    const cuotaMensual = solicitud.monto_solicitado / solicitud.coutas;
 
     // Creamos el prestamo
     const { data: prestamo, error } =

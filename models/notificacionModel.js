@@ -1,10 +1,7 @@
 // Importamos Supabase
-
 import { supabase } from "../config/supabase.js";
 
-
 // Crear una notificacion
-
 export const crearNotificacionModel = async (notificacion) => {
 
     const { data, error } = await supabase
@@ -18,7 +15,6 @@ export const crearNotificacionModel = async (notificacion) => {
 
 
 // Buscar las notificaciones de un usuario
-
 export const obtenerNotificacionesModel = async (id_usuario) => {
 
     const { data, error } = await supabase
@@ -32,7 +28,6 @@ export const obtenerNotificacionesModel = async (id_usuario) => {
 
 
 // Marcar una notificacion como leida
-
 export const marcarNotificacionLeidaModel = async (id_notificacion) => {
 
     const { data, error } = await supabase

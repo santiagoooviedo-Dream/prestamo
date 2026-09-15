@@ -504,8 +504,7 @@ export const solicitarCodigoRecuperacion = async (req, res) => {
         });
     }
     // Enviamos el codigo por correo
-    const resultado =
-        await enviarCodigoRecuperacion(
+    const resultado =await enviarCodigoRecuperacion(
             correo,
             codigo
         );
@@ -554,8 +553,7 @@ export const verificarCodigoRecuperacion = async (req, res) => {
     }
 
     // Buscamos el codigo
-    const { data: codigoEncontrado, error } =
-        await buscarCodigoRecuperacion(
+    const { data: codigoEncontrado, error } =await buscarCodigoRecuperacion(
             usuario.id_usuario,
             codigo
         );
@@ -584,11 +582,7 @@ export const verificarCodigoRecuperacion = async (req, res) => {
 export const recuperarContrasena = async (req, res) => {
 
     // Obtenemos los datos
-    const {
-        correo,
-        codigo,
-        contrasenaNueva
-    } = req.body;
+    const { correo, codigo, contrasenaNueva } = req.body;
 
     // Verificamos que lleguen
     if (!correo || !codigo || !contrasenaNueva) {
@@ -639,12 +633,10 @@ export const recuperarContrasena = async (req, res) => {
     }
 
     // Protegemos la nueva contraseña
-    const contrasenaSegura =
-        await bcrypt.hash(contrasenaNueva, 10);
+    const contrasenaSegura = await bcrypt.hash(contrasenaNueva, 10);
 
     // Actualizamos la contraseña
-    const { error } =
-        await cambiarContrasena(
+    const { error } = await cambiarContrasena(
             usuario.id_usuario,
             contrasenaSegura
         );

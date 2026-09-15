@@ -1,8 +1,8 @@
     // Importamos Supabase
-    import { supabase } from '../config/supabase.js';
+import { supabase } from '../config/supabase.js';
 
-    // Buscar un usuario por correo
-    export const buscarUsuarioPorCorreo = async (correo) => {
+// Buscar un usuario por correo
+export const buscarUsuarioPorCorreo = async (correo) => {
         const { data, error } = await supabase
             .from('usuarios')
             .select('*')
@@ -11,8 +11,8 @@
 
         return { data, error };
     };
-    // Buscar un usuario por ID
-    export const buscarUsuarioPorId = async (id_usuario) => {
+// Buscar un usuario por ID
+ export const buscarUsuarioPorId = async (id_usuario) => {
 
         const { data, error } = await supabase
             .from('usuarios')
@@ -23,7 +23,6 @@
         return { data, error };
     };
 export const crearUsuario = async (usuario) => {
-
 
     const { data, error } = await supabase
         .from('usuarios')
@@ -44,8 +43,8 @@ export const crearUsuario = async (usuario) => {
 
     return { data, error };
 };
-    // cambiar el correo electronico
-    export const actualizarCorreoUsuario = async (id_usuario, correo) => {
+// cambiar el correo electronico
+export const actualizarCorreoUsuario = async (id_usuario, correo) => {
 
         const { data, error } = await supabase
             .from('usuarios')
@@ -59,7 +58,7 @@ export const crearUsuario = async (usuario) => {
         return { data, error };
     };
     // cambiar la contraseña del usuario
-    export const cambiarContrasena = async (id_usuario, contrasena) => {
+export const cambiarContrasena = async (id_usuario, contrasena) => {
 
         const { data, error } = await supabase
             .from('usuarios')
@@ -72,8 +71,8 @@ export const crearUsuario = async (usuario) => {
 
         return { data, error };
     };
-    // Guardar codigo de recuperacion
-    export const crearCodigoRecuperacion = async (id_usuario, codigo) => {
+// Guardar codigo de recuperacion
+export const crearCodigoRecuperacion = async (id_usuario, codigo) => {
 
         const { data, error } = await supabase
             .from('codigos')
@@ -89,7 +88,7 @@ export const crearUsuario = async (usuario) => {
         return { data, error };
     };
     // Buscar codigo de recuperacion
-    export const buscarCodigoRecuperacion = async (id_usuario, codigo) => {
+export const buscarCodigoRecuperacion = async (id_usuario, codigo) => {
 
         const { data, error } = await supabase
             .from('codigos')
@@ -103,7 +102,7 @@ export const crearUsuario = async (usuario) => {
         return { data, error };
     };
     // Actualizar la foto del usuario
-    export const actualizarFotoUsuario = async (id_usuario, foto) => {
+export const actualizarFotoUsuario = async (id_usuario, foto) => {
 
         const { data, error } = await supabase
             .from('usuarios')
@@ -115,8 +114,8 @@ export const crearUsuario = async (usuario) => {
             .single();
         return { data, error };
     };
-// Verificar la cuenta del usuario
-export const verificarUsuario = async (id_usuario) => {
+    // Verificar la cuenta del usuario
+ export const verificarUsuario = async (id_usuario) => {
 
     const { data, error } = await supabase
         .from('usuarios')

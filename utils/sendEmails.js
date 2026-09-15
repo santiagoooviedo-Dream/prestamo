@@ -5,9 +5,6 @@ const brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
 export const enviarCodigoRecuperacion = async (correo, codigo) => {
 
     try {
-          console.log(">>> ENTRANDO A BREVO - RECUPERACION");
-    console.log(">>> EMAIL:", process.env.EMAIL_USER);
-    console.log(">>> BREVO API KEY EXISTE:", !!process.env.BREVO_API_KEY);
         await brevo.transactionalEmails.sendTransacEmail({
             subject: 'Codigo para recuperar tu contraseña',
 

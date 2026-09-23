@@ -254,7 +254,7 @@ export const transferirAAdmin = async (req, res) => {
             .eq('id_conversacion', id_conversacion)
             .maybeSingle();
 
-        //si ocurre ub errir 
+        //si ocurre este error 
         if (errorConversacion) {
             return res.status(500).json({
                 mensaje: 'Error al buscar la conversacion',

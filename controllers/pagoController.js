@@ -79,7 +79,7 @@ if (errorActualizacion) {
 // Creamos un movimiento para registrar el pago
 const { error: errorMovimiento } =
     await crearMovimiento({
-
+        
         id_usuario: prestamo.id_usuario,
         id_prestamo: id_prestamos,
         tipo: 'pago',

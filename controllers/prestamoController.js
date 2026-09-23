@@ -32,8 +32,8 @@ export const crearPrestamo = async (req, res) => {
 
     // Creamos el prestamo
     const { data: prestamo, error } =
-        await crearPrestamoModel({
 
+        await crearPrestamoModel({
             id_usuario: solicitud.id_usuario,
             id_solicitud: solicitud.id_solicitud,
             monto: solicitud.monto_solicitado,
@@ -42,7 +42,6 @@ export const crearPrestamo = async (req, res) => {
             interes: 0,
             fecha_inicio: new Date().toISOString().split('T')[0],
             estado: 'activo'
-
         });
 
     // Si ocurre un error al crear el prestamo
@@ -83,7 +82,7 @@ export const crearCuotas = async (req, res) => {
 
     // Repetimos el proceso segun la cantidad de cuotas
     for (let i = 1; i <= prestamo.coutas; i++) {
-
+        
         cuotas.push({
             id_prestamo: prestamo.id_prestamo,
             numero_cuota: i,

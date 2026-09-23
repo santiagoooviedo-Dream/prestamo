@@ -24,13 +24,11 @@ export const crearSolicitud = async (req, res) => {
 
     // Creamos la solicitud usando el modelo
     const { data, error } = await crearSolicitudModel({
-
         id_usuario: id_usuario,
         monto_solicitado: monto_solicitado,
         coutas: coutas,
         motivo: motivo,
         estado: 'pendiente'
-
     });
 
 
@@ -53,7 +51,6 @@ export const crearSolicitud = async (req, res) => {
 export const obtenerSolicitudes = async (req, res) => {
     // Obtenemos el ID desde el token
     const id_usuario = req.usuario.id_usuario;
-
     // Buscamos las solicitudes usando el modelo
     const { data, error } = await obtenerSolicitudesPorUsuario(id_usuario);
 
@@ -148,7 +145,7 @@ export const actualizarEstadoSolicitud = async (req, res) => {
 
     // Creamos el mensaje de la notificacion
     let mensajeNotificacion;
-
+    
     if (estado === 'aceptada') {
         mensajeNotificacion =
             'Tu solicitud de prestamo ha sido aceptada';

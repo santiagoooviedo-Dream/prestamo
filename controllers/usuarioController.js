@@ -52,7 +52,6 @@ export const registrarUsuario = async (req, res) => {
     const codigoVerificacionExpiracion =
         new Date(Date.now() + 15 * 60 * 1000);
 
-        
 const { data, error } = await crearUsuario({
     nombre,
     apellido,
@@ -669,7 +668,7 @@ export const cambiarFotoUsuario = async (req, res) => {
 
     // Cloudinary nos entrega la URL de la imagen
     const foto = req.file.path;
-
+    
     // Actualizamos la foto en la base de datos
     const { data, error } = await actualizarFotoUsuario(
         id_usuario,

@@ -21,7 +21,6 @@ import notificacionRoutes from './routes/notificacionRoutes.js';
 
 //importamos las ruta de conversaciones
 import conversacionRoutes from './routes/conversacionRoutes.js'
-  
 
 //creamos una instancia de express
 const app = express();
@@ -69,9 +68,9 @@ app.get('/usuarios', async (req, res) => {
     }
 
     //enviamos los usuarios
-    res.json(data);
+res.json(data);
 });
-
+    
 //obtenemos el puerto desde .env
 const PORT = process.env.PORT || 3000;
 

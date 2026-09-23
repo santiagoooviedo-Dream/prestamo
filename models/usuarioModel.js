@@ -13,7 +13,6 @@ export const buscarUsuarioPorCorreo = async (correo) => {
     };
 // Buscar un usuario por ID
  export const buscarUsuarioPorId = async (id_usuario) => {
-
         const { data, error } = await supabase
             .from('usuarios')
             .select('*')
@@ -23,7 +22,6 @@ export const buscarUsuarioPorCorreo = async (correo) => {
         return { data, error };
     };
 export const crearUsuario = async (usuario) => {
-
     const { data, error } = await supabase
         .from('usuarios')
         .insert({
@@ -43,6 +41,7 @@ export const crearUsuario = async (usuario) => {
 
     return { data, error };
 };
+
 // cambiar el correo electronico
 export const actualizarCorreoUsuario = async (id_usuario, correo) => {
 
@@ -73,7 +72,6 @@ export const cambiarContrasena = async (id_usuario, contrasena) => {
     };
 // Guardar codigo de recuperacion
 export const crearCodigoRecuperacion = async (id_usuario, codigo) => {
-
         const { data, error } = await supabase
             .from('codigos')
             .insert([
@@ -89,7 +87,6 @@ export const crearCodigoRecuperacion = async (id_usuario, codigo) => {
     };
     // Buscar codigo de recuperacion
 export const buscarCodigoRecuperacion = async (id_usuario, codigo) => {
-
         const { data, error } = await supabase
             .from('codigos')
             .select('*')

@@ -60,12 +60,6 @@ git clone https://github.com/santiagoooviedo-Dream/prestamo.git
 ```bash
   Instalación npm install
 ```
-```bash
-  Instalación de node
-```
-```bash
-  Instalación de node
-```
 
 ---
 

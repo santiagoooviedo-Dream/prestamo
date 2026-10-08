@@ -1,16 +1,19 @@
 name: front_prestamo
+
 description: "A new Flutter project."
+
 publish_to: 'none'
+
 version: 0.1.0+1
 
 environment:
   sdk: ^3.13.2
-  
 
 dependencies:
   flutter:
     sdk: flutter
   http: ^1.6.0
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -20,12 +23,11 @@ dev_dependencies:
 flutter:
   assets:
     - assets/backgrounds/
-    - assets/images/ 
+    - assets/images/
 
-  fonts: 
-      - family: Poly
-        fonts:
-          - asset: assets/fonts/Poly-Italic.ttf
-          - asset: assets/fonts/Poly-Regular.ttf
-            style: italic
-  
+  fonts:
+    - family: Poly
+      fonts:
+        - asset: assets/fonts/Poly-Regular.ttf
+        - asset: assets/fonts/Poly-Italic.ttf
+          style: italic

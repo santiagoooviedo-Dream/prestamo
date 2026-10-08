@@ -16,14 +16,14 @@ class RecuperarInfo extends StatelessWidget {
     return Positioned(
       left: width * .145,
       right: width * .12,
-      top: height * .695,
+      top: height * .625,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Icon(
             Icons.shield_outlined,
             color: Colores.azul,
-            size: 23,
+            size: 25,
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -32,7 +32,7 @@ class RecuperarInfo extends StatelessWidget {
               'un enlace para restablecer tu contraseña',
               style: const TextStyle(
                 color: Colores.negro,
-                fontSize: 15,
+                fontSize: 16,
                 height: 1.25,
               ),
             ),

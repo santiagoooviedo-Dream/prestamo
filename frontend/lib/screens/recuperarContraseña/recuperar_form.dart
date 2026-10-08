@@ -19,12 +19,12 @@ class RecuperarForm extends StatelessWidget {
           left: width * .075,
           right: width * .075,
           top: height * .390,
-          height: height * .071,
+          height: height * .075,
           child: TextField(
             keyboardType: TextInputType.emailAddress,
             style: const TextStyle(
               color: Colores.negro,
-              fontSize: 15,
+              fontSize: 16,
             ),
             decoration: InputDecoration(
               filled: true,
@@ -32,29 +32,28 @@ class RecuperarForm extends StatelessWidget {
               hintText: 'Correo',
               hintStyle: const TextStyle(
                 color: Colores.negro,
-                fontSize: 15,
+                fontSize: 16,
               ),
               prefixIcon: const Icon(
                 Icons.mail_outline,
                 color: Colores.azul,
-                size: 21,
+                size: 23,
               ),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
               ),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(15),
                 borderSide: BorderSide.none,
               ),
             ),
           ),
         ),
-
         Positioned(
           left: width * .075,
           right: width * .075,
-          top: height * .555,
-          height: height * .071,
+          top: height * .505,
+          height: height * .075,
           child: ElevatedButton(
             onPressed: () {},
             style: ElevatedButton.styleFrom(
@@ -63,13 +62,13 @@ class RecuperarForm extends StatelessWidget {
               elevation: 0,
               padding: EdgeInsets.zero,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(15),
               ),
             ),
             child: const Text(
               'Enviar enlace',
               style: TextStyle(
-                fontSize: 17,
+                fontSize: 18,
               ),
             ),
           ),

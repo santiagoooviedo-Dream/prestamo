@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../../core/colores.dart';
+
+import '../models/usuario.dart';
+import '../core/colores.dart';
 
 class BienvenidaCard extends StatelessWidget {
-  const BienvenidaCard({super.key});
+  final Usuario usuario;
+  final VoidCallback onLogout;
+
+  const BienvenidaCard({
+    super.key,
+    required this.usuario,
+    required this.onLogout,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +24,8 @@ class BienvenidaCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text(
-            'BIENVENIDO',
+          Text(
+            'BIENVENIDO${usuario.nombre.isEmpty ? '' : ', ${usuario.nombre.toUpperCase()}'}',
             style: TextStyle(
               fontFamily: "Poly",
               color: Colores.negro,
@@ -36,14 +45,18 @@ class BienvenidaCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 85),
-          _LoginContainer(),
+          _LogoutContainer(onLogout: onLogout),
         ],
       ),
     );
   }
 }
 
-class _LoginContainer extends StatelessWidget {
+class _LogoutContainer extends StatelessWidget {
+  final VoidCallback onLogout;
+
+  const _LogoutContainer({required this.onLogout});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -63,22 +76,23 @@ class _LoginContainer extends StatelessWidget {
               color: const Color(0xFF778AD0),
               borderRadius: BorderRadius.circular(25),
             ),
-            child: const Text(
-              'Iniciar sesión',
-              style: TextStyle(
-              fontFamily: "Poly_Regular",
-                color: Colores.negro,
-                fontSize: 15,
+            child: TextButton(
+              onPressed: onLogout,
+              style: TextButton.styleFrom(
+                foregroundColor: Colores.negro,
+                minimumSize: const Size.fromHeight(41),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
               ),
-            ),
-          ),
-          const SizedBox(height: 5),
-          const Text(
-            '¿No tienes cuenta?crear',
-            style: TextStyle(
-              fontFamily: "Poly_Regular",
-              color: Colores.azul,
-              fontSize: 14,
+              child: const Text(
+                'Cerrar sesión',
+                style: TextStyle(
+                  fontFamily: "Poly_Regular",
+                  color: Colores.negro,
+                  fontSize: 15,
+                ),
+              ),
             ),
           ),
         ],

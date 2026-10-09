@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+
 import '../../core/colores.dart';
 
 class ListaButton extends StatelessWidget {
   final double width;
   final double height;
+  final VoidCallback onPressed;
 
   const ListaButton({
     super.key,
     required this.width,
     required this.height,
+    required this.onPressed,
   });
 
   @override
@@ -19,7 +22,7 @@ class ListaButton extends StatelessWidget {
       top: height * 0.80,
       height: height * 0.068,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colores.azulSecundario,
           foregroundColor: Colores.blanco,
@@ -31,10 +34,7 @@ class ListaButton extends StatelessWidget {
         ),
         child: const Text(
           'Ir a iniciar sesion',
-          style: TextStyle(
-            fontFamily: "Poly_Regular",
-            fontSize: 16,
-          ),
+          style: TextStyle(fontFamily: "Poly_Regular", fontSize: 16),
         ),
       ),
     );

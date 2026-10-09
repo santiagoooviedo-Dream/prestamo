@@ -4,16 +4,29 @@ import '../../core/colores.dart';
 class CrearFields extends StatelessWidget {
   final double width;
   final double height;
+  final TextEditingController cedulaController;
+  final TextEditingController nombreController;
+  final TextEditingController apellidoController;
+  final TextEditingController correoController;
+  final TextEditingController telefonoController;
+  final TextEditingController contrasenaController;
 
   const CrearFields({
     super.key,
     required this.width,
     required this.height,
+    required this.cedulaController,
+    required this.nombreController,
+    required this.apellidoController,
+    required this.correoController,
+    required this.telefonoController,
+    required this.contrasenaController,
   });
 
   Widget _campo({
     required String hint,
     required IconData icon,
+    required TextEditingController controller,
     TextInputType tipo = TextInputType.text,
     bool ocultar = false,
     String? helper,
@@ -22,8 +35,10 @@ class CrearFields extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         TextField(
+          controller: controller,
           keyboardType: tipo,
           obscureText: ocultar,
+          textInputAction: ocultar ? TextInputAction.done : TextInputAction.next,
           style: const TextStyle(
             color: Colores.negro,
             fontSize: 14,
@@ -31,7 +46,7 @@ class CrearFields extends StatelessWidget {
           ),
           decoration: InputDecoration(
             filled: true,
-            fillColor: Colores.blanco.withOpacity(0.85),
+            fillColor: Colores.blanco.withValues(alpha: 0.85),
             hintText: hint,
             hintStyle: const TextStyle(
               color: Colores.grisOscuro,
@@ -74,19 +89,43 @@ class CrearFields extends StatelessWidget {
       top: height * 0.25,
       child: Column(
         children: [
-          _campo(hint: 'Cedula', icon: Icons.badge_outlined, tipo: TextInputType.number),
+          _campo(
+            hint: 'Cedula',
+            icon: Icons.badge_outlined,
+            controller: cedulaController,
+            tipo: TextInputType.number,
+          ),
           SizedBox(height: height * 0.018),
-          _campo(hint: 'Nombres', icon: Icons.person_outline),
+          _campo(
+            hint: 'Nombres',
+            icon: Icons.person_outline,
+            controller: nombreController,
+          ),
           SizedBox(height: height * 0.018),
-          _campo(hint: 'Apellidos', icon: Icons.person_outline),
+          _campo(
+            hint: 'Apellidos',
+            icon: Icons.person_outline,
+            controller: apellidoController,
+          ),
           SizedBox(height: height * 0.018),
-          _campo(hint: 'Correo', icon: Icons.mail_outline, tipo: TextInputType.emailAddress),
+          _campo(
+            hint: 'Correo',
+            icon: Icons.mail_outline,
+            controller: correoController,
+            tipo: TextInputType.emailAddress,
+          ),
           SizedBox(height: height * 0.018),
-          _campo(hint: 'Telefono', icon: Icons.phone_outlined, tipo: TextInputType.phone),
+          _campo(
+            hint: 'Telefono',
+            icon: Icons.phone_outlined,
+            controller: telefonoController,
+            tipo: TextInputType.phone,
+          ),
           SizedBox(height: height * 0.018),
           _campo(
             hint: 'Contraseña',
             icon: Icons.lock_outline,
+            controller: contrasenaController,
             ocultar: true,
             helper: 'Minimo 8 caracteres',
           ),

@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
+
 import '../../core/colores.dart';
 
 class CrearFooter extends StatelessWidget {
   final double width;
   final double height;
+  final bool aceptaTerminos;
+  final ValueChanged<bool?> onAceptaTerminosChanged;
+  final VoidCallback onCrearCuenta;
+  final VoidCallback onIniciarSesion;
+  final bool isLoading;
 
   const CrearFooter({
     super.key,
     required this.width,
     required this.height,
+    required this.aceptaTerminos,
+    required this.onAceptaTerminosChanged,
+    required this.onCrearCuenta,
+    required this.onIniciarSesion,
+    required this.isLoading,
   });
 
   @override
@@ -21,15 +32,12 @@ class CrearFooter extends StatelessWidget {
           top: height * 0.72,
           child: Row(
             children: [
-              Container(
-                width: 18,
-                height: 18,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colores.azul, width: 1.5),
-                  borderRadius: BorderRadius.circular(4),
-                ),
+              Checkbox(
+                value: aceptaTerminos,
+                onChanged: onAceptaTerminosChanged,
+                visualDensity: VisualDensity.compact,
+                activeColor: Colores.azulSecundario,
               ),
-              const SizedBox(width: 8),
               const Text(
                 'Acepto los Terminos y condiciones',
                 style: TextStyle(
@@ -49,7 +57,7 @@ class CrearFooter extends StatelessWidget {
           top: height * 0.78,
           height: height * 0.065,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: isLoading ? null : onCrearCuenta,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colores.azulSecundario,
               foregroundColor: Colores.blanco,
@@ -59,13 +67,19 @@ class CrearFooter extends StatelessWidget {
                 borderRadius: BorderRadius.circular(28),
               ),
             ),
-            child: const Text(
-              'Crear cuenta',
-              style: TextStyle(
-                fontFamily: "Poly_Regular",
-                fontSize: 16,
-              ),
-            ),
+            child: isLoading
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      color: Colores.blanco,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Text(
+                    'Crear cuenta',
+                    style: TextStyle(fontFamily: "Poly_Regular", fontSize: 16),
+                  ),
           ),
         ),
 
@@ -74,7 +88,7 @@ class CrearFooter extends StatelessWidget {
           left: 0,
           right: 0,
           top: height * 0.875,
-          child: const Text.rich(
+          child: Text.rich(
             TextSpan(
               style: TextStyle(
                 fontFamily: "Poly_Regular",
@@ -83,11 +97,16 @@ class CrearFooter extends StatelessWidget {
               ),
               children: [
                 TextSpan(text: '¿Ya tienes cuenta? '),
-                TextSpan(
-                  text: 'Iniciar sesion',
-                  style: TextStyle(
-                    color: Colores.azul,
-                    decoration: TextDecoration.underline,
+                WidgetSpan(
+                  child: GestureDetector(
+                    onTap: onIniciarSesion,
+                    child: const Text(
+                      'Iniciar sesion',
+                      style: TextStyle(
+                        color: Colores.azul,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
                   ),
                 ),
               ],

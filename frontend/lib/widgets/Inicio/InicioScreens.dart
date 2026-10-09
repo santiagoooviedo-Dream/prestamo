@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:front_prestamo/screens/Bienvenido_card.dart';
 import 'package:front_prestamo/widgets/fondos/widgetsFondoColor.dart';
-import '../../../widgets/fondos/widgetsFondo1.dart';
+
+import '../fondos/widgetsFondo1.dart';
+import '../../models/usuario.dart';
+import '../../screens/loginScreens.dart';
 
 class InicioScreen extends StatelessWidget {
-  const InicioScreen({super.key});
+  final Sesion sesion;
+
+  const InicioScreen({super.key, required this.sesion});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +21,7 @@ class InicioScreen extends StatelessWidget {
             builder: (context, constraints) {
               return Column(
                 children: [
-                  SizedBox(
-                    height: constraints.maxHeight * 0.10,
-                  ),
+                  SizedBox(height: constraints.maxHeight * 0.10),
 
                   Image.asset(
                     'assets/images/logo_prestamos.png',
@@ -26,14 +29,22 @@ class InicioScreen extends StatelessWidget {
                     height: 200,
                   ),
 
-                  SizedBox(
-                    height: constraints.maxHeight * 0.06,
-                  ),
+                  SizedBox(height: constraints.maxHeight * 0.06),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: constraints.maxWidth * 0.16,
                     ),
-                      child: const BienvenidaCard(),
+                    child: BienvenidaCard(
+                      usuario: sesion.usuario,
+                      onLogout: () {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const LoginScreen(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                    ),
                   ),
                 ],
               );

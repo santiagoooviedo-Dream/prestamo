@@ -4,11 +4,13 @@ import '../../core/colores.dart';
 class ListaHeader extends StatelessWidget {
   final double width;
   final double height;
+  final VoidCallback onBack;
 
   const ListaHeader({
     super.key,
     required this.width,
     required this.height,
+    required this.onBack,
   });
 
   @override
@@ -20,7 +22,7 @@ class ListaHeader extends StatelessWidget {
           left: width * 0.03,
           top: height * 0.012,
           child: IconButton(
-            onPressed: () {},
+            onPressed: onBack,
             padding: EdgeInsets.zero,
             icon: const Icon(Icons.arrow_back, color: Colores.negro, size: 26),
           ),

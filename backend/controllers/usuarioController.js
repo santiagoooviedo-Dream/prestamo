@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 //importamos jwt para generar el token
 import jwt from 'jsonwebtoken';
 
-import { buscarUsuarioPorCorreo, crearUsuario, actualizarCorreoUsuario, cambiarContrasena, buscarUsuarioPorId, crearCodigoRecuperacion, buscarCodigoRecuperacion, actualizarFotoUsuario, verificarUsuario } from '../models/usuarioModel.js';
+import { buscarUsuarioPorCorreo, buscarUsuarioPorCedula, crearUsuario, actualizarCodigoVerificacion, actualizarCorreoUsuario, cambiarContrasena, buscarUsuarioPorId, crearCodigoRecuperacion, buscarCodigoRecuperacion, actualizarFotoUsuario, verificarUsuario } from '../models/usuarioModel.js';
 
 //importamos el brave para enviar codigos de recuperacion de contraseña
 import { enviarCodigoRecuperacion, enviarCodigoVerificacion } from '../utils/sendEmails.js';
@@ -235,16 +235,71 @@ export const verificarRegistro = async (req, res) => {
         }
     });
 };
+
+export const reenviarCodigoRegistro = async (req, res) => {
+    const { correo } = req.body;
+
+    if (!correo) {
+        return res.status(400).json({
+            mensaje: 'El correo es obligatorio'
+        });
+    }
+
+    const { data: usuario, error } = await buscarUsuarioPorCorreo(correo);
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al buscar el usuario',
+            error: error.message
+        });
+    }
+    if (!usuario) {
+        return res.status(404).json({
+            mensaje: 'No se encontró una cuenta con ese correo'
+        });
+    }
+    if (usuario.isVerified) {
+        return res.status(400).json({
+            mensaje: 'La cuenta ya está verificada'
+        });
+    }
+
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiracion = new Date(Date.now() + 15 * 60 * 1000);
+    const { error: errorActualizacion } = await actualizarCodigoVerificacion(
+        usuario.id_usuario,
+        codigo,
+        expiracion
+    );
+    if (errorActualizacion) {
+        return res.status(500).json({
+            mensaje: 'No se pudo generar un nuevo código',
+            error: errorActualizacion.message
+        });
+    }
+
+    const resultado = await enviarCodigoVerificacion(correo, usuario.nombre, codigo);
+    if (!resultado.exito) {
+        return res.status(500).json({
+            mensaje: 'No se pudo enviar el código',
+            error: resultado.error
+        });
+    }
+
+    return res.status(200).json({
+        mensaje: 'Código de verificación enviado correctamente'
+    });
+};
 //funcion para iniciar sesion
 export const loginUsuario = async (req, res) => {
 
     //recibimos los datos
-    const { correo, contrasena } = req.body;
+    const { correo, cedula, contrasena } = req.body;
+    const identificador = cedula || correo;
 
     //comprobamos que llegaron
-    if (!correo || !contrasena) {
+    if (!identificador || !contrasena) {
         return res.status(400).json({
-            error: 'correo y contraseña faltan'
+            error: 'La cédula o el correo y la contraseña son obligatorios'
         });
     }
 
@@ -252,7 +307,9 @@ export const loginUsuario = async (req, res) => {
     const {
         data: usuario,
         error
-    } = await buscarUsuarioPorCorreo(correo);
+    } = cedula
+        ? await buscarUsuarioPorCedula(cedula)
+        : await buscarUsuarioPorCorreo(correo);
 
     //comprobamos error de Supabase
     if (error) {
@@ -279,6 +336,11 @@ export const loginUsuario = async (req, res) => {
     if (!contrasenaCorrecta) {
         return res.status(401).json({
             mensaje: 'Correo o contraseña incorrectos'
+        });
+    }
+    if (!usuario.isVerified) {
+        return res.status(403).json({
+            mensaje: 'Verifica tu cuenta antes de iniciar sesión'
         });
     }
 

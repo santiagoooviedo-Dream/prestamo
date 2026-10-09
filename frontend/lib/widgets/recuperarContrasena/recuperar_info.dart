@@ -29,7 +29,7 @@ class RecuperarInfo extends StatelessWidget {
           Expanded(
             child: Text(
               'Ingresa tu correo y te enviaremos\n'
-              'un enlace para restablecer tu contraseña',
+              'un código para restablecer tu contraseña',
               style: const TextStyle(
                 fontFamily: "Poly_regular",
                 color: Colores.negro,

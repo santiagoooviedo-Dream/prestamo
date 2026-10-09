@@ -4,11 +4,17 @@ import '../../core/colores.dart';
 class RecuperarForm extends StatelessWidget {
   final double width;
   final double height;
+  final TextEditingController correoController;
+  final VoidCallback onSubmit;
+  final bool isLoading;
 
   const RecuperarForm({
     super.key,
     required this.width,
     required this.height,
+    required this.correoController,
+    required this.onSubmit,
+    required this.isLoading,
   });
 
   @override
@@ -21,7 +27,9 @@ class RecuperarForm extends StatelessWidget {
           top: height * .390,
           height: height * .075,
           child: TextField(
+            controller: correoController,
             keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.done,
             style: const TextStyle(
               color: Colores.negro,
               fontSize: 16,
@@ -55,7 +63,7 @@ class RecuperarForm extends StatelessWidget {
           top: height * .505,
           height: height * .075,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: isLoading ? null : onSubmit,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colores.azulSecundario,
               foregroundColor: Colores.blanco,
@@ -65,13 +73,22 @@ class RecuperarForm extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15),
               ),
             ),
-            child: const Text(
-              'Enviar enlace',
-              style: TextStyle(
-                fontFamily: "Poly_regular",
-                fontSize: 18,
-              ),
-            ),
+            child: isLoading
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      color: Colores.blanco,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Text(
+                    'Enviar código',
+                    style: TextStyle(
+                      fontFamily: "Poly_regular",
+                      fontSize: 18,
+                    ),
+                  ),
           ),
         ),
       ],

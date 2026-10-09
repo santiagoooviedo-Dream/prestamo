@@ -11,6 +11,15 @@ export const buscarUsuarioPorCorreo = async (correo) => {
 
         return { data, error };
     };
+export const buscarUsuarioPorCedula = async (cedula) => {
+        const { data, error } = await supabase
+            .from('usuarios')
+            .select('*')
+            .eq('cedula', cedula)
+            .maybeSingle();
+
+        return { data, error };
+    };
 // Buscar un usuario por ID
  export const buscarUsuarioPorId = async (id_usuario) => {
         const { data, error } = await supabase
@@ -120,6 +129,20 @@ export const actualizarFotoUsuario = async (id_usuario, foto) => {
             isVerified: true,
             codigoVerificacion: null,
             codigoVerificacionExpiracion: null
+        })
+        .eq('id_usuario', id_usuario)
+        .select()
+        .single();
+
+    return { data, error };
+};
+
+export const actualizarCodigoVerificacion = async (id_usuario, codigo, expiracion) => {
+    const { data, error } = await supabase
+        .from('usuarios')
+        .update({
+            codigoVerificacion: codigo,
+            codigoVerificacionExpiracion: expiracion
         })
         .eq('id_usuario', id_usuario)
         .select()

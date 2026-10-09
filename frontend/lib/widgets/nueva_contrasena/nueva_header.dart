@@ -4,11 +4,13 @@ import '../../core/colores.dart';
 class NuevaHeader extends StatelessWidget {
   final double width;
   final double height;
+  final VoidCallback onBack;
 
   const NuevaHeader({
     super.key,
     required this.width,
     required this.height,
+    required this.onBack,
   });
 
   @override
@@ -20,7 +22,7 @@ class NuevaHeader extends StatelessWidget {
           left: width * 0.04,
           top: height * 0.012,
           child: IconButton(
-            onPressed: () {},
+            onPressed: onBack,
             icon: const Icon(
               Icons.arrow_back,
               color: Colores.negro,

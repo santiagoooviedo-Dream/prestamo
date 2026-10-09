@@ -4,11 +4,13 @@ import '../../core/colores.dart';
 class VerifInfo extends StatelessWidget {
   final double width;
   final double height;
+  final VoidCallback onResend;
 
   const VerifInfo({
     super.key,
     required this.width,
     required this.height,
+    required this.onResend,
   });
 
   @override
@@ -21,7 +23,7 @@ class VerifInfo extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.fromLTRB(14, 12, 12, 10),
         decoration: BoxDecoration(
-          color: Colores.blanco.withOpacity(0.75),
+          color: Colores.blanco.withValues(alpha: 0.75),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -57,12 +59,20 @@ class VerifInfo extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Reenviar enlace',
-                    style: TextStyle(
-                      fontFamily: "Poly_Regular",
-                      color: Colores.azulSecundario,
-                      fontSize: 14,
+                  TextButton(
+                    onPressed: onResend,
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text(
+                      'Reenviar código',
+                      style: TextStyle(
+                        fontFamily: "Poly_Regular",
+                        color: Colores.azulSecundario,
+                        fontSize: 14,
+                      ),
                     ),
                   ),
                 ],

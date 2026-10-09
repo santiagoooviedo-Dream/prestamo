@@ -4,11 +4,21 @@ import '../../core/colores.dart';
 class LoginFields extends StatelessWidget {
   final double width;
   final double height;
+  final TextEditingController cedulaController;
+  final TextEditingController contrasenaController;
+  final VoidCallback onLogin;
+  final VoidCallback onRecovery;
+  final bool isLoading;
 
   const LoginFields({
     super.key,
     required this.width,
     required this.height,
+    required this.cedulaController,
+    required this.contrasenaController,
+    required this.onLogin,
+    required this.onRecovery,
+    required this.isLoading,
   });
 
   @override
@@ -24,6 +34,7 @@ class LoginFields extends StatelessWidget {
             'Cedula',
             Icons.badge_outlined,
             TextInputType.number,
+            controller: cedulaController,
           ),
         ),
 
@@ -36,6 +47,7 @@ class LoginFields extends StatelessWidget {
             'Contraseña',
             Icons.lock_outline,
             TextInputType.text,
+            controller: contrasenaController,
             ocultar: true,
           ),
         ),
@@ -43,11 +55,20 @@ class LoginFields extends StatelessWidget {
         Positioned(
           left: width * .145,
           top: height * .565,
-          child: const Text(
-            'Recuperar contraseña',
-            style: TextStyle(
-              color: Colores.azul,
-              fontSize: 15,
+          child: TextButton(
+            onPressed: onRecovery,
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: const Text(
+              'Recuperar contraseña',
+              style: TextStyle(
+                color: Colores.azul,
+                fontSize: 15,
+                fontFamily: "Poly_Regular",
+              ),
             ),
           ),
         ),
@@ -58,7 +79,7 @@ class LoginFields extends StatelessWidget {
           top: height * .620,
           height: height * .071,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: isLoading ? null : onLogin,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colores.azulSecundario,
               foregroundColor: Colores.blanco,
@@ -68,12 +89,16 @@ class LoginFields extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            child: const Text(
-              'Confirmar',
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
+            child: isLoading
+                ? const SizedBox(
+                    width: 22,
+                    height: 22,
+                    child: CircularProgressIndicator(
+                      color: Colores.blanco,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : const Text('Confirmar', style: TextStyle(fontSize: 16)),
           ),
         ),
       ],
@@ -84,11 +109,14 @@ class LoginFields extends StatelessWidget {
     String hint,
     IconData icon,
     TextInputType tipo, {
+    required TextEditingController controller,
     bool ocultar = false,
   }) {
     return TextField(
+      controller: controller,
       keyboardType: tipo,
       obscureText: ocultar,
+      textInputAction: ocultar ? TextInputAction.done : TextInputAction.next,
       style: const TextStyle(
         color: Colores.negro,
         fontSize: 15,

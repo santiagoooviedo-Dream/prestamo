@@ -4,11 +4,13 @@ import '../../core/colores.dart';
 class CodigoInfo extends StatelessWidget {
   final double width;
   final double height;
+  final VoidCallback onResend;
 
   const CodigoInfo({
     super.key,
     required this.width,
     required this.height,
+    required this.onResend,
   });
 
   @override
@@ -21,7 +23,7 @@ class CodigoInfo extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.fromLTRB(12, 12, 12, 10),
         decoration: BoxDecoration(
-          color: Colores.grisMedio.withOpacity(0.90),
+          color: Colores.grisMedio.withValues(alpha: 0.90),
           borderRadius: BorderRadius.circular(18),
         ),
         child: Row(
@@ -57,12 +59,20 @@ class CodigoInfo extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 4),
-                  const Text(
-                    'Reenviar enlace',
-                    style: TextStyle(
-                      fontFamily: "Poly_Regular",
-                      color: Colores.azulSecundario,
-                      fontSize: 16,
+                  TextButton(
+                    onPressed: onResend,
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: const Text(
+                      'Reenviar código',
+                      style: TextStyle(
+                        fontFamily: "Poly_Regular",
+                        color: Colores.azulSecundario,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ],

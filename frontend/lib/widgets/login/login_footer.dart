@@ -4,11 +4,13 @@ import '../../core/colores.dart';
 class LoginFooter extends StatelessWidget {
   final double width;
   final double height;
+  final VoidCallback onRegister;
 
   const LoginFooter({
     super.key,
     required this.width,
     required this.height,
+    required this.onRegister,
   });
 
   @override
@@ -28,11 +30,19 @@ class LoginFooter extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 3),
-          const Text(
+          TextButton(
+            onPressed: onRegister,
+            style: TextButton.styleFrom(
+              padding: EdgeInsets.zero,
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: const Text(
             'Crear cuenta',
             style: TextStyle(
               color: Colores.azul,
               fontSize: 14,
+            ),
             ),
           ),
         ],

@@ -4,21 +4,34 @@ import '../../core/colores.dart';
 class NuevaRequisitos extends StatelessWidget {
   final double width;
   final double height;
+  final String contrasena;
 
   const NuevaRequisitos({
     super.key,
     required this.width,
     required this.height,
+    required this.contrasena,
   });
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      'Minimo 8 caracteres',
-      'Incluye un numero',
-      'Incluye una mayuscula',
-      'Incluye un simbolo',
+    final items = <(String, bool)>[
+      ('Minimo 8 caracteres', contrasena.length >= 8),
+      ('Incluye un numero', RegExp(r'\d').hasMatch(contrasena)),
+      ('Incluye una mayuscula', RegExp(r'[A-Z]').hasMatch(contrasena)),
+      ('Incluye un simbolo', RegExp(r'[^A-Za-z0-9]').hasMatch(contrasena)),
     ];
+    final cumplidos = items.where((item) => item.$2).length;
+    final colorSeguridad = cumplidos == 4
+        ? Colores.verde
+        : cumplidos >= 2
+            ? Colores.azul
+            : Colores.grisOscuro;
+    final nivelSeguridad = cumplidos == 4
+        ? 'Fuerte'
+        : cumplidos >= 2
+            ? 'Media'
+            : 'Débil';
 
     return Stack(
       children: [
@@ -30,13 +43,13 @@ class NuevaRequisitos extends StatelessWidget {
             child: Row(
               children: [
                 Icon(
-                  Icons.check_circle,
-                  color: Colores.verde,
+                  items[i].$2 ? Icons.check_circle : Icons.radio_button_unchecked,
+                  color: items[i].$2 ? Colores.verde : Colores.grisOscuro,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  items[i],
+                  items[i].$1,
                   style: const TextStyle(
                     fontFamily: "Poly_Regular",
                     color: Colores.negro,
@@ -55,8 +68,8 @@ class NuevaRequisitos extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                Icons.check_circle,
-                color: Colores.verde,
+                cumplidos == 4 ? Icons.check_circle : Icons.shield_outlined,
+                color: colorSeguridad,
                 size: 20,
               ),
               const SizedBox(width: 8),
@@ -69,10 +82,10 @@ class NuevaRequisitos extends StatelessWidget {
                 ),
               ),
               Text(
-                'Fuerte',
+                nivelSeguridad,
                 style: TextStyle(
                   fontFamily: "Poly_Regular",
-                  color: Colores.verde,
+                  color: colorSeguridad,
                   fontSize: 15,
                 ),
               ),
@@ -88,16 +101,17 @@ class NuevaRequisitos extends StatelessWidget {
           height: 6,
           child: Container(
             decoration: BoxDecoration(
-              color: Colores.verdeClaro.withOpacity(0.4),
+              color: Colores.verdeClaro.withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(3),
             ),
             child: Align(
               alignment: Alignment.centerLeft,
               child: FractionallySizedBox(
-                widthFactor: 0.82,
+                widthFactor:
+                    (cumplidos / items.length).clamp(0.08, 1.0).toDouble(),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colores.verde,
+                    color: colorSeguridad,
                     borderRadius: BorderRadius.circular(3),
                   ),
                 ),

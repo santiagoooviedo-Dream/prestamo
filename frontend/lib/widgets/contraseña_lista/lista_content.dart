@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_prestamo/screens/loginScreens.dart';
 import '../../core/colores.dart';
 
 class ListaContent extends StatelessWidget {
@@ -48,6 +49,32 @@ class ListaContent extends StatelessWidget {
               fontSize: 15,
               height: 1.35,
             ),
+          ),
+        ),
+
+        Positioned(
+          left: width * 0.10,
+          right: width * 0.10,
+          top: height * 0.80,
+          height: height * 0.065,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute<void>(
+                  builder: (_) => const LoginScreen(),
+                ),
+                (route) => false,
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colores.azulSecundario,
+              foregroundColor: Colores.blanco,
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
+            child: const Text('Iniciar sesión'),
           ),
         ),
 

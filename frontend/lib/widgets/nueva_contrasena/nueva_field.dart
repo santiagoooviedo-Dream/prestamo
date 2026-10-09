@@ -4,11 +4,15 @@ import '../../core/colores.dart';
 class NuevaField extends StatelessWidget {
   final double width;
   final double height;
+  final TextEditingController controller;
+  final ValueChanged<String> onChanged;
 
   const NuevaField({
     super.key,
     required this.width,
     required this.height,
+    required this.controller,
+    required this.onChanged,
   });
 
   @override
@@ -19,7 +23,9 @@ class NuevaField extends StatelessWidget {
       top: height * 0.382,
       height: height * 0.066,
       child: TextField(
+        controller: controller,
         obscureText: true,
+        onChanged: onChanged,
         style: const TextStyle(
           color: Colores.negro,
           fontSize: 15,
@@ -27,7 +33,7 @@ class NuevaField extends StatelessWidget {
         ),
         decoration: InputDecoration(
           filled: true,
-          fillColor: Colores.grisMedio.withOpacity(0.90),
+          fillColor: Colores.grisMedio.withValues(alpha: 0.90),
           hintText: 'Nueva contraseña',
           hintStyle: const TextStyle(
             color: Colores.negro,

@@ -4,11 +4,15 @@ import '../../core/colores.dart';
 class CodigoButton extends StatelessWidget {
   final double width;
   final double height;
+  final VoidCallback onPressed;
+  final bool isLoading;
 
   const CodigoButton({
     super.key,
     required this.width,
     required this.height,
+    required this.onPressed,
+    required this.isLoading,
   });
 
   @override
@@ -19,7 +23,7 @@ class CodigoButton extends StatelessWidget {
       top: height * 0.626,
       height: height * 0.071,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: Colores.azulSecundario,
           foregroundColor: Colores.blanco,
@@ -29,13 +33,22 @@ class CodigoButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(18),
           ),
         ),
-        child: const Text(
-          'Continuar',
-          style: TextStyle(
-            fontFamily: "Poly_Regular",
-            fontSize: 18,
-          ),
-        ),
+        child: isLoading
+            ? const SizedBox(
+                width: 22,
+                height: 22,
+                child: CircularProgressIndicator(
+                  color: Colores.blanco,
+                  strokeWidth: 2,
+                ),
+              )
+            : const Text(
+                'Continuar',
+                style: TextStyle(
+                  fontFamily: "Poly_Regular",
+                  fontSize: 18,
+                ),
+              ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 //importamos express
 import express from 'express';
+import cors from 'cors';
 
 //importamos la configuracion de supabase
 import { supabase } from './config/supabase.js';
@@ -24,6 +25,8 @@ import conversacionRoutes from './routes/conversacionRoutes.js'
 
 //creamos una instancia de express
 const app = express();
+
+app.use(cors());
 
 //permite recibir datos en formato JSON
 app.use(express.json());

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:front_prestamo/widgets/confirmar_contrase%C3%B1a/confirmar_button.dart';
+import 'package:front_prestamo/widgets/confirmar_contrase%C3%B1a/confirmar_field.dart';
+import 'package:front_prestamo/widgets/confirmar_contrase%C3%B1a/confirmar_header.dart';
+import 'package:front_prestamo/widgets/confirmar_contrase%C3%B1a/confirmar_status.dart';
 import 'package:front_prestamo/widgets/fondos/widgetsFondoColor.dart';
+import '../widgets/fondos/widgetsFondo1.dart';
 
-import '../../widgets/fondos/widgetsFondo1.dart';
-import 'recuperar_header.dart';
-import 'recuperar_form.dart';
-import 'recuperar_info.dart';
 
-class RecuperarScreen extends StatelessWidget {
-  const RecuperarScreen({super.key});
+class ConfirmarContrasenaScreen extends StatelessWidget {
+  const ConfirmarContrasenaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +23,19 @@ class RecuperarScreen extends StatelessWidget {
                 height: constraints.maxHeight,
                 child: Stack(
                   children: [
-                    RecuperarHeader(
+                    ConfirmarHeader(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
                     ),
-                    RecuperarForm(
+                    ConfirmarField(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
                     ),
-                    RecuperarInfo(
+                    ConfirmarStatus(
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                    ),
+                    ConfirmarButton(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
                     ),

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:front_prestamo/widgets/fondos/widgetsFondoColor.dart';
 
-import '../../widgets/fondos/widgetsFondo1.dart';
-import 'login_header.dart';
-import 'login_fields.dart';
-import 'login_footer.dart';
+import '../widgets/fondos/widgetsFondo1.dart';
+import '../widgets/login/login_header.dart';
+import '../widgets/login/login_fields.dart';
+import '../widgets/login/login_footer.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});

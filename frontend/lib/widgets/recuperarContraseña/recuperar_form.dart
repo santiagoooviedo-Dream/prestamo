@@ -68,6 +68,7 @@ class RecuperarForm extends StatelessWidget {
             child: const Text(
               'Enviar enlace',
               style: TextStyle(
+                fontFamily: "Poly_regular",
                 fontSize: 18,
               ),
             ),

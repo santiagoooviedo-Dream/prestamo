@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:front_prestamo/screens/Bienvenido_card.dart';
 import 'package:front_prestamo/widgets/fondos/widgetsFondoColor.dart';
 import '../../../widgets/fondos/widgetsFondo1.dart';
-
-import 'Bienvenido_card.dart';
 
 class InicioScreen extends StatelessWidget {
   const InicioScreen({super.key});
@@ -34,7 +33,7 @@ class InicioScreen extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                       horizontal: constraints.maxWidth * 0.16,
                     ),
-                    child: const BienvenidaCard(),
+                      child: const BienvenidaCard(),
                   ),
                 ],
               );

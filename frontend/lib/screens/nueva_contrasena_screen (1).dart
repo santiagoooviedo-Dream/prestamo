@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:front_prestamo/widgets/fondos/widgetsFondoColor.dart';
-
 import '../widgets/fondos/widgetsFondo1.dart';
-import '../widgets/recuperarContrasena/recuperar_header.dart';
-import '../widgets/recuperarContrasena/recuperar_form.dart';
-import '../widgets/recuperarContrasena/recuperar_info.dart';
+import '../widgets/nueva_contrasena/nueva_header.dart';
+import '../widgets/nueva_contrasena/nueva_field.dart';
+import '../widgets/nueva_contrasena/nueva_requisitos.dart';
+import '../widgets/nueva_contrasena/nueva_button.dart';
 
-class RecuperarScreen extends StatelessWidget {
-  const RecuperarScreen({super.key});
+class NuevaContrasenaScreen extends StatelessWidget {
+  const NuevaContrasenaScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +22,19 @@ class RecuperarScreen extends StatelessWidget {
                 height: constraints.maxHeight,
                 child: Stack(
                   children: [
-                    RecuperarHeader(
+                    NuevaHeader(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
                     ),
-                    RecuperarForm(
+                    NuevaField(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
                     ),
-                    RecuperarInfo(
+                    NuevaRequisitos(
+                      width: constraints.maxWidth,
+                      height: constraints.maxHeight,
+                    ),
+                    NuevaButton(
                       width: constraints.maxWidth,
                       height: constraints.maxHeight,
                     ),

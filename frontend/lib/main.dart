@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front_prestamo/screens/codigo_recuperacion_screen.dart';
 import 'package:front_prestamo/screens/confirmar_contrasena_screen%20(1).dart';
+import 'package:front_prestamo/screens/nueva_contrasena_screen%20(1).dart';
 import 'package:front_prestamo/widgets/Inicio/InicioScreens.dart';
 import 'package:front_prestamo/screens/loginScreens.dart';
 import 'package:front_prestamo/screens/recuperar_screen.dart';
@@ -16,7 +17,7 @@ class FrontPrestamoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const ConfirmarContrasenaScreen(),
+      home: const NuevaContrasenaScreen(),
     );
   }
 }

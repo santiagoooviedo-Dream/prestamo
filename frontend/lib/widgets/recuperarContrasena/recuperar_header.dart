@@ -30,7 +30,7 @@ class RecuperarHeader extends StatelessWidget {
             child: const Text(
               'Recuperar\nContraseña',
               style: TextStyle(
-                fontFamily: "Poly_regular",
+                fontFamily: "Poly",
                 color: Colores.negro,
                 fontSize: 39,
                 height: .93,
@@ -57,7 +57,7 @@ class RecuperarHeader extends StatelessWidget {
               style: TextStyle(
                 fontFamily: "Poly_regular",
                 color: Colores.negro,
-                fontSize: 14,
+                fontSize: 16,
                 height: 1.25,
               ),
             ),

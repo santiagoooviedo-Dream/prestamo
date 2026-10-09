@@ -25,7 +25,7 @@ class ListaContent extends StatelessWidget {
             '¡Todo listo!',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: "Poly_Regular",
+              fontFamily: "Poly",
               color: Colores.negro,
               fontSize: 34,
               fontWeight: FontWeight.w600,
@@ -46,7 +46,7 @@ class ListaContent extends StatelessWidget {
             style: TextStyle(
               fontFamily: "Poly_Regular",
               color: Colores.negro,
-              fontSize: 15,
+              fontSize: 17,
               height: 1.35,
             ),
           ),

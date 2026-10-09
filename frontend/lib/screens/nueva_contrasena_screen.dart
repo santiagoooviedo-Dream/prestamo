@@ -63,7 +63,7 @@ class _NuevaContrasenaScreenState extends State<NuevaContrasenaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AppBackground(
-        tipo: TipoFondo.azul2,
+        tipo: TipoFondo.azulBlancoTotal,
         child: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {

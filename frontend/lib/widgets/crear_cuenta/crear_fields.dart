@@ -94,6 +94,7 @@ class CrearFields extends StatelessWidget {
             icon: Icons.badge_outlined,
             controller: cedulaController,
             tipo: TextInputType.number,
+            
           ),
           SizedBox(height: height * 0.018),
           _campo(

@@ -22,7 +22,7 @@ class CrearHeader extends StatelessWidget {
           child: const Text(
             'Crear\ncuenta',
             style: TextStyle(
-              fontFamily: "Poly_Regular",
+              fontFamily: "Poly",
               color: Colores.negro,
               fontSize: 40,
               height: 1.05,

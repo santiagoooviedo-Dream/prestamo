@@ -21,6 +21,9 @@ class AppBackground extends StatelessWidget {
       
       case TipoFondo.azulBlanco:
         return 'assets/backgrounds/fondo_azul_blanco.png';
+
+      case TipoFondo.azulBlancoTotal:
+        return 'assets/backgrounds/fondo_azul_blancoTotal.png';
     }
   }
 

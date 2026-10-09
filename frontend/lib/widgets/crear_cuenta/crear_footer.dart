@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../core/colores.dart';
 
 class CrearFooter extends StatelessWidget {
@@ -78,7 +77,10 @@ class CrearFooter extends StatelessWidget {
                   )
                 : const Text(
                     'Crear cuenta',
-                    style: TextStyle(fontFamily: "Poly_Regular", fontSize: 16),
+                    style: TextStyle(
+                      fontFamily: "Poly_Regular",
+                      fontSize: 16,
+                    ),
                   ),
           ),
         ),

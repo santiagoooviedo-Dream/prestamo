@@ -322,7 +322,7 @@ export const loginUsuario = async (req, res) => {
     //comprobamos si existe
     if (!usuario) {
         return res.status(401).json({
-            mensaje: 'Correo o contraseña incorrectos'
+            mensaje: 'Cedula o contraseña incorrectos'
         });
     }
 
@@ -335,7 +335,7 @@ export const loginUsuario = async (req, res) => {
     //si la contraseña es incorrecta
     if (!contrasenaCorrecta) {
         return res.status(401).json({
-            mensaje: 'Correo o contraseña incorrectos'
+            mensaje: 'Cedula o contraseña incorrectos'
         });
     }
     if (!usuario.isVerified) {

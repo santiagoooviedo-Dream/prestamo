@@ -82,7 +82,7 @@ class ConfirmarHeader extends StatelessWidget {
             'Confirmar contraseña',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: "Poly_Regular",
+              fontFamily: "Poly",
               color: Colores.negro,
               fontSize: 32,
               height: 1.05,
@@ -101,7 +101,7 @@ class ConfirmarHeader extends StatelessWidget {
             style: TextStyle(
               fontFamily: "Poly_Regular",
               color: Colores.negro,
-              fontSize: 16,
+              fontSize: 18,
               height: 1.3,
             ),
           ),

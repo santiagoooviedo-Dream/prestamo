@@ -47,7 +47,7 @@ class LoginFields extends StatelessWidget {
             'Recuperar contraseña',
             style: TextStyle(
               color: Colores.azul,
-              fontSize: 10,
+              fontSize: 15,
             ),
           ),
         ),

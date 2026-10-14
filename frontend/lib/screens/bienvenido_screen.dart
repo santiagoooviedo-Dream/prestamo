@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:front_prestamo/screens/mi_perfil_screen.dart';
 import '../models/usuario.dart';
 import '../widgets/fondos/widgetsFondo1.dart';
 import '../widgets/fondos/widgetsFondoColor.dart';
 import '../widgets/bienvenido/bienvenido_header.dart';
 import '../widgets/bienvenido/bienvenido_grid.dart';
 import '../widgets/bienvenido/bienvenido_footer.dart';
-import 'mi_perfil_screen.dart';
-import 'estado_cuenta_screen.dart';
-import 'actividad_cuenta_screen.dart';
 
 class BienvenidoScreen extends StatelessWidget {
   final Sesion sesion;
@@ -40,18 +38,14 @@ class BienvenidoScreen extends StatelessWidget {
                         // TODO: navegar a asistente virtual
                       },
                       onHistorial: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => ActividadCuentaScreen(
-                              sesion: sesion,
-                            ),
-                          ),
-                        );
+
                       },
                       onPerfil: () {
                         Navigator.of(context).push(
                           MaterialPageRoute<void>(
-                            builder: (_) => MiPerfilScreen(sesion: sesion),
+                            builder: (_) => MiPerfilScreen(
+                              sesion: sesion,
+                            ),
                           ),
                         );
                       },

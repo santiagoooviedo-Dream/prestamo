@@ -16,30 +16,30 @@ class BienvenidoHeader extends StatelessWidget {
     return Stack(
       children: [
         Positioned(
-          left: width * 0.05,
-          right: width * 0.05,
-          top: height * 0.075,
+          left: width * 0.08,
+          right: width * 0.08,
+          top: height * 0.06,
           child: const Text(
             '¡Bienvenido!',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: 'Poly',
+              fontFamily: "Poly",
               color: Colores.negro,
-              fontSize: 35,
+              fontSize: 34,
               fontWeight: FontWeight.w600,
               height: 1.1,
             ),
           ),
         ),
         Positioned(
-          left: width * 0.04,
-          right: width * 0.04,
-          top: height * 0.137,
+          left: width * 0.08,
+          right: width * 0.08,
+          top: height * 0.125,
           child: const Text(
             '¿Que te gustaria hacer hoy?',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontFamily: 'Poly_Regular',
+              fontFamily: "Poly_Regular",
               color: Colores.negro,
               fontSize: 14,
             ),

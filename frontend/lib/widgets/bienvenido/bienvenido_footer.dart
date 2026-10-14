@@ -14,56 +14,54 @@ class BienvenidoFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: width * 0.105,
-      right: width * 0.105,
-      bottom: height * 0.078,
+      left: width * 0.08,
+      right: width * 0.08,
+      bottom: height * 0.05,
       child: Container(
-        padding: const EdgeInsets.fromLTRB(14, 17, 12, 17),
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
         decoration: BoxDecoration(
-          color: const Color(0x33FFFFFF),
-          borderRadius: BorderRadius.circular(19),
+          color: Colores.blanco.withOpacity(0.55),
+          borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
-              width: 40,
-              height: 48,
-              child: Icon(
-                Icons.verified_user_rounded,
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
                 color: Colores.azul,
-                size: 43,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.verified_user_rounded,
+                color: Colores.blanco,
+                size: 18,
               ),
             ),
-            const SizedBox(width: 7),
-            Expanded(
+            const SizedBox(width: 12),
+            const Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
+                  Text(
                     'Tu seguridad es importante\npara nosotros',
-                    textAlign: TextAlign.left,
                     style: TextStyle(
-                      fontFamily: 'Poly',
+                      fontFamily: "Poly",
                       color: Colores.negro,
-                      fontSize: 17,
-                      height: 1.2,
+                      fontSize: 13,
+                      height: 1.25,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 15),
-                  const SizedBox(
-                    width: double.infinity,
-                    child: Text(
-                      'Cuidamos tu informacion en\ncada paso',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Poly_Regular',
-                        color: Colores.negro,
-                        fontSize: 15,
-                        height: 1.3,
-                      ),
+                  SizedBox(height: 3),
+                  Text(
+                    'Cuidamos tu informacion en\ncada paso',
+                    style: TextStyle(
+                      fontFamily: "Poly_Regular",
+                      color: Colores.negro,
+                      fontSize: 11,
+                      height: 1.3,
                     ),
                   ),
                 ],

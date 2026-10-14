@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:front_prestamo/screens/Bienvenido_card.dart';
+import 'package:front_prestamo/screens/bienvenido_screen.dart';
 import 'package:front_prestamo/widgets/fondos/widgetsFondoColor.dart';
 import '../services/api_client.dart';
 import '../services/auth_service.dart';

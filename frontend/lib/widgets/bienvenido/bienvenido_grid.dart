@@ -22,17 +22,17 @@ class BienvenidoGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cardW = width * 0.385;
-    final cardH = height * 0.215;
-    final gapX = width * 0.07;
-    final left = width * 0.09;
-    final top = height * 0.205;
-    final gapY = height * 0.033;
+    final cardH = height * 0.175;
+    final gapX = width * 0.035;
+    final left = (width - cardW * 2 - gapX) / 2;
+    final top1 = height * 0.195;
+    final top2 = top1 + cardH + height * 0.022;
 
     return Stack(
       children: [
         Positioned(
           left: left,
-          top: top,
+          top: top1,
           width: cardW,
           height: cardH,
           child: _MenuCard(
@@ -43,7 +43,7 @@ class BienvenidoGrid extends StatelessWidget {
         ),
         Positioned(
           left: left + cardW + gapX,
-          top: top,
+          top: top1,
           width: cardW,
           height: cardH,
           child: _MenuCard(
@@ -54,18 +54,18 @@ class BienvenidoGrid extends StatelessWidget {
         ),
         Positioned(
           left: left,
-          top: top + cardH + gapY,
+          top: top2,
           width: cardW,
           height: cardH,
           child: _MenuCard(
-            icon: Icons.access_time_rounded,
+            icon: Icons.access_time_filled_rounded,
             label: 'Historial',
             onTap: onHistorial,
           ),
         ),
         Positioned(
           left: left + cardW + gapX,
-          top: top + cardH + gapY,
+          top: top2,
           width: cardW,
           height: cardH,
           child: _MenuCard(
@@ -92,44 +92,36 @@ class _MenuCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colores.blanco,
-      borderRadius: BorderRadius.circular(17),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(17),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(17),
-            boxShadow: [
-              BoxShadow(
-                color: Colores.azul.withOpacity(0.08),
-                blurRadius: 10,
-                offset: const Offset(0, 3),
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colores.blanco,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF045CFF).withOpacity(0.10),
+              blurRadius: 14,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: Colores.azul),
+            const SizedBox(height: 10),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: "Poly_Regular",
+                color: Colores.negro,
+                fontSize: 13,
+                height: 1.25,
               ),
-            ],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 36,
-                color: Colores.azul,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontFamily: 'Poly_Regular',
-                  color: Colores.negro,
-                  fontSize: 14,
-                  height: 1.2,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

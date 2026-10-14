@@ -37,11 +37,7 @@ class VerifHeader extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(
-                Icons.mail_outline_rounded,
-                size: width * 0.22,
-                color: Colores.blanco,
-              ),
+
               Positioned(
                 right: 0,
                 top: 0,

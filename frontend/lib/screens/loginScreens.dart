@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_prestamo/screens/Bienvenido_card.dart';
 import 'package:front_prestamo/widgets/fondos/widgetsFondoColor.dart';
 import '../services/api_client.dart';
 import '../services/auth_service.dart';
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute<void>(
-          builder: (_) => InicioScreen(
+          builder: (_) => BienvenidoScreen(
             sesion: sesion,
           ),
         ),

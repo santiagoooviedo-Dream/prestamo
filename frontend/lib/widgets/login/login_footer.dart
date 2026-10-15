@@ -1,48 +1,33 @@
 import 'package:flutter/material.dart';
-import '../../core/colores.dart';
 
 class LoginFooter extends StatelessWidget {
-  final double width;
-  final double height;
-  final VoidCallback onRegister;
+  final VoidCallback? onRegister;
 
-  const LoginFooter({
-    super.key,
-    required this.width,
-    required this.height,
-    required this.onRegister,
-  });
+  const LoginFooter({super.key, this.onRegister});
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
-      right: 0,
-      top: height * .745,
-      child: Column(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 28),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
-            'En caso de que no tengas cuenta',
-            textAlign: TextAlign.center,
+          Text(
+            '¿No tienes cuenta? ',
             style: TextStyle(
-              color: Colores.negro,
               fontSize: 14,
+              color: Colors.grey.shade600,
             ),
           ),
-          const SizedBox(height: 3),
-          TextButton(
-            onPressed: onRegister,
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              minimumSize: Size.zero,
-              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
+          GestureDetector(
+            onTap: onRegister,
             child: const Text(
-            'Crear cuenta',
-            style: TextStyle(
-              color: Colores.azul,
-              fontSize: 14,
-            ),
+              'Crear cuenta',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF2563EB),
+              ),
             ),
           ),
         ],

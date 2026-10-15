@@ -54,17 +54,11 @@ tecnologías:
 git clone https://github.com/santiagoooviedo-Dream/prestamo.git
 ```
 
+Instala las dependencias desde la carpeta del backend:
+
 ```bash
-  instalacion de node
-```
-```bash
-  Instalación npm install
-```
-```bash
-  Instalación de node
-```
-```bash
-  Instalación de node
+cd backend
+npm install
 ```
 
 ---
@@ -74,8 +68,11 @@ git clone https://github.com/santiagoooviedo-Dream/prestamo.git
 Para iniciar el servidor en modo desarrollo utilizar:
 
 ```bash
+cd backend
 npm run dev
 ```
+
+En PowerShell de Windows, usa `npm.cmd install` y `npm.cmd run dev` si la política de ejecución bloquea `npm.ps1`.
 
 El servidor se ejecutará en:
 

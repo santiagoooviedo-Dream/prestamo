@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:front_prestamo/screens/loginScreens.dart';
+import 'package:front_prestamo/screens/welcome_screen.dart';
+
 
 void main() {
-  runApp(const FrontPrestamoApp());
+  runApp(const MainApp());
 }
 
-class FrontPrestamoApp extends StatelessWidget {
-  const FrontPrestamoApp({super.key});
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: WelcomeScreen()
     );
   }
 }

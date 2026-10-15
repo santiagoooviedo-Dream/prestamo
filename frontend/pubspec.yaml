@@ -24,12 +24,5 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/backgrounds/
     - assets/images/
 
-  fonts:
-    - family: Poly
-      fonts:
-        - asset: assets/fonts/Poly-Regular.ttf
-        - asset: assets/fonts/Poly-Italic.ttf
-          style: italic

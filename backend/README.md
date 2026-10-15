@@ -54,12 +54,13 @@ tecnologías:
 git clone https://github.com/santiagoooviedo-Dream/prestamo.git
 ```
 
+Instala las dependencias desde esta carpeta:
+
 ```bash
-  instalacion de node
+npm install
 ```
-```bash
-  Instalación npm install
-```
+
+En PowerShell de Windows, usa `npm.cmd install` y `npm.cmd run dev` si la política de ejecución bloquea `npm.ps1`.
 
 ---
 

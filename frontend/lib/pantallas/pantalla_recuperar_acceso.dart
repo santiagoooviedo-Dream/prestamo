@@ -1,0 +1,140 @@
+import 'package:flutter/material.dart';
+import '../nucleo/colores_app.dart';
+import '../widgets/comunes/boton_primario.dart';
+import '../widgets/comunes/boton_volver.dart';
+import '../widgets/comunes/campo_texto.dart';
+import '../widgets/comunes/emblema_circular.dart';
+import '../widgets/comunes/aviso_seguridad.dart';
+
+class PantallaRecuperarAcceso extends StatefulWidget {
+  const PantallaRecuperarAcceso({super.key});
+
+  @override
+  State<PantallaRecuperarAcceso> createState() =>
+      _PantallaRecuperarAccesoState();
+}
+
+class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
+  final _correoCtrl = TextEditingController();
+
+  @override
+  void dispose() {
+    _correoCtrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final top = MediaQuery.paddingOf(context).top;
+    final bottom = MediaQuery.paddingOf(context).bottom;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F8FD),
+      body: Stack(
+        children: [
+          Positioned(
+            top: top - 20,
+            left: -40,
+            child: Container(
+              width: 180,
+              height: 180,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE4EDFF).withValues(alpha: 0.7),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(24, top + 6, 24, 20 + bottom),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Cabecera
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    BotonVolver(alPresionar: () => Navigator.pop(context)),
+                    Text(
+                      'RECUPERACIÓN',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: ColoresApp.textoContexto,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 24),
+
+                // Título
+                const Text(
+                  'Recupera tu acceso',
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.w700,
+                    color: Color(0xFF17243C),
+                    height: 1.15,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.',
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Color(0xFF66758D),
+                    height: 1.4,
+                  ),
+                ),
+
+                // Aire + emblema grande
+                const Spacer(flex: 2),
+
+                const Center(
+                  child: EmblemaCircular(
+                    icono: Icons.key_rounded,
+                    tamano: 120,
+                    tamanoIcono: 44,
+                  ),
+                ),
+
+                const Spacer(flex: 2),
+
+                // Campo
+                CampoTexto(
+                  etiqueta: 'Correo electrónico',
+                  pista: 'correo@ejemplo.com',
+                  controlador: _correoCtrl,
+                  tipoTeclado: TextInputType.emailAddress,
+                  iconoIzquierdo: const Icon(
+                    Icons.mail_outline_rounded,
+                    size: 20,
+                    color: ColoresApp.textoSuave,
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                const AvisoSeguridad(
+                  texto:
+                      'Revisa la bandeja de entrada del correo asociado a tu cuenta.',
+                ),
+
+                // Aire antes del botón (como Figma)
+                const Spacer(flex: 3),
+
+                BotonPrimario(
+                  texto: 'Enviar código',
+                  alPresionar: () {
+                    Navigator.pushNamed(context, '/nueva-contrasena');
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

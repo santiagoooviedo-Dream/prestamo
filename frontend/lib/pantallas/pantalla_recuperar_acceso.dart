@@ -127,7 +127,13 @@ class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
                 BotonPrimario(
                   texto: 'Enviar código',
                   alPresionar: () {
-                    Navigator.pushNamed(context, '/nueva-contrasena');
+                    Navigator.pushNamed(
+                      context,
+                      '/codigo-recuperacion',
+                      arguments: _correoCtrl.text.isEmpty
+                          ? 'correo@ejemplo.com'
+                          : _correoCtrl.text,
+                    );
                   },
                 ),
               ],

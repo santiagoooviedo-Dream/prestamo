@@ -3,6 +3,7 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_secundario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_metodo_pago.dart';
 
 class PantallaConfirmarPago extends StatelessWidget {
   final String metodo;
@@ -111,7 +112,10 @@ class PantallaConfirmarPago extends StatelessWidget {
                   _Fila(label: 'Método de pago', valor: metodoPago),
                   const SizedBox(height: 8),
                   GestureDetector(
-                    onTap: () => Navigator.pop(context),
+                    onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaMetodoPago()),
+                  ),
                     child: const Text(
                       'Cambiar método de pago',
                       style: TextStyle(
@@ -128,7 +132,11 @@ class PantallaConfirmarPago extends StatelessWidget {
             BotonPrimario(
               texto: 'Confirmar pago',
               alPresionar: () {
-                Navigator.pushNamed(context, '/procesando-pago');
+                // Figma: Confirmar pago → Seleccionar método de pago
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaMetodoPago()),
+                  );
               },
             ),
             const SizedBox(height: 12),

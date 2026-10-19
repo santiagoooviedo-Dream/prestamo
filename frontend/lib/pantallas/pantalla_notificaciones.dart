@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_perfil.dart';
 
 class PantallaNotificaciones extends StatefulWidget {
   const PantallaNotificaciones({super.key});
@@ -104,7 +105,11 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
                         if (Navigator.canPop(context)) {
                           Navigator.pop(context);
                         } else {
-                          Navigator.pushReplacementNamed(context, '/perfil');
+                          Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const PantallaPerfil()),
+                          (_) => false,
+                        );
                         }
                       }),
                       Text(

@@ -4,6 +4,7 @@ import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_secundario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_validando_solicitud.dart';
 
 class PantallaMetodoDesembolso extends StatefulWidget {
   const PantallaMetodoDesembolso({super.key});
@@ -79,7 +80,10 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
             BotonPrimario(
               texto: 'Continuar',
               alPresionar: () {
-                Navigator.pushNamed(context, '/validando-solicitud');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaValidandoSolicitud()),
+                  );
               },
             ),
             const SizedBox(height: 12),

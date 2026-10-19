@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
+import 'pantalla_pago_exitoso.dart';
 
 /// Figma: Procesando pago — entre Confirmar y Pago exitoso
 class PantallaProcesandoPago extends StatefulWidget {
@@ -16,7 +17,10 @@ class _PantallaProcesandoPagoState extends State<PantallaProcesandoPago> {
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/pago-exitoso');
+      Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaPagoExitoso()),
+                  );
     });
   }
 

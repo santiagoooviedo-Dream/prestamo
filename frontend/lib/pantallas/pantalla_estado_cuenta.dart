@@ -3,6 +3,8 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_calendario_pagos.dart';
+import 'pantalla_actividad_cuenta.dart';
 
 class PantallaEstadoCuenta extends StatelessWidget {
   const PantallaEstadoCuenta({super.key});
@@ -134,7 +136,7 @@ class PantallaEstadoCuenta extends StatelessWidget {
                         ),
                         GestureDetector(
                           onTap: () =>
-                              Navigator.pushNamed(context, '/actividad-cuenta'),
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => const PantallaActividadCuenta())),
                           child: const Text(
                             'Ver todo',
                             style: TextStyle(
@@ -185,7 +187,10 @@ class PantallaEstadoCuenta extends StatelessWidget {
             BotonPrimario(
               texto: 'Ver calendario de pagos',
               alPresionar: () {
-                Navigator.pushNamed(context, '/calendario-pagos');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaCalendarioPagos()),
+                  );
               },
             ),
           ],

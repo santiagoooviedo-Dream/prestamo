@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_secundario.dart';
+import 'pantalla_registro.dart';
+import 'pantalla_iniciar_sesion.dart';
 
 class PantallaBienvenida extends StatelessWidget {
   const PantallaBienvenida({super.key});
@@ -180,14 +182,20 @@ class PantallaBienvenida extends StatelessWidget {
                 BotonPrimario(
                   texto: 'Iniciar sesión',
                   alPresionar: () {
-                    Navigator.pushNamed(context, '/iniciar-sesion');
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaIniciarSesion()),
+                  );
                   },
                 ),
                 const SizedBox(height: 12),
                 BotonSecundario(
                   texto: 'Crear cuenta',
                   alPresionar: () {
-                    Navigator.pushNamed(context, '/registro');
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaRegistro()),
+                  );
                   },
                 ),
               ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_detalle_prestamo_completado.dart';
 
 class PantallaPrestamosAnteriores extends StatelessWidget {
   const PantallaPrestamosAnteriores({super.key});
@@ -57,10 +58,10 @@ class PantallaPrestamosAnteriores extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/detalle-prestamo-completado',
-                        );
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const PantallaDetallePrestamoCompletado()),
+                      );
                       },
                       child: Container(
                         padding: const EdgeInsets.all(16),

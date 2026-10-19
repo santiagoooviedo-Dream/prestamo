@@ -5,6 +5,7 @@ import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
 import '../widgets/comunes/emblema_circular.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
+import 'pantalla_codigo_recuperacion.dart';
 
 class PantallaRecuperarAcceso extends StatefulWidget {
   const PantallaRecuperarAcceso({super.key});
@@ -127,13 +128,10 @@ class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
                 BotonPrimario(
                   texto: 'Enviar código',
                   alPresionar: () {
-                    Navigator.pushNamed(
-                      context,
-                      '/codigo-recuperacion',
-                      arguments: _correoCtrl.text.isEmpty
-                          ? 'correo@ejemplo.com'
-                          : _correoCtrl.text,
-                    );
+                    Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PantallaCodigoRecuperacion(correo: _correoCtrl.text.isEmpty ? 'correo@ejemplo.com' : _correoCtrl.text.trim())),
+                );
                   },
                 ),
               ],

@@ -3,6 +3,7 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
+import 'pantalla_contrasena_lista.dart';
 
 class PantallaConfirmarContrasena extends StatefulWidget {
   final String? contrasenaAnterior;
@@ -53,7 +54,10 @@ class _PantallaConfirmarContrasenaState
   }
 
   void _continuar() {
-    Navigator.pushNamed(context, '/contrasena-lista');
+    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaContrasenaLista()),
+                  );
   }
 
   @override

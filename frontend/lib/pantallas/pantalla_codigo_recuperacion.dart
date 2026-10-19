@@ -5,6 +5,7 @@ import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/emblema_circular.dart';
+import 'pantalla_nueva_contrasena.dart';
 
 /// Figma: Código de recuperación (1:2195)
 /// Flujo: Recuperar acceso → esta → Nueva contraseña
@@ -200,7 +201,10 @@ class _PantallaCodigoRecuperacionState extends State<PantallaCodigoRecuperacion>
             BotonPrimario(
               texto: 'Continuar',
               alPresionar: _completo
-                  ? () => Navigator.pushNamed(context, '/nueva-contrasena')
+                  ? () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaNuevaContrasena()),
+                  )
                   : null,
             ),
           ],

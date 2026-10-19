@@ -3,6 +3,7 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
+import 'pantalla_solicitud_enviada.dart';
 
 class PantallaDatosPersonales extends StatefulWidget {
   const PantallaDatosPersonales({super.key});
@@ -111,7 +112,10 @@ class _PantallaDatosPersonalesState extends State<PantallaDatosPersonales> {
                 BotonPrimario(
                   texto: 'Continuar',
                   alPresionar: () {
-                    Navigator.pushNamed(context, '/solicitud-enviada');
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaSolicitudEnviada()),
+                  );
                   },
                 ),
                 const SizedBox(height: 32),

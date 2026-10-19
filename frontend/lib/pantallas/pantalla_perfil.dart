@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_cerrar_sesion.dart';
+import 'pantalla_cambiar_correo.dart';
+import 'pantalla_notificaciones.dart';
+import 'pantalla_cambiar_foto.dart';
+import 'pantalla_cambiar_contrasena_perfil.dart';
+import 'pantalla_estado_cuenta.dart';
+import 'pantalla_inicio.dart';
 
 class PantallaPerfil extends StatelessWidget {
   const PantallaPerfil({super.key});
@@ -22,7 +29,15 @@ class PantallaPerfil extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      BotonVolver(alPresionar: () => Navigator.pop(context)),
+                      BotonVolver(
+                      alPresionar: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const PantallaInicio()),
+                          (_) => false,
+                        );
+                      },
+                    ),
                       Text(
                         'MI PERFIL',
                         style: TextStyle(
@@ -36,7 +51,10 @@ class PantallaPerfil extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   GestureDetector(
-                    onTap: () => Navigator.pushNamed(context, '/cambiar-foto'),
+                    onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaCambiarFoto()),
+                  ),
                     child: Stack(
                     alignment: Alignment.bottomRight,
                     children: [
@@ -88,25 +106,34 @@ class PantallaPerfil extends StatelessWidget {
                   _Opcion(
                     icono: Icons.lock_outline_rounded,
                     titulo: 'Cambiar contraseña',
-                    onTap: () => Navigator.pushNamed(context, '/cambiar-contrasena-perfil'),
+                    onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaCambiarContrasenaPerfil()),
+                  ),
                   ),
                   const SizedBox(height: 10),
                   _Opcion(
                     icono: Icons.mail_outline_rounded,
                     titulo: 'Cambiar correo',
-                    onTap: () => Navigator.pushNamed(context, '/cambiar-correo'),
+                    onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaCambiarCorreo()),
+                  ),
                   ),
                   const SizedBox(height: 10),
                   _Opcion(
                     icono: Icons.bar_chart_rounded,
                     titulo: 'Estado de cuenta',
-                    onTap: () => Navigator.pushNamed(context, '/estado-cuenta'),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PantallaEstadoCuenta())),
                   ),
                   const SizedBox(height: 10),
                   _Opcion(
                     icono: Icons.notifications_none_rounded,
                     titulo: 'Notificaciones',
-                    onTap: () => Navigator.pushNamed(context, '/notificaciones'),
+                    onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaNotificaciones()),
+                  ),
                   ),
                   const SizedBox(height: 10),
                   _Opcion(
@@ -114,7 +141,10 @@ class PantallaPerfil extends StatelessWidget {
                     titulo: 'Cerrar sesión',
                     peligro: true,
                     onTap: () {
-                      Navigator.pushNamed(context, '/cerrar-sesion');
+                      Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaCerrarSesion()),
+                  );
                     },
                   ),
                 ],

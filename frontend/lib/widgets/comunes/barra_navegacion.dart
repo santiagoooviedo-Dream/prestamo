@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../pantallas/pantalla_inicio.dart';
+import '../../pantallas/pantalla_mis_prestamos.dart';
+import '../../pantallas/pantalla_asistente_virtual.dart';
+import '../../pantallas/pantalla_perfil.dart';
 
 enum DestinoNav { inicio, prestamos, soporte, perfil }
 
@@ -7,52 +11,63 @@ class BarraNavegacion extends StatelessWidget {
 
   const BarraNavegacion({super.key, required this.actual});
 
-  void _ir(BuildContext context, DestinoNav d, String ruta) {
-    if (d == actual) return;
-    Navigator.pushReplacementNamed(context, ruta);
+  void _ir(BuildContext context, DestinoNav destino, Widget pantalla) {
+    if (destino == actual) return;
+    // Reemplaza toda la pila para que el botón atrás no deje pantalla en blanco
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => pantalla),
+      (_) => false,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 72,
+      padding: EdgeInsets.fromLTRB(
+        8,
+        10,
+        8,
+        10 + MediaQuery.paddingOf(context).bottom,
+      ),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFE3E9F2))),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x0D17243C),
-            blurRadius: 16,
-            offset: Offset(0, -4),
-          ),
-        ],
+        border: Border(top: BorderSide(color: Color(0xFFE1E8F3))),
       ),
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 8),
       child: Row(
         children: [
           _Item(
             icono: Icons.home_rounded,
             etiqueta: 'Inicio',
             activo: actual == DestinoNav.inicio,
-            onTap: () => _ir(context, DestinoNav.inicio, '/inicio'),
+            onTap: () => _ir(context, DestinoNav.inicio, const PantallaInicio()),
           ),
           _Item(
             icono: Icons.account_balance_wallet_outlined,
             etiqueta: 'Préstamos',
             activo: actual == DestinoNav.prestamos,
-            onTap: () => _ir(context, DestinoNav.prestamos, '/mis-prestamos'),
+            onTap: () => _ir(
+              context,
+              DestinoNav.prestamos,
+              const PantallaMisPrestamos(),
+            ),
           ),
           _Item(
             icono: Icons.chat_bubble_outline_rounded,
             etiqueta: 'Soporte',
             activo: actual == DestinoNav.soporte,
-            onTap: () => _ir(context, DestinoNav.soporte, '/asistente-virtual'),
+            onTap: () => _ir(
+              context,
+              DestinoNav.soporte,
+              const PantallaAsistenteVirtual(),
+            ),
           ),
           _Item(
             icono: Icons.person_outline_rounded,
             etiqueta: 'Perfil',
             activo: actual == DestinoNav.perfil,
-            onTap: () => _ir(context, DestinoNav.perfil, '/perfil'),
+            onTap: () =>
+                _ir(context, DestinoNav.perfil, const PantallaPerfil()),
           ),
         ],
       ),

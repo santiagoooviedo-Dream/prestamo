@@ -4,6 +4,9 @@ import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
 import '../widgets/comunes/emblema_circular.dart';
+import 'pantalla_registro.dart';
+import 'pantalla_inicio.dart';
+import 'pantalla_recuperar_acceso.dart';
 
 class PantallaIniciarSesion extends StatefulWidget {
   const PantallaIniciarSesion({super.key});
@@ -141,7 +144,10 @@ class _PantallaIniciarSesionState extends State<PantallaIniciarSesion> {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/recuperar-acceso');
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaRecuperarAcceso()),
+                  );
                   },
                   child: const Text(
                     'Recuperar contraseña',
@@ -159,7 +165,11 @@ class _PantallaIniciarSesionState extends State<PantallaIniciarSesion> {
                   texto: 'Iniciar sesión',
                   alPresionar: () {
                     // Flujo autenticado → por ahora a solicitud enviada (placeholder)
-                    Navigator.pushNamed(context, '/inicio');
+                    Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PantallaInicio()),
+                  (route) => false
+                );
                   },
                 ),
 
@@ -177,7 +187,10 @@ class _PantallaIniciarSesionState extends State<PantallaIniciarSesion> {
                 Center(
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/registro');
+                      Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaRegistro()),
+                  );
                     },
                     child: const Text(
                       'Crear cuenta',

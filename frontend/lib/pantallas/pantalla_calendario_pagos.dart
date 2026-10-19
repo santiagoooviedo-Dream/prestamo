@@ -3,6 +3,7 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_confirmar_pago.dart';
 
 class PantallaCalendarioPagos extends StatelessWidget {
   const PantallaCalendarioPagos({super.key});
@@ -172,7 +173,10 @@ class PantallaCalendarioPagos extends StatelessWidget {
             BotonPrimario(
               texto: 'Pagar ahora',
               alPresionar: () {
-                Navigator.pushNamed(context, '/metodo-pago');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaConfirmarPago()),
+                  );
               },
             ),
           ],

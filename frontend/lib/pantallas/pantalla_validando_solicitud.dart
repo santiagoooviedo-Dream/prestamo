@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
+import 'pantalla_solicitud_enviada.dart';
 
 /// Validando → después de 2s va a Solicitud enviada
 class PantallaValidandoSolicitud extends StatefulWidget {
@@ -18,7 +19,10 @@ class _PantallaValidandoSolicitudState
     super.initState();
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/solicitud-enviada');
+      Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaSolicitudEnviada()),
+                  );
     });
   }
 

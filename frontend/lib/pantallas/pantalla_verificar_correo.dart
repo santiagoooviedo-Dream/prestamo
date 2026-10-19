@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_iniciar_sesion.dart';
 
 class PantallaVerificarCorreo extends StatefulWidget {
   const PantallaVerificarCorreo({super.key});
@@ -226,10 +227,10 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
             BotonPrimario(
               texto: 'Continuar',
               alPresionar: () {
-                Navigator.pushNamedAndRemoveUntil(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  '/inicio',
-                  (route) => false,
+                  MaterialPageRoute(builder: (_) => const PantallaIniciarSesion()),
+                  (route) => route.isFirst,
                 );
               },
             ),

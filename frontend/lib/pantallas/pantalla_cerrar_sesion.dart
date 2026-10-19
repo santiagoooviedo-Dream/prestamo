@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_bienvenida.dart';
 
 /// Figma: Cerrar sesión (MI CUENTA / SALIR)
 class PantallaCerrarSesion extends StatelessWidget {
@@ -85,9 +86,9 @@ class PantallaCerrarSesion extends StatelessWidget {
               subtitulo: 'Cerrar mi sesión',
               peligro: true,
               onTap: () {
-                Navigator.pushNamedAndRemoveUntil(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  '/bienvenida',
+                  MaterialPageRoute(builder: (_) => const PantallaBienvenida()),
                   (_) => false,
                 );
               },

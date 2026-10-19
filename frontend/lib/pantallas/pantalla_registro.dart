@@ -3,6 +3,8 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
+import 'pantalla_iniciar_sesion.dart';
+import 'pantalla_verificar_correo.dart';
 
 class PantallaRegistro extends StatefulWidget {
   const PantallaRegistro({super.key});
@@ -19,6 +21,18 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   final _telefono = TextEditingController();
   final _contrasena = TextEditingController();
   bool _ocultar = true;
+
+  bool get _min8 => _contrasena.text.length >= 8;
+  bool get _tieneNumero => RegExp(r'[0-9]').hasMatch(_contrasena.text);
+  bool get _tieneMayuscula => RegExp(r'[A-Z]').hasMatch(_contrasena.text);
+  bool get _tieneSimbolo =>
+      RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-+=\[\]\;/]').hasMatch(_contrasena.text);
+
+  @override
+  void initState() {
+    super.initState();
+    _contrasena.addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
@@ -46,7 +60,18 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                BotonVolver(alPresionar: () => Navigator.pop(context)),
+                BotonVolver(
+                  alPresionar: () {
+                    // Figma: Crear cuenta ← → Iniciar sesión (evita pantalla blanca)
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PantallaIniciarSesion(),
+                      ),
+                      (route) => route.isFirst,
+                    );
+                  },
+                ),
                 const Text(
                   'REGISTRO',
                   style: TextStyle(
@@ -163,14 +188,11 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    const Text(
-                      'Mínimo 8 caracteres',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF9AA6B8),
-                      ),
-                    ),
+                    const SizedBox(height: 12),
+                    _Requisito(texto: 'Mínimo 8 caracteres', ok: _min8),
+                    _Requisito(texto: 'Incluye un número', ok: _tieneNumero),
+                    _Requisito(texto: 'Incluye una mayúscula', ok: _tieneMayuscula),
+                    _Requisito(texto: 'Incluye un símbolo', ok: _tieneSimbolo),
                     const SizedBox(height: 24),
                   ],
                 ),
@@ -179,14 +201,20 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
             BotonPrimario(
               texto: 'Crear cuenta',
               alPresionar: () {
-                Navigator.pushNamed(context, '/verificar-correo');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaVerificarCorreo()),
+                  );
               },
             ),
             const SizedBox(height: 12),
             Center(
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, '/iniciar-sesion');
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaIniciarSesion()),
+                  );
                 },
                 child: const Text.rich(
                   TextSpan(
@@ -208,6 +236,37 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _Requisito extends StatelessWidget {
+  final String texto;
+  final bool ok;
+
+  const _Requisito({required this.texto, required this.ok});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(
+            ok ? Icons.check_circle : Icons.circle_outlined,
+            size: 18,
+            color: ok ? const Color(0xFF22C55E) : const Color(0xFF94A0B3),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            texto,
+            style: TextStyle(
+              fontSize: 13,
+              color: ok ? const Color(0xFF17243C) : const Color(0xFF66758D),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/emblema_circular.dart';
+import 'pantalla_perfil.dart';
 
 /// Figma: Código para cambio de correo
 /// Secuencia: Cambiar correo → esta pantalla
@@ -211,10 +212,10 @@ class _PantallaCodigoCambioCorreoState extends State<PantallaCodigoCambioCorreo>
               texto: 'Confirmar',
               alPresionar: _completo
                   ? () {
-                      Navigator.popUntil(
+                      Navigator.pushAndRemoveUntil(
                         context,
-                        (route) =>
-                            route.settings.name == '/perfil' || route.isFirst,
+                        MaterialPageRoute(builder: (_) => const PantallaPerfil()),
+                        (route) => route.isFirst,
                       );
                     }
                   : null,

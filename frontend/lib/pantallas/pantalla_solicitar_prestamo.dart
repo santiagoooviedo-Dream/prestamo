@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_metodo_desembolso.dart';
 
 /// Figma: Solicita tu préstamo + selector de cuotas (2–36)
 class PantallaSolicitarPrestamo extends StatefulWidget {
@@ -347,7 +348,10 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
             BotonPrimario(
               texto: 'Continuar',
               alPresionar: () {
-                Navigator.pushNamed(context, '/metodo-desembolso');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaMetodoDesembolso()),
+                  );
               },
             ),
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
+import 'pantalla_inicio.dart';
 
 class PantallaSolicitudEnviada extends StatelessWidget {
   const PantallaSolicitudEnviada({super.key});
@@ -82,9 +83,9 @@ class PantallaSolicitudEnviada extends StatelessWidget {
             BotonPrimario(
               texto: 'Volver al inicio',
               alPresionar: () {
-                Navigator.pushNamedAndRemoveUntil(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  '/inicio',
+                  MaterialPageRoute(builder: (_) => const PantallaInicio()),
                   (_) => false,
                 );
               },

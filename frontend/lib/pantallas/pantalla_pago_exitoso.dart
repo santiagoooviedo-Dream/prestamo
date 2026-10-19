@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_inicio.dart';
 
 class PantallaPagoExitoso extends StatelessWidget {
   const PantallaPagoExitoso({super.key});
@@ -22,9 +23,9 @@ class PantallaPagoExitoso extends StatelessWidget {
               children: [
                 BotonVolver(
                   alPresionar: () {
-                    Navigator.pushNamedAndRemoveUntil(
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      '/inicio',
+                      MaterialPageRoute(builder: (_) => const PantallaInicio()),
                       (_) => false,
                     );
                   },
@@ -107,9 +108,9 @@ class PantallaPagoExitoso extends StatelessWidget {
             BotonPrimario(
               texto: 'Volver al inicio',
               alPresionar: () {
-                Navigator.pushNamedAndRemoveUntil(
+                Navigator.pushAndRemoveUntil(
                   context,
-                  '/inicio',
+                  MaterialPageRoute(builder: (_) => const PantallaInicio()),
                   (_) => false,
                 );
               },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_calendario_pagos.dart';
 
 class PantallaDetallePrestamo extends StatelessWidget {
   const PantallaDetallePrestamo({super.key});
@@ -163,7 +164,10 @@ class PantallaDetallePrestamo extends StatelessWidget {
             child: BotonPrimario(
               texto: 'Ver calendario de pagos',
               alPresionar: () {
-                Navigator.pushNamed(context, '/calendario-pagos');
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaCalendarioPagos()),
+                  );
               },
             ),
           ),

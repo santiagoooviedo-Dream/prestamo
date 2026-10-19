@@ -4,6 +4,7 @@ import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_secundario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_procesando_pago.dart';
 
 class PantallaMetodoPago extends StatefulWidget {
   const PantallaMetodoPago({super.key});
@@ -78,11 +79,11 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
             BotonPrimario(
               texto: 'Continuar',
               alPresionar: () {
-                Navigator.pushNamed(
-                  context,
-                  '/confirmar-pago',
-                  arguments: _sel == 0 ? 'Nequi' : 'Efectivo',
-                );
+                // Figma: Seleccionar método → Procesando pago
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaProcesandoPago()),
+                  );
               },
             ),
             const SizedBox(height: 12),

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/barra_navegacion.dart';
+import 'pantalla_asistente_virtual.dart';
+import 'pantalla_perfil.dart';
+import 'pantalla_mis_prestamos.dart';
+import 'pantalla_solicitar_prestamo.dart';
 
 class PantallaInicio extends StatelessWidget {
   const PantallaInicio({super.key});
@@ -90,7 +94,10 @@ class PantallaInicio extends StatelessWidget {
                           titulo: 'Solicitar\npréstamo',
                           subtitulo: 'Comienza una solicitud',
                           onTap: () =>
-                              Navigator.pushNamed(context, '/solicitar-prestamo'),
+                              Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaSolicitarPrestamo()),
+                  ),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -100,7 +107,10 @@ class PantallaInicio extends StatelessWidget {
                           titulo: 'Soporte',
                           subtitulo: 'Estamos para ayudarte',
                           onTap: () =>
-                              Navigator.pushNamed(context, '/asistente-virtual'),
+                              Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaAsistenteVirtual()),
+                  ),
                         ),
                       ),
                     ],
@@ -114,7 +124,10 @@ class PantallaInicio extends StatelessWidget {
                           titulo: 'Historial',
                           subtitulo: 'Consulta tus préstamos',
                           onTap: () =>
-                              Navigator.pushNamed(context, '/mis-prestamos'),
+                              Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaMisPrestamos()),
+                  ),
                         ),
                       ),
                       const SizedBox(width: 14),
@@ -124,7 +137,10 @@ class PantallaInicio extends StatelessWidget {
                           titulo: 'Mi perfil',
                           subtitulo: 'Administra tu cuenta',
                           onTap: () =>
-                              Navigator.pushNamed(context, '/perfil'),
+                              Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaPerfil()),
+                  ),
                         ),
                       ),
                     ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_inicio.dart';
 
 /// Figma: Asistente virtual (SOPORTE)
 class PantallaAsistenteVirtual extends StatefulWidget {
@@ -68,13 +69,15 @@ class _PantallaAsistenteVirtualState extends State<PantallaAsistenteVirtual> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      BotonVolver(alPresionar: () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        } else {
-                          Navigator.pushReplacementNamed(context, '/inicio');
-                        }
-                      }),
+                      BotonVolver(
+                      alPresionar: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const PantallaInicio()),
+                          (_) => false,
+                        );
+                      },
+                    ),
                       Text(
                         'SOPORTE',
                         style: TextStyle(

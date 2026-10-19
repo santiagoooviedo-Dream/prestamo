@@ -3,6 +3,10 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_calendario_pagos.dart';
+import 'pantalla_prestamos_anteriores.dart';
+import 'pantalla_inicio.dart';
+import 'pantalla_detalle_prestamo.dart';
 
 class PantallaMisPrestamos extends StatelessWidget {
   const PantallaMisPrestamos({super.key});
@@ -22,13 +26,15 @@ class PantallaMisPrestamos extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    BotonVolver(alPresionar: () {
-                      if (Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      } else {
-                        Navigator.pushReplacementNamed(context, '/inicio');
-                      }
-                    }),
+                    BotonVolver(
+                      alPresionar: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const PantallaInicio()),
+                          (_) => false,
+                        );
+                      },
+                    ),
                     Text(
                       'PRÉSTAMOS',
                       style: TextStyle(
@@ -52,7 +58,10 @@ class PantallaMisPrestamos extends StatelessWidget {
                 const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () =>
-                      Navigator.pushNamed(context, '/detalle-prestamo'),
+                      Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaDetallePrestamo()),
+                  ),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -111,7 +120,10 @@ class PantallaMisPrestamos extends StatelessWidget {
                 const SizedBox(height: 16),
                 GestureDetector(
                   onTap: () =>
-                      Navigator.pushNamed(context, '/detalle-prestamo'),
+                      Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaDetallePrestamo()),
+                  ),
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
@@ -180,7 +192,10 @@ class PantallaMisPrestamos extends StatelessWidget {
                 const SizedBox(height: 14),
                 GestureDetector(
                   onTap: () =>
-                      Navigator.pushNamed(context, '/prestamos-anteriores'),
+                      Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaPrestamosAnteriores()),
+                  ),
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -218,7 +233,10 @@ class PantallaMisPrestamos extends StatelessWidget {
                 BotonPrimario(
                   texto: 'Ver calendario de pagos',
                   alPresionar: () {
-                    Navigator.pushNamed(context, '/calendario-pagos');
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaCalendarioPagos()),
+                  );
                   },
                 ),
               ],

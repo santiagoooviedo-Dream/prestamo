@@ -4,6 +4,7 @@ import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
+import 'pantalla_codigo_cambio_correo.dart';
 
 /// Figma: Cambiar correo (PERFIL / CORREO)
 /// Secuencia: esta pantalla → código al correo nuevo
@@ -29,11 +30,10 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
 
   void _continuar() {
     final nuevo = _nuevoCtrl.text.trim();
-    Navigator.pushNamed(
-      context,
-      '/codigo-cambio-correo',
-      arguments: nuevo.isEmpty ? 'correo@ejemplo.com' : nuevo,
-    );
+    Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => PantallaCodigoCambioCorreo(correo: nuevo.isEmpty ? 'correo@ejemplo.com' : nuevo)),
+                );
   }
 
   @override

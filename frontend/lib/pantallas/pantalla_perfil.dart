@@ -18,7 +18,7 @@ class PantallaPerfil extends StatelessWidget {
     final top = MediaQuery.paddingOf(context).top;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8FD),
+      backgroundColor: Colors.transparent,
       body: Column(
         children: [
           Expanded(

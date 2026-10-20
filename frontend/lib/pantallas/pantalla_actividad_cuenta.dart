@@ -33,7 +33,7 @@ class PantallaActividadCuenta extends StatelessWidget {
     };
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8FD),
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.fromLTRB(24, top + 6, 24, 16),
         child: Column(

@@ -17,9 +17,9 @@ flutter run --dart-define=API_BASE_URL=https://tu-api.example.com
 
 Las compilaciones de producción deben usar una URL HTTPS. El permiso de tráfico HTTP sin cifrar está habilitado únicamente para compilaciones Android de depuración.
 
-## Flujos conectados
+## Modo de navegación
 
-- Inicio de sesión con cédula y contraseña.
-- Registro y verificación por código enviado al correo.
-- Reenvío del código de verificación.
-- Solicitud, verificación y uso de código para recuperar la contraseña.
+Las pantallas conservan su diseño y permiten escribir en los campos y mostrar u
+ocultar las contraseñas. Los códigos de verificación no se solicitan y los
+botones permiten avanzar sin validar la información. La aplicación todavía no
+autentica usuarios ni realiza pagos o solicitudes.

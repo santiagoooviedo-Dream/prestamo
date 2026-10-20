@@ -22,7 +22,7 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
     final bottom = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8FD),
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.fromLTRB(24, top + 6, 24, 20 + bottom),
         child: Column(

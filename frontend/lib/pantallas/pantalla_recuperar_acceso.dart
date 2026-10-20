@@ -30,7 +30,7 @@ class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
     final bottom = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8FD),
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           Positioned(

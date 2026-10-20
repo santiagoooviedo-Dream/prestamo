@@ -13,7 +13,7 @@ class PantallaCerrarSesion extends StatelessWidget {
     final bottom = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8FD),
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.fromLTRB(24, top + 6, 24, 24 + bottom),
         child: Column(

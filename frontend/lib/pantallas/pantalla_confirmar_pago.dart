@@ -18,7 +18,7 @@ class PantallaConfirmarPago extends StatelessWidget {
     final metodoPago = args is String ? args : metodo;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8FD),
+      backgroundColor: Colors.transparent,
       body: Padding(
         padding: EdgeInsets.fromLTRB(24, top + 6, 24, 20 + bottom),
         child: Column(

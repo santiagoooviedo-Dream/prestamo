@@ -16,7 +16,14 @@ class BarraNavegacion extends StatelessWidget {
     // Reemplaza toda la pila para que el botón atrás no deje pantalla en blanco
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => pantalla),
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => pantalla,
+        transitionDuration: const Duration(milliseconds: 200),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
+        transitionsBuilder: (_, anim, __, child) {
+          return FadeTransition(opacity: anim, child: child);
+        },
+      ),
       (_) => false,
     );
   }

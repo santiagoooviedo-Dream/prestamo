@@ -33,7 +33,7 @@ class _PantallaIniciarSesionState extends State<PantallaIniciarSesion> {
     final bottom = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F8FD),
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // Blob decorativo

@@ -106,7 +106,7 @@ class PantallaPagoExitoso extends StatelessWidget {
             ),
             const Spacer(flex: 3),
             BotonPrimario(
-              texto: 'Volver al inicio',
+              texto: 'Volver a Bienvenido',
               alPresionar: () {
                 Navigator.pushAndRemoveUntil(
                   context,

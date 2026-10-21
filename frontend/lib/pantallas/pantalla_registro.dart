@@ -85,7 +85,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
             ),
             const SizedBox(height: 20),
             const Text(
-              'Empecemos por ti',
+              'Crear cuenta',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,

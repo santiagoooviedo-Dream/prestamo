@@ -81,7 +81,7 @@ class PantallaSolicitudEnviada extends StatelessWidget {
             ),
             const Spacer(flex: 3),
             BotonPrimario(
-              texto: 'Volver al inicio',
+              texto: 'Volver',
               alPresionar: () {
                 Navigator.pushAndRemoveUntil(
                   context,

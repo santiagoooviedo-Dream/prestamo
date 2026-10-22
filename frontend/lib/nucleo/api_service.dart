@@ -63,7 +63,9 @@ class ApiService {
           : jsonDecode(respuestaCompleta.body);
 
       if (cuerpo is! Map<String, dynamic>) {
-        throw const ApiException('El servidor devolvió una respuesta inválida.');
+        throw const ApiException(
+          'El servidor devolvió una respuesta inválida.',
+        );
       }
       if (respuestaCompleta.statusCode < 200 ||
           respuestaCompleta.statusCode >= 300) {
@@ -127,6 +129,44 @@ class ApiService {
       '/usuarios/registrar/reenviar-codigo',
       autenticada: false,
       datos: {'correo': correo},
+    );
+  }
+
+  static Future<void> solicitarCodigoRecuperacion(String correo) async {
+    await _solicitar(
+      'POST',
+      '/usuarios/codigo',
+      autenticada: false,
+      datos: {'correo': correo},
+    );
+  }
+
+  static Future<void> verificarCodigoRecuperacion(
+    String correo,
+    String codigo,
+  ) async {
+    await _solicitar(
+      'POST',
+      '/usuarios/verificar',
+      autenticada: false,
+      datos: {'correo': correo, 'codigo': codigo},
+    );
+  }
+
+  static Future<void> recuperarContrasena({
+    required String correo,
+    required String codigo,
+    required String contrasenaNueva,
+  }) async {
+    await _solicitar(
+      'PUT',
+      '/usuarios/recuperar',
+      autenticada: false,
+      datos: {
+        'correo': correo,
+        'codigo': codigo,
+        'contrasenaNueva': contrasenaNueva,
+      },
     );
   }
 

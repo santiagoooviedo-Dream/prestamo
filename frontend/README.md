@@ -21,8 +21,10 @@ Las compilaciones de producción deben usar una URL HTTPS. El permiso de tráfic
 
 ## Flujos conectados
 
-El inicio de sesión y el registro usan la API; el token de acceso se guarda en
-el almacenamiento seguro del dispositivo. El formulario envía solicitudes de
+El inicio de sesión, el registro y la recuperación de contraseña usan la API.
+La recuperación solicita y verifica el código enviado por correo y después
+actualiza la contraseña con el mismo código. El token de acceso se guarda en el
+almacenamiento seguro del dispositivo. El formulario envía solicitudes de
 préstamo reales, con la opción de desembolso en efectivo o Nequi. Las solicitudes,
 los préstamos y las notificaciones se cargan desde el backend.
 

@@ -85,7 +85,7 @@ class _PantallaAsistenteVirtualState extends State<PantallaAsistenteVirtual> {
                           fontWeight: FontWeight.w600,
                           color: ColoresApp.textoContexto,
                           letterSpacing: 0.3,
-                        ),
+                        )
                       ),
                     ],
                   ),

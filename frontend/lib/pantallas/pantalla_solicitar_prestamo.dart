@@ -218,7 +218,7 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
               child: Text(
                 _cuotas == null
                     ? 'Selecciona el número de cuotas'
-                    : '$_cuotas cuotas mensuales',
+                    : '$_cuotas cuotas',
                 style: TextStyle(
                   fontSize: 15,
                   color: _cuotas == null
@@ -276,7 +276,7 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
                 children: [
                   Expanded(
                     child: Text(
-                      '$n cuotas mensuales',
+                      '$n cuotas',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight:

@@ -48,13 +48,11 @@ export const buscarSolicitudPorId = async (id_solicitud) => {
 };
 
 // Actualizar el estado de una solicitud
-export const actualizarEstadoSolicitudModel = async (id_solicitud,estado) => {
+export const actualizarEstadoSolicitudModel = async (id_solicitud, actualizacion) => {
 
     const { data, error } = await supabase
         .from('solicitudes')
-        .update({
-            estado: estado
-        })
+        .update(actualizacion)
         .eq('id_solicitud', id_solicitud)
         .select()
         .single();

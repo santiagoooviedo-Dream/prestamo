@@ -132,10 +132,24 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
             BotonPrimario(
               texto: 'Continuar',
               alPresionar: () {
+                if (!_mostrarResumen ||
+                    _motivoCtrl.text.trim().isEmpty ||
+                    _cuotas == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Verifica el monto, las cuotas y el motivo del préstamo.'),
+                    ),
+                  );
+                  return;
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const PantallaMetodoDesembolso(),
+                    builder: (_) => PantallaMetodoDesembolso(
+                      monto: _monto,
+                      cuotas: _cuotas!,
+                      motivo: _motivoCtrl.text.trim(),
+                    ),
                   ),
                 );
               },

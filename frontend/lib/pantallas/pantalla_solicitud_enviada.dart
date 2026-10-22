@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import 'pantalla_inicio.dart';
 
 class PantallaSolicitudEnviada extends StatelessWidget {
-  const PantallaSolicitudEnviada({super.key});
+  final String? idSolicitud;
+  final bool correoEnviado;
+  final bool notificacionCreada;
+
+  const PantallaSolicitudEnviada({
+    super.key,
+    this.idSolicitud,
+    this.correoEnviado = true,
+    this.notificacionCreada = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +76,8 @@ class PantallaSolicitudEnviada extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Pronto te actualizaremos sobre la solicitud de tu préstamo.',
+            Text(
+              'Solicitud${idSolicitud == null ? '' : ' #$idSolicitud'} registrada. Te avisaremos por correo y en Notificaciones cuando tengamos una respuesta.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
@@ -77,8 +87,24 @@ class PantallaSolicitudEnviada extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             const AvisoSeguridad(
-              texto: '¡Mantente atento a tu correo!',
+              texto: 'Mantente atento a tu correo y a las notificaciones de la aplicación.',
             ),
+            if (!correoEnviado) ...[
+              const SizedBox(height: 8),
+              const Text(
+                'La solicitud quedó registrada, pero no pudimos enviar el correo de confirmación.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: Color(0xFFB45309)),
+              ),
+            ],
+            if (!notificacionCreada) ...[
+              const SizedBox(height: 8),
+              const Text(
+                'La solicitud quedó registrada, pero no se pudo crear la notificación dentro de la aplicación.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 12, color: Color(0xFFB45309)),
+              ),
+            ],
             const Spacer(flex: 3),
             BotonPrimario(
               texto: 'Volver',

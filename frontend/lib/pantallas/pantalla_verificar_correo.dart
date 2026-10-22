@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../nucleo/colores_app.dart';
+import '../nucleo/api_service.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_iniciar_sesion.dart';
 
 class PantallaVerificarCorreo extends StatefulWidget {
-  const PantallaVerificarCorreo({super.key});
+  final String correo;
+
+  const PantallaVerificarCorreo({super.key, required this.correo});
 
   @override
   State<PantallaVerificarCorreo> createState() =>
@@ -14,6 +17,8 @@ class PantallaVerificarCorreo extends StatefulWidget {
 }
 
 class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
+  bool _verificando = false;
+  bool _reenviando = false;
   final List<TextEditingController> _digitos =
       List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focos = List.generate(6, (_) => FocusNode());
@@ -27,6 +32,54 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
       f.dispose();
     }
     super.dispose();
+  }
+
+  Future<void> _verificar() async {
+    final codigo = _digitos.map((digito) => digito.text).join();
+    if (codigo.length != 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ingresa el código de 6 dígitos.')),
+      );
+      return;
+    }
+    setState(() => _verificando = true);
+    try {
+      await ApiService.verificarRegistro(widget.correo, codigo);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Cuenta verificada. Ya puedes iniciar sesión.')),
+      );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const PantallaIniciarSesion()),
+        (route) => route.isFirst,
+      );
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.mensaje)),
+      );
+    } finally {
+      if (mounted) setState(() => _verificando = false);
+    }
+  }
+
+  Future<void> _reenviarCodigo() async {
+    setState(() => _reenviando = true);
+    try {
+      await ApiService.reenviarCodigoRegistro(widget.correo);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enviamos un nuevo código a tu correo.')),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.mensaje)),
+      );
+    } finally {
+      if (mounted) setState(() => _reenviando = false);
+    }
   }
 
   @override
@@ -68,7 +121,7 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Sigue las instrucciones del enlace para crear tu\ncuenta.',
+              'Ingresa el código que enviamos a tu correo para verificar tu cuenta.',
               style: TextStyle(
                 fontSize: 15,
                 color: Color(0xFF66758D),
@@ -99,10 +152,10 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
                 color: const Color(0xFFE8F0FE),
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  Text(
-                    '¡Enlace enviado a:',
+                  const Text(
+                    'Código enviado a:',
                     style: TextStyle(
                       fontSize: 13,
                       color: Color(0xFF66758D),
@@ -110,8 +163,8 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    'correo@ejemplo.com',
-                    style: TextStyle(
+                    widget.correo,
+                    style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF285FE8),
@@ -212,9 +265,9 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
             const Spacer(),
             Center(
               child: GestureDetector(
-                onTap: () {},
+                onTap: _reenviando ? null : _reenviarCodigo,
                 child: const Text(
-                  'Reenviar enlace',
+                  'Reenviar código',
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
@@ -225,14 +278,8 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
             ),
             const SizedBox(height: 16),
             BotonPrimario(
-              texto: 'Continuar',
-              alPresionar: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const PantallaIniciarSesion()),
-                  (route) => route.isFirst,
-                );
-              },
+              texto: _verificando ? 'Verificando…' : 'Verificar cuenta',
+              alPresionar: _verificando ? () {} : _verificar,
             ),
           ],
         ),

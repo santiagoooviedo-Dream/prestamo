@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_bienvenida.dart';
@@ -6,6 +8,22 @@ import 'pantalla_bienvenida.dart';
 /// Figma: Cerrar sesión (MI CUENTA / SALIR)
 class PantallaCerrarSesion extends StatelessWidget {
   const PantallaCerrarSesion({super.key});
+
+  Future<void> _cerrarSesion(BuildContext context) async {
+    try {
+      await ApiService.cerrarSesion();
+      if (!context.mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const PantallaBienvenida()),
+        (_) => false,
+      );
+    } on ApiException catch (error) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.mensaje)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +103,7 @@ class PantallaCerrarSesion extends StatelessWidget {
               titulo: 'Sí, salir',
               subtitulo: 'Cerrar mi sesión',
               peligro: true,
-              onTap: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const PantallaBienvenida()),
-                  (_) => false,
-                );
-              },
+              onTap: () => _cerrarSesion(context),
             ),
             const Spacer(flex: 3),
           ],

@@ -78,6 +78,40 @@ El servidor se ejecutará en:
 http://localhost:3000
 ```
 
+## Solicitudes y desembolso
+
+Antes de iniciar el servidor, aplica una sola vez el SQL de
+`migrations/20261022_detalles_desembolso.sql` en el editor SQL de Supabase. La
+migración agrega a `solicitudes` el método de desembolso, el número Nequi y los
+datos de programación de una aprobación.
+
+Las solicitudes autenticadas se crean en `POST /solicitudes` con un token
+Bearer. El cuerpo incluye `monto_solicitado`, `coutas`, `motivo` y
+`metodo_desembolso` (`efectivo` o `nequi`). Para Nequi se requiere
+`telefono_nequi` en formato celular colombiano de 10 dígitos.
+
+Para resolver una solicitud, un administrador usa `PATCH /solicitudes/:id`.
+La aprobación requiere indicar una fecha futura ISO 8601 en `fecha_desembolso`;
+si el método elegido fue efectivo, también requiere `lugar_recogida`. Ejemplo:
+
+```json
+{
+  "estado": "aceptada",
+  "fecha_desembolso": "2026-11-05T15:30:00-05:00",
+  "lugar_recogida": "Oficina principal, Calle 10 # 20-30"
+}
+```
+
+En solicitudes Nequi, el número de destino es el que el cliente indicó al
+solicitar; la aprobación solo requiere fecha y hora. Rechazar requiere
+`{"estado":"rechazada"}`. Cada decisión genera una notificación en la aplicación
+y un correo detallado al usuario. Configura `BREVO_API_KEY` y `EMAIL_USER` en el
+entorno; las respuestas indican explícitamente si el correo pudo enviarse.
+
+`GET /prestamos` y `GET /solicitudes` requieren el token del usuario y solo
+devuelven sus propios datos. `GET /notificaciones` permite consultar sus
+notificaciones y `PUT /notificaciones/:id` marcar una como leída.
+
 ---
 
 # 📁 Estructura del Proyecto

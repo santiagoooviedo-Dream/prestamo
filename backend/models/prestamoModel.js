@@ -1,6 +1,16 @@
 //importamos la base de datos
 import { supabase } from "../config/supabase.js";
 
+export const obtenerPrestamosPorUsuario = async (id_usuario) => {
+    const { data, error } = await supabase
+        .from('prestamos')
+        .select('*')
+        .eq('id_usuario', id_usuario)
+        .order('fecha_inicio', { ascending: false });
+
+    return { data, error };
+};
+
 //funcion para buscar una solicitud por su ID
 export const buscarSolicitudPorId = async (id_solicitud) => {
 
@@ -47,4 +57,3 @@ export const crearCuotasModel = async (cuotas) => {
 
     return { data, error };
 };
-

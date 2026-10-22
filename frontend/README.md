@@ -1,11 +1,13 @@
 # Front Prestamo
 
-Aplicación Flutter para autenticación y recuperación de cuentas de Prestamo.
+Aplicación Flutter para las cuentas y el flujo de préstamos de Prestamo Amigo.
 
 ## Ejecutar en desarrollo
 
 1. Inicia el backend desde `../backend` con `npm run dev` y confirma que esté disponible en el puerto `3000`. En PowerShell de Windows, usa `npm.cmd run dev` si la política de ejecución bloquea `npm.ps1`.
-2. Desde esta carpeta, ejecuta `flutter pub get` y `flutter run`.
+2. Aplica la migración SQL documentada en `../backend/README.md` para guardar
+   los datos de desembolso y configura las variables de correo del backend.
+3. Desde esta carpeta, ejecuta `flutter pub get` y `flutter run`.
 
 En Windows, si `flutter run -d windows` muestra `Building with plugins requires symlink support`, activa **Developer Mode** en la configuración de Windows y vuelve a ejecutar el comando. Si no puedes activarlo, inicia la aplicación web con `flutter run -d chrome`.
 
@@ -17,9 +19,13 @@ flutter run --dart-define=API_BASE_URL=https://tu-api.example.com
 
 Las compilaciones de producción deben usar una URL HTTPS. El permiso de tráfico HTTP sin cifrar está habilitado únicamente para compilaciones Android de depuración.
 
-## Modo de navegación
+## Flujos conectados
 
-Las pantallas conservan su diseño y permiten escribir en los campos y mostrar u
-ocultar las contraseñas. Los códigos de verificación no se solicitan y los
-botones permiten avanzar sin validar la información. La aplicación todavía no
-autentica usuarios ni realiza pagos o solicitudes.
+El inicio de sesión y el registro usan la API; el token de acceso se guarda en
+el almacenamiento seguro del dispositivo. El formulario envía solicitudes de
+préstamo reales, con la opción de desembolso en efectivo o Nequi. Las solicitudes,
+los préstamos y las notificaciones se cargan desde el backend.
+
+El usuario debe iniciar sesión antes de solicitar préstamos o consultar sus
+datos. La aprobación la realiza un administrador mediante `PATCH /solicitudes/:id`;
+las instrucciones y el cuerpo requerido están en `../backend/README.md`.

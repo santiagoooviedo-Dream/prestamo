@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
+import '../nucleo/api_service.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
@@ -21,12 +22,56 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   final _telefono = TextEditingController();
   final _contrasena = TextEditingController();
   bool _ocultar = true;
+  bool _registrando = false;
 
   bool get _min8 => _contrasena.text.length >= 8;
   bool get _tieneNumero => RegExp(r'[0-9]').hasMatch(_contrasena.text);
   bool get _tieneMayuscula => RegExp(r'[A-Z]').hasMatch(_contrasena.text);
   bool get _tieneSimbolo =>
       RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-+=\[\]\;/]').hasMatch(_contrasena.text);
+
+  Future<void> _registrar() async {
+    final correo = _correo.text.trim();
+    if (_cedula.text.trim().isEmpty ||
+        _nombres.text.trim().isEmpty ||
+        _apellidos.text.trim().isEmpty ||
+        correo.isEmpty ||
+        _telefono.text.trim().isEmpty ||
+        !_min8 ||
+        !_tieneNumero ||
+        !_tieneMayuscula ||
+        !_tieneSimbolo) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Completa todos los datos y cumple los requisitos de la contraseña.')),
+      );
+      return;
+    }
+    setState(() => _registrando = true);
+    try {
+      await ApiService.registrarUsuario({
+        'nombre': _nombres.text.trim(),
+        'apellido': _apellidos.text.trim(),
+        'correo': correo,
+        'telefono': _telefono.text.trim(),
+        'cedula': _cedula.text.trim(),
+        'contrasena': _contrasena.text,
+      });
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PantallaVerificarCorreo(correo: correo),
+        ),
+      );
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.mensaje)),
+      );
+    } finally {
+      if (mounted) setState(() => _registrando = false);
+    }
+  }
 
   @override
   void initState() {
@@ -199,13 +244,8 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
               ),
             ),
             BotonPrimario(
-              texto: 'Crear cuenta',
-              alPresionar: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaVerificarCorreo()),
-                  );
-              },
+              texto: _registrando ? 'Enviando…' : 'Crear cuenta',
+              alPresionar: _registrando ? () {} : _registrar,
             ),
             const SizedBox(height: 12),
             Center(

@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
 import 'pantalla_solicitud_enviada.dart';
 
 /// Validando → después de 2s va a Solicitud enviada
 class PantallaValidandoSolicitud extends StatefulWidget {
-  const PantallaValidandoSolicitud({super.key});
+  final int monto;
+  final int cuotas;
+  final String motivo;
+  final String metodoDesembolso;
+  final String? telefonoNequi;
+
+  const PantallaValidandoSolicitud({
+    super.key,
+    required this.monto,
+    required this.cuotas,
+    required this.motivo,
+    required this.metodoDesembolso,
+    this.telefonoNequi,
+  });
 
   @override
   State<PantallaValidandoSolicitud> createState() =>
@@ -14,16 +28,48 @@ class PantallaValidandoSolicitud extends StatefulWidget {
 
 class _PantallaValidandoSolicitudState
     extends State<PantallaValidandoSolicitud> {
+  String? _error;
+  bool _enviando = false;
+
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaSolicitudEnviada()),
-                  );
+    _enviarSolicitud();
+  }
+
+  Future<void> _enviarSolicitud() async {
+    setState(() {
+      _enviando = true;
+      _error = null;
     });
+    try {
+      final respuesta = await ApiService.crearSolicitud(
+        monto: widget.monto,
+        cuotas: widget.cuotas,
+        motivo: widget.motivo,
+        metodoDesembolso: widget.metodoDesembolso,
+        telefonoNequi: widget.telefonoNequi,
+      );
+      if (!mounted) return;
+      final solicitud = respuesta['solicitud'];
+      final idSolicitud = solicitud is Map<String, dynamic>
+          ? solicitud['id_solicitud']?.toString()
+          : null;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PantallaSolicitudEnviada(
+            idSolicitud: idSolicitud,
+            correoEnviado: respuesta['correo_enviado'] != false,
+            notificacionCreada: respuesta['notificacion_creada'] != false,
+          ),
+        ),
+      );
+    } on ApiException catch (error) {
+      if (mounted) setState(() => _error = error.mensaje);
+    } finally {
+      if (mounted) setState(() => _enviando = false);
+    }
   }
 
   @override
@@ -68,17 +114,25 @@ class _PantallaValidandoSolicitudState
                 shape: BoxShape.circle,
                 border: Border.all(color: const Color(0xFFD6E4FF), width: 6),
               ),
-              child: const Padding(
-                padding: EdgeInsets.all(28),
-                child: CircularProgressIndicator(
-                  strokeWidth: 3.5,
-                  color: Color(0xFF285FE8),
-                ),
-              ),
+              child: _error == null
+                  ? const Padding(
+                      padding: EdgeInsets.all(28),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3.5,
+                        color: Color(0xFF285FE8),
+                      ),
+                    )
+                  : const Icon(
+                      Icons.error_outline,
+                      color: Color(0xFFB42318),
+                      size: 48,
+                    ),
             ),
             const SizedBox(height: 28),
-            const Text(
-              'Solicitud de préstamo\nrealizada',
+            Text(
+              _error == null
+                  ? 'Enviando tu solicitud'
+                  : 'No se pudo enviar',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 26,
@@ -88,12 +142,17 @@ class _PantallaValidandoSolicitudState
               ),
             ),
             const SizedBox(height: 10),
-            const Text(
-              'Estamos validando tu préstamo.',
+            Text(
+              _error ?? 'Estamos registrando tu solicitud de préstamo.',
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const Spacer(flex: 3),
+            if (_error != null)
+              TextButton(
+                onPressed: _enviando ? null : _enviarSolicitud,
+                child: const Text('Intentar de nuevo'),
+              ),
             const AvisoSeguridad(
               texto: 'Te enviaremos una notificación cuando esté listo.',
             ),

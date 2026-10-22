@@ -1,6 +1,17 @@
 //importamos las funciones del modelo
 
-import { buscarSolicitudPorId,crearPrestamoModel,buscarPrestamoPorId,crearCuotasModel} from "../models/prestamoModel.js";
+import { buscarSolicitudPorId,crearPrestamoModel,buscarPrestamoPorId,crearCuotasModel,obtenerPrestamosPorUsuario} from "../models/prestamoModel.js";
+
+export const obtenerMisPrestamos = async (req, res) => {
+    const { data, error } = await obtenerPrestamosPorUsuario(req.usuario.id_usuario);
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al consultar los préstamos',
+            error: error.message
+        });
+    }
+    return res.status(200).json({ prestamos: data });
+};
 
 // Funcion para crear un prestamo a partir de una solicitud aceptada
 export const crearPrestamo = async (req, res) => {
@@ -110,5 +121,4 @@ export const crearCuotas = async (req, res) => {
         cuotas: data
     });
 };
-
 

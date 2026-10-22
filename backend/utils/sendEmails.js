@@ -2,6 +2,95 @@ import { BrevoClient } from '@getbrevo/brevo';
 
 const brevo = new BrevoClient({ apiKey: process.env.BREVO_API_KEY });
 
+const escaparHtml = (valor = '') => String(valor)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+
+const formatoFechaDesembolso = (fecha) => new Intl.DateTimeFormat('es-CO', {
+    dateStyle: 'full',
+    timeStyle: 'short',
+    timeZone: 'America/Bogota'
+}).format(new Date(fecha));
+
+const enviarCorreoPrestamo = async (correo, asunto, contenido) => {
+    try {
+        await brevo.transactionalEmails.sendTransacEmail({
+            subject: asunto,
+            sender: {
+                name: process.env.EMAIL_FROM_NAME || 'Prestamo Amigo',
+                email: process.env.EMAIL_USER
+            },
+            to: [{ email: correo }],
+            htmlContent: contenido
+        });
+        return { enviado: true };
+    } catch (error) {
+        console.error(`No se pudo enviar el correo "${asunto}":`, error);
+        return { enviado: false, error: error.message };
+    }
+};
+
+export const enviarConfirmacionSolicitud = async (correo, nombre, solicitud) => {
+    const metodo = solicitud.metodo_desembolso === 'nequi' ? 'Transferencia a Nequi' : 'Entrega en efectivo';
+    const destino = solicitud.metodo_desembolso === 'nequi'
+        ? `Número Nequi: ${escaparHtml(solicitud.telefono_nequi)}`
+        : 'El punto y la fecha de recogida se confirmarán cuando se apruebe la solicitud.';
+    const fecha = new Intl.DateTimeFormat('es-CO', {
+        dateStyle: 'full',
+        timeStyle: 'short',
+        timeZone: 'America/Bogota'
+    }).format(new Date(solicitud.created_at || Date.now()));
+
+    return enviarCorreoPrestamo(
+        correo,
+        `Recibimos tu solicitud de préstamo #${solicitud.id_solicitud}`,
+        `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#17243C">
+          <h2>Solicitud recibida</h2>
+          <p>Hola ${escaparHtml(nombre)}, registramos tu solicitud correctamente.</p>
+          <ul>
+            <li><strong>Número:</strong> ${escaparHtml(solicitud.id_solicitud)}</li>
+            <li><strong>Monto solicitado:</strong> $${Number(solicitud.monto_solicitado).toLocaleString('es-CO')} COP</li>
+            <li><strong>Cuotas:</strong> ${escaparHtml(solicitud.coutas)} mensuales</li>
+            <li><strong>Motivo:</strong> ${escaparHtml(solicitud.motivo)}</li>
+            <li><strong>Desembolso elegido:</strong> ${metodo}</li>
+            <li><strong>Destino:</strong> ${destino}</li>
+            <li><strong>Fecha de solicitud:</strong> ${escaparHtml(fecha)}</li>
+            <li><strong>Estado:</strong> En revisión</li>
+          </ul>
+          <p>Te enviaremos otro correo y una notificación cuando se tome una decisión. Si se aprueba, allí encontrarás la fecha, la hora y el punto de recogida o el número al que se enviará el dinero.</p>
+        </div>`
+    );
+};
+
+export const enviarResultadoSolicitud = async (correo, nombre, solicitud) => {
+    const aprobada = solicitud.estado === 'aceptada';
+    const detalleDesembolso = aprobada
+        ? solicitud.metodo_desembolso === 'nequi'
+            ? `<p><strong>Desembolso:</strong> Transferencia a Nequi</p>
+               <p><strong>Número de destino:</strong> ${escaparHtml(solicitud.telefono_nequi)}</p>`
+            : `<p><strong>Desembolso:</strong> Recogida en efectivo</p>
+               <p><strong>Punto de recogida:</strong> ${escaparHtml(solicitud.lugar_recogida)}</p>`
+        : '';
+    const fecha = aprobada ? escaparHtml(formatoFechaDesembolso(solicitud.fecha_desembolso)) : '';
+    const estado = aprobada ? 'fue aprobada' : 'no fue aprobada';
+
+    return enviarCorreoPrestamo(
+        correo,
+        `Actualización de tu solicitud de préstamo #${solicitud.id_solicitud}`,
+        `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#17243C">
+          <h2>Actualización de tu solicitud</h2>
+          <p>Hola ${escaparHtml(nombre)}, tu solicitud de préstamo #${escaparHtml(solicitud.id_solicitud)} ${estado}.</p>
+          <p><strong>Monto:</strong> $${Number(solicitud.monto_solicitado).toLocaleString('es-CO')} COP</p>
+          <p><strong>Cuotas:</strong> ${escaparHtml(solicitud.coutas)} mensuales</p>
+          ${aprobada ? `<p><strong>Fecha y hora programadas:</strong> ${fecha} (hora de Colombia)</p>${detalleDesembolso}` : '<p>Si necesitas más información, comunícate con nuestro equipo de atención.</p>'}
+          <p>Este mensaje confirma el resultado de la solicitud. No compartas claves ni códigos de verificación.</p>
+        </div>`
+    );
+};
+
 export const enviarCodigoRecuperacion = async (correo, codigo) => {
 
     try {
@@ -121,4 +210,3 @@ export const enviarCodigoVerificacion = async (emailDestino,nombreDestino,codigo
         };
     }
 };
-

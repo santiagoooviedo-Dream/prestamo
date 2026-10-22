@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
+import '../nucleo/api_service.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
@@ -19,6 +20,36 @@ class _PantallaIniciarSesionState extends State<PantallaIniciarSesion> {
   final _cedulaCtrl = TextEditingController();
   final _claveCtrl = TextEditingController();
   bool _ocultar = true;
+  bool _cargando = false;
+
+  Future<void> _iniciarSesion() async {
+    if (_cedulaCtrl.text.trim().isEmpty || _claveCtrl.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ingresa tu cédula y contraseña.')),
+      );
+      return;
+    }
+    setState(() => _cargando = true);
+    try {
+      await ApiService.iniciarSesion(
+        _cedulaCtrl.text.trim(),
+        _claveCtrl.text,
+      );
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const PantallaInicio()),
+        (route) => false,
+      );
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.mensaje)),
+      );
+    } finally {
+      if (mounted) setState(() => _cargando = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -162,15 +193,8 @@ class _PantallaIniciarSesionState extends State<PantallaIniciarSesion> {
                 const SizedBox(height: 24),
 
                 BotonPrimario(
-                  texto: 'Iniciar sesión',
-                  alPresionar: () {
-                    // Flujo autenticado → por ahora a solicitud enviada (placeholder)
-                    Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const PantallaInicio()),
-                  (route) => false
-                );
-                  },
+                  texto: _cargando ? 'Conectando…' : 'Iniciar sesión',
+                  alPresionar: _cargando ? () {} : _iniciarSesion,
                 ),
 
                 const SizedBox(height: 16),

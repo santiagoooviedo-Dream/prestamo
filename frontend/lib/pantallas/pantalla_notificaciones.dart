@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -8,11 +10,11 @@ class PantallaNotificaciones extends StatefulWidget {
   const PantallaNotificaciones({super.key});
 
   @override
-  State<PantallaNotificaciones> createState() =>
-      _PantallaNotificacionesState();
+  State<PantallaNotificaciones> createState() => _PantallaNotificacionesState();
 }
 
 class _Notif {
+  final String id;
   final String titulo;
   final String cuerpo;
   final String tiempo;
@@ -21,6 +23,7 @@ class _Notif {
   final bool leida;
 
   const _Notif({
+    required this.id,
     required this.titulo,
     required this.cuerpo,
     required this.tiempo,
@@ -35,40 +38,89 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
 
   static const _tabs = ['Todas', 'No leídas', 'Préstamos', 'Pagos'];
 
-  final _items = const [
-    _Notif(
-      titulo: 'Pago recibido',
-      cuerpo: 'Tu pago de \$200.000 fue procesado.',
-      tiempo: 'Hace 1 hora',
-      icono: Icons.check_circle_outline,
-      categoria: 'pagos',
-      leida: false,
-    ),
-    _Notif(
-      titulo: 'Recordatorio de cuota',
-      cuerpo: 'Tu próxima cuota vence el 20 de mayo.',
-      tiempo: 'Ayer, 12:00 p. m.',
-      icono: Icons.calendar_today_outlined,
-      categoria: 'pagos',
-      leida: false,
-    ),
-    _Notif(
-      titulo: 'Préstamo aprobado',
-      cuerpo: 'Tu préstamo de \$1.000.000 fue aprobado.',
-      tiempo: '10 mayo · 02:15 p. m.',
-      icono: Icons.account_balance_wallet_outlined,
-      categoria: 'prestamos',
-      leida: true,
-    ),
-    _Notif(
-      titulo: 'Nuevo mensaje',
-      cuerpo: 'Tienes un nuevo mensaje de soporte.',
-      tiempo: '9 mayo · 11:12 a. m.',
-      icono: Icons.chat_bubble_outline,
-      categoria: 'info',
-      leida: true,
-    ),
-  ];
+  List<_Notif> _items = [];
+  bool _cargando = true;
+  String? _error;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarNotificaciones();
+  }
+
+  Future<void> _cargarNotificaciones() async {
+    setState(() {
+      _cargando = true;
+      _error = null;
+    });
+    try {
+      final datos = await ApiService.obtenerNotificaciones();
+      if (!mounted) return;
+      setState(() {
+        _items = datos.map(_desdeApi).toList();
+      });
+    } on ApiException catch (error) {
+      if (mounted) setState(() => _error = error.mensaje);
+    } finally {
+      if (mounted) setState(() => _cargando = false);
+    }
+  }
+
+  _Notif _desdeApi(Map<String, dynamic> dato) {
+    final tipo = dato['tipo']?.toString() ?? 'info';
+    final cuerpo =
+        dato['mensaje']?.toString() ?? 'Tienes una nueva notificación.';
+    final fecha = DateTime.tryParse(dato['fecha']?.toString() ?? '');
+    return _Notif(
+      id: dato['id_notificacion']?.toString() ?? '',
+      titulo: cuerpo.toLowerCase().contains('aprob')
+          ? 'Solicitud aprobada'
+          : cuerpo.toLowerCase().contains('rechaz')
+          ? 'Actualización de solicitud'
+          : tipo == 'pago'
+          ? 'Actualización de pago'
+          : 'Actualización de solicitud',
+      cuerpo: cuerpo,
+      tiempo: fecha == null
+          ? ''
+          : '${fecha.toLocal().day.toString().padLeft(2, '0')}/${fecha.toLocal().month.toString().padLeft(2, '0')}/${fecha.toLocal().year} · ${fecha.toLocal().hour.toString().padLeft(2, '0')}:${fecha.toLocal().minute.toString().padLeft(2, '0')}',
+      icono: tipo == 'pago'
+          ? Icons.payments_outlined
+          : Icons.account_balance_wallet_outlined,
+      categoria: tipo == 'pago' ? 'pagos' : 'prestamos',
+      leida: dato['leida'] == true,
+    );
+  }
+
+  Future<void> _marcarLeida(_Notif notificacion) async {
+    if (notificacion.leida || notificacion.id.isEmpty) return;
+    try {
+      await ApiService.marcarNotificacionLeida(notificacion.id);
+      if (!mounted) return;
+      setState(() {
+        _items = _items
+            .map(
+              (item) => item.id == notificacion.id
+                  ? _Notif(
+                      id: item.id,
+                      titulo: item.titulo,
+                      cuerpo: item.cuerpo,
+                      tiempo: item.tiempo,
+                      icono: item.icono,
+                      categoria: item.categoria,
+                      leida: true,
+                    )
+                  : item,
+            )
+            .toList();
+      });
+    } on ApiException catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error.mensaje)));
+      }
+    }
+  }
 
   List<_Notif> get _filtradas {
     switch (_filtro) {
@@ -101,17 +153,21 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      BotonVolver(alPresionar: () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        } else {
-                          Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (_) => const PantallaPerfil()),
-                          (_) => false,
-                        );
-                        }
-                      }),
+                      BotonVolver(
+                        alPresionar: () {
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          } else {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const PantallaPerfil(),
+                              ),
+                              (_) => false,
+                            );
+                          }
+                        },
+                      ),
                       Text(
                         'TU ACTIVIDAD',
                         style: TextStyle(
@@ -150,7 +206,9 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
                             onTap: () => setState(() => _filtro = i),
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 14, vertical: 8),
+                                horizontal: 14,
+                                vertical: 8,
+                              ),
                               decoration: BoxDecoration(
                                 color: activo
                                     ? const Color(0xFF285FE8)
@@ -180,94 +238,130 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
                   ),
                   const SizedBox(height: 16),
                   Expanded(
-                    child: lista.isEmpty
+                    child: _cargando
+                        ? const Center(child: CircularProgressIndicator())
+                        : _error != null
+                        ? Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  _error!,
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    color: Color(0xFF66758D),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: _cargarNotificaciones,
+                                  child: const Text('Reintentar'),
+                                ),
+                              ],
+                            ),
+                          )
+                        : lista.isEmpty
                         ? const Center(
                             child: Text(
                               'No hay notificaciones',
                               style: TextStyle(
-                                  fontSize: 14, color: Color(0xFF66758D)),
+                                fontSize: 14,
+                                color: Color(0xFF66758D),
+                              ),
                             ),
                           )
                         : ListView.separated(
                             itemCount: lista.length,
-                            separatorBuilder: (_, __) =>
+                            separatorBuilder: (_, _) =>
                                 const SizedBox(height: 10),
                             itemBuilder: (_, i) {
                               final n = lista[i];
-                              return Container(
-                                padding: const EdgeInsets.all(14),
-                                decoration: BoxDecoration(
-                                  color: n.leida
-                                      ? Colors.white
-                                      : const Color(0xFFEDF3FF),
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                      color: const Color(0xFFE1E8F3)),
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFEDF3FF),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Icon(n.icono,
+                              return GestureDetector(
+                                onTap: () => _marcarLeida(n),
+                                child: Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: n.leida
+                                        ? Colors.white
+                                        : const Color(0xFFEDF3FF),
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(
+                                      color: const Color(0xFFE1E8F3),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFEDF3FF),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
+                                        ),
+                                        child: Icon(
+                                          n.icono,
                                           size: 20,
-                                          color: const Color(0xFF285FE8)),
-                                    ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Text(
-                                                  n.titulo,
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Color(0xFF17243C),
-                                                  ),
-                                                ),
-                                              ),
-                                              if (!n.leida)
-                                                Container(
-                                                  width: 8,
-                                                  height: 8,
-                                                  decoration:
-                                                      const BoxDecoration(
-                                                    color: Color(0xFF285FE8),
-                                                    shape: BoxShape.circle,
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            n.cuerpo,
-                                            style: const TextStyle(
-                                              fontSize: 13,
-                                              color: Color(0xFF66758D),
-                                            ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            n.tiempo,
-                                            style: const TextStyle(
-                                              fontSize: 11,
-                                              color: Color(0xFF94A0B3),
-                                            ),
-                                          ),
-                                        ],
+                                          color: const Color(0xFF285FE8),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Text(
+                                                    n.titulo,
+                                                    style: const TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Color(0xFF17243C),
+                                                    ),
+                                                  ),
+                                                ),
+                                                if (!n.leida)
+                                                  Container(
+                                                    width: 8,
+                                                    height: 8,
+                                                    decoration:
+                                                        const BoxDecoration(
+                                                          color: Color(
+                                                            0xFF285FE8,
+                                                          ),
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                  ),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              n.cuerpo,
+                                              style: const TextStyle(
+                                                fontSize: 13,
+                                                color: Color(0xFF66758D),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              n.tiempo,
+                                              style: const TextStyle(
+                                                fontSize: 11,
+                                                color: Color(0xFF94A0B3),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },

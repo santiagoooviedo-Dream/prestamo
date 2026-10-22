@@ -104,7 +104,7 @@ class PantallaInicio extends StatelessWidget {
                       Expanded(
                         child: _TarjetaAcceso(
                           icono: Icons.headset_mic_rounded,
-                          titulo: 'Comunicate \ncon nosotros',
+                          titulo: 'Soporte',
                           subtitulo: 'Estamos para ayudarte',
                           onTap: () =>
                               Navigator.push(

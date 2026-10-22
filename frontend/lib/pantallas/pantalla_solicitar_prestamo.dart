@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import '../widgets/prestamos/calendario_cuotas.dart';
+import '../widgets/prestamos/resumen_estimado.dart';
 import 'pantalla_metodo_desembolso.dart';
 
-/// Figma: Solicita tu préstamo + selector de cuotas (2–36)
+/// Solicita tu préstamo + selector de cuotas (2–36) + resumen y calendario
 class PantallaSolicitarPrestamo extends StatefulWidget {
   const PantallaSolicitarPrestamo({super.key});
 
@@ -15,16 +17,26 @@ class PantallaSolicitarPrestamo extends StatefulWidget {
 }
 
 class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
-  final _montoCtrl = TextEditingController();
+  final _montoCtrl = TextEditingController(text: '1000000');
   final _motivoCtrl = TextEditingController();
   int? _cuotas;
   bool _menuAbierto = false;
 
-  /// Lista visible en el desplegable (2–10) + resto hasta 36
-  static const _cuotasVisibles = [2, 3, 4, 5, 6, 7, 8, 9, 10];
-  static const _todasLasCuotas = [
-    2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 18, 24, 30, 36,
-  ];
+  static final _opcionesRapidas = List<int>.generate(35, (i) => i + 2); // 2..36
+
+  int get _monto {
+    final t = _montoCtrl.text.replaceAll(RegExp(r'[^0-9]'), '');
+    return int.tryParse(t) ?? 0;
+  }
+
+  bool get _mostrarResumen =>
+      _cuotas != null && _monto >= 100000 && _monto <= 3000000;
+
+  @override
+  void initState() {
+    super.initState();
+    _montoCtrl.addListener(() => setState(() {}));
+  }
 
   @override
   void dispose() {
@@ -37,12 +49,11 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final etiqueta = _menuAbierto ? 'SOLICITUD / CUOTAS' : 'SOLICITUD / DATOS';
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(24, top + 6, 24, 20 + bottom),
+        padding: EdgeInsets.fromLTRB(24, top + 6, 24, 16 + bottom),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,8 +62,8 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
               children: [
                 BotonVolver(alPresionar: () => Navigator.pop(context)),
                 Text(
-                  etiqueta,
-                  style: TextStyle(
+                  _cuotas != null ? 'SOLICITUD / CUOTAS' : 'SOLICITUD / DATOS',
+                  style: const TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: ColoresApp.textoContexto,
@@ -61,286 +72,59 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             const Text(
               'Solicita tu préstamo',
               style: TextStyle(
                 fontSize: 28,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
-                height: 1.18,
+                height: 1.15,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             const Text(
               'Completa la información para continuar.',
-              style: TextStyle(
-                fontSize: 15,
-                color: Color(0xFF66758D),
-                height: 1.5,
-              ),
+              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 20),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Monto
-                    const Text(
-                      'Monto a solicitar',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
-                      ),
-                    ),
+                    _label('Monto a solicitar'),
                     const SizedBox(height: 8),
-                    Container(
-                      height: 52,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFE1E8F3)),
-                      ),
-                      child: Row(
-                        children: [
-                          const Padding(
-                            padding: EdgeInsets.only(left: 16),
-                            child: Text(
-                              '\$',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF94A0B3),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: TextField(
-                              controller: _montoCtrl,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: Color(0xFF17243C),
-                              ),
-                              decoration: const InputDecoration(
-                                hintText: 'Ingresa el monto',
-                                hintStyle: TextStyle(
-                                  fontSize: 15,
-                                  color: Color(0xFF94A0B3),
-                                ),
-                                border: InputBorder.none,
-                                contentPadding: EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 14,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    _campoMonto(),
                     const SizedBox(height: 6),
                     const Text(
                       'Mínimo \$100.000 · Máximo \$3.000.000',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF94A0B3),
-                      ),
+                      style: TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
                     ),
-                    const SizedBox(height: 22),
-
-                    // Número de cuotas
-                    const Text(
-                      'Número de cuotas',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
-                      ),
-                    ),
+                    const SizedBox(height: 20),
+                    _label('Número de cuotas'),
                     const SizedBox(height: 8),
-                    GestureDetector(
-                      onTap: () =>
-                          setState(() => _menuAbierto = !_menuAbierto),
-                      child: Container(
-                        height: 52,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: _menuAbierto
-                                ? const Color(0xFF285FE8)
-                                : const Color(0xFFE1E8F3),
-                            width: _menuAbierto ? 1.5 : 1,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                _cuotas == null
-                                    ? 'Selecciona el número de cuotas'
-                                    : '$_cuotas cuotas',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: _cuotas == null
-                                      ? const Color(0xFF94A0B3)
-                                      : const Color(0xFF17243C),
-                                ),
-                              ),
-                            ),
-                            Icon(
-                              _menuAbierto
-                                  ? Icons.keyboard_arrow_up
-                                  : Icons.keyboard_arrow_down,
-                              color: const Color(0xFF66758D),
-                            ),
-                          ],
-                        ),
-                      ),
+                    _selectorCuotas(),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Mínimo 2 · Máximo 36 cuotas',
+                      style: TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
                     ),
-                    if (!_menuAbierto)
-                      const Padding(
-                        padding: EdgeInsets.only(top: 6),
-                        child: Text(
-                          'Mínimo 2 · Máximo 36 cuotas',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Color(0xFF94A0B3),
-                          ),
-                        ),
-                      ),
-
-                    // Lista desplegable 2–10 + más
                     if (_menuAbierto) ...[
                       const SizedBox(height: 8),
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: const Color(0xFFE1E8F3)),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color(0x0D17243C),
-                              blurRadius: 12,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            ..._cuotasVisibles.map((n) {
-                              final sel = _cuotas == n;
-                              return InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    _cuotas = n;
-                                    _menuAbierto = false;
-                                  });
-                                },
-                                child: Container(
-                                  width: double.infinity,
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                    vertical: 14,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: sel
-                                        ? const Color(0xFFEDF3FF)
-                                        : Colors.white,
-                                    border: Border(
-                                      bottom: BorderSide(
-                                        color: const Color(0xFFE8EEF6),
-                                        width: n == _cuotasVisibles.last
-                                            ? 0
-                                            : 1,
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    '$n cuotas',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: sel
-                                          ? FontWeight.w600
-                                          : FontWeight.w400,
-                                      color: sel
-                                          ? const Color(0xFF285FE8)
-                                          : const Color(0xFF17243C),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }),
-                            // Más opciones hasta 36
-                            InkWell(
-                              onTap: () => _mostrarTodasLasCuotas(context),
-                              child: Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 14,
-                                ),
-                                child: const Text(
-                                  'Más opciones hasta 36 cuotas',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xFF285FE8),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      _listaCuotas(),
                     ],
-                    const SizedBox(height: 22),
-
-                    // Motivo
-                    const Text(
-                      'Motivo del préstamo',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
-                      ),
-                    ),
+                    if (_mostrarResumen) ...[
+                      const SizedBox(height: 20),
+                      ResumenEstimado(monto: _monto, cuotas: _cuotas!),
+                      const SizedBox(height: 14),
+                      CalendarioCuotas(monto: _monto, cuotas: _cuotas!),
+                    ],
+                    const SizedBox(height: 20),
+                    _label('Motivo del préstamo'),
                     const SizedBox(height: 8),
-                    Container(
-                      height: 52,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFE1E8F3)),
-                      ),
-                      child: TextField(
-                        controller: _motivoCtrl,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF17243C),
-                        ),
-                        decoration: const InputDecoration(
-                          hintText: 'Ingresa el motivo',
-                          hintStyle: TextStyle(
-                            fontSize: 15,
-                            color: Color(0xFF94A0B3),
-                          ),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                        ),
-                      ),
-                    ),
+                    _campoMotivo(),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),
@@ -349,9 +133,11 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
               texto: 'Continuar',
               alPresionar: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaMetodoDesembolso()),
-                  );
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PantallaMetodoDesembolso(),
+                  ),
+                );
               },
             ),
           ],
@@ -360,69 +146,177 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
     );
   }
 
-  void _mostrarTodasLasCuotas(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+  Widget _label(String t) => Text(
+        t,
+        style: const TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: Color(0xFF17243C),
+        ),
+      );
+
+  Widget _campoMonto() {
+    return Container(
+      height: 52,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE1E8F3)),
       ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.fromLTRB(24, 20, 24, 12),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Selecciona el número de cuotas',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
-                    ),
+      child: Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(left: 16),
+            child: Text(
+              '\$',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF94A0B3),
+              ),
+            ),
+          ),
+          Expanded(
+            child: TextField(
+              controller: _montoCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              style: const TextStyle(fontSize: 15, color: Color(0xFF17243C)),
+              decoration: const InputDecoration(
+                hintText: '1.000.000',
+                hintStyle: TextStyle(fontSize: 15, color: Color(0xFF94A0B3)),
+                border: InputBorder.none,
+                contentPadding:
+                    EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _selectorCuotas() {
+    return GestureDetector(
+      onTap: () => setState(() => _menuAbierto = !_menuAbierto),
+      child: Container(
+        height: 52,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: _menuAbierto
+                ? const Color(0xFF285FE8)
+                : const Color(0xFFE1E8F3),
+            width: _menuAbierto ? 1.5 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                _cuotas == null
+                    ? 'Selecciona el número de cuotas'
+                    : '$_cuotas cuotas mensuales',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: _cuotas == null
+                      ? const Color(0xFF94A0B3)
+                      : const Color(0xFF17243C),
+                ),
+              ),
+            ),
+            Icon(
+              _menuAbierto
+                  ? Icons.keyboard_arrow_up
+                  : Icons.keyboard_arrow_down,
+              color: const Color(0xFF66758D),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _listaCuotas() {
+    return Container(
+      width: double.infinity,
+      constraints: const BoxConstraints(maxHeight: 280),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE1E8F3)),
+      ),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: _opcionesRapidas.length,
+        itemBuilder: (_, i) {
+          final n = _opcionesRapidas[i];
+          final sel = _cuotas == n;
+          final esUltimo = i == _opcionesRapidas.length - 1;
+          return InkWell(
+            onTap: () => setState(() {
+              _cuotas = n;
+              _menuAbierto = false;
+            }),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: esUltimo
+                        ? Colors.transparent
+                        : const Color(0xFFF0F3F8),
                   ),
                 ),
               ),
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: _todasLasCuotas.length,
-                  itemBuilder: (_, i) {
-                    final n = _todasLasCuotas[i];
-                    final sel = _cuotas == n;
-                    return ListTile(
-                      title: Text(
-                        '$n cuotas',
-                        style: TextStyle(
-                          fontWeight:
-                              sel ? FontWeight.w600 : FontWeight.w400,
-                          color: sel
-                              ? const Color(0xFF285FE8)
-                              : const Color(0xFF17243C),
-                        ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '$n cuotas mensuales',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight:
+                            sel ? FontWeight.w600 : FontWeight.w400,
+                        color: sel
+                            ? const Color(0xFF285FE8)
+                            : const Color(0xFF17243C),
                       ),
-                      trailing: sel
-                          ? const Icon(Icons.check,
-                              color: Color(0xFF285FE8), size: 20)
-                          : null,
-                      onTap: () {
-                        setState(() {
-                          _cuotas = n;
-                          _menuAbierto = false;
-                        });
-                        Navigator.pop(ctx);
-                      },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  if (sel)
+                    const Icon(Icons.check,
+                        size: 18, color: Color(0xFF285FE8)),
+                ],
               ),
-            ],
-          ),
-        );
-      },
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _campoMotivo() {
+    return Container(
+      height: 52,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE1E8F3)),
+      ),
+      child: TextField(
+        controller: _motivoCtrl,
+        style: const TextStyle(fontSize: 15, color: Color(0xFF17243C)),
+        decoration: const InputDecoration(
+          hintText: 'Ingresa el motivo',
+          hintStyle: TextStyle(fontSize: 15, color: Color(0xFF94A0B3)),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        ),
+      ),
     );
   }
 }

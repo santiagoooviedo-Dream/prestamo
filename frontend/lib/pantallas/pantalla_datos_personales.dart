@@ -65,7 +65,7 @@ class _PantallaDatosPersonalesState extends State<PantallaDatosPersonales> {
                 ),
                 const SizedBox(height: 28),
                 const Text(
-                  'Empecemos por ti',
+                  'Crea cuenta',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w600,

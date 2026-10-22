@@ -114,6 +114,15 @@ class ApiService {
     );
   }
 
+  static Future<Map<String, dynamic>> obtenerPerfil() async {
+    final respuesta = await _solicitar('GET', '/usuarios/perfil');
+    final usuario = respuesta['usuario'];
+    if (usuario is! Map<String, dynamic>) {
+      throw const ApiException('La respuesta del perfil no es válida.');
+    }
+    return usuario;
+  }
+
   static Future<void> verificarRegistro(String correo, String codigo) async {
     await _solicitar(
       'POST',
@@ -129,6 +138,31 @@ class ApiService {
       '/usuarios/registrar/reenviar-codigo',
       autenticada: false,
       datos: {'correo': correo},
+    );
+  }
+
+  static Future<void> cambiarCorreo({
+    required String nuevoCorreo,
+    required String contrasena,
+  }) async {
+    await _solicitar(
+      'PUT',
+      '/usuarios/correo',
+      datos: {'nuevoCorreo': nuevoCorreo, 'contrasena': contrasena},
+    );
+  }
+
+  static Future<void> cambiarContrasena({
+    required String contrasenaActual,
+    required String contrasenaNueva,
+  }) async {
+    await _solicitar(
+      'PUT',
+      '/usuarios/contrasena',
+      datos: {
+        'contrasenaActual': contrasenaActual,
+        'contrasenaNueva': contrasenaNueva,
+      },
     );
   }
 
@@ -217,8 +251,41 @@ class ApiService {
     return items.whereType<Map<String, dynamic>>().toList();
   }
 
+  static Future<List<Map<String, dynamic>>> obtenerCuotas() async {
+    final respuesta = await _solicitar('GET', '/prestamos/cuotas');
+    final items = respuesta['cuotas'];
+    if (items is! List) {
+      throw const ApiException('La respuesta de cuotas no es válida.');
+    }
+    return items.whereType<Map<String, dynamic>>().toList();
+  }
+
+  static Future<List<Map<String, dynamic>>> obtenerMovimientos() async {
+    final respuesta = await _solicitar('GET', '/pagos/movimientos');
+    final items = respuesta['movimientos'];
+    if (items is! List) {
+      throw const ApiException('La respuesta de movimientos no es válida.');
+    }
+    return items.whereType<Map<String, dynamic>>().toList();
+  }
+
   static Future<void> marcarNotificacionLeida(String id) async {
     await _solicitar('PUT', '/notificaciones/$id');
+  }
+
+  static Future<Map<String, dynamic>> crearConversacion() {
+    return _solicitar('POST', '/conversaciones');
+  }
+
+  static Future<Map<String, dynamic>> enviarMensajeChatbot(
+    String idConversacion,
+    String mensaje,
+  ) {
+    return _solicitar(
+      'POST',
+      '/conversaciones/$idConversacion/chatbot',
+      datos: {'mensaje': mensaje},
+    );
   }
 
   static Future<void> cerrarSesion() async {

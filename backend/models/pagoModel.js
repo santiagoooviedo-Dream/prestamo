@@ -65,3 +65,12 @@ const { data, error } = await supabase
 
 return { data, error };
 };
+
+export const obtenerMovimientosPorUsuario = async (id_usuario) => {
+    const { data, error } = await supabase
+        .from('movimientos')
+        .select('*')
+        .eq('id_usuario', id_usuario);
+
+    return { data, error };
+};

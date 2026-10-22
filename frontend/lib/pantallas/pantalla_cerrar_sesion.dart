@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../models/usuario_model.dart';
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -8,10 +9,11 @@ import 'pantalla_bienvenida.dart';
 /// Figma: Cerrar sesión (MI CUENTA / SALIR)
 class PantallaCerrarSesion extends StatelessWidget {
   const PantallaCerrarSesion({super.key});
+  static const _usuarioModel = UsuarioModel();
 
   Future<void> _cerrarSesion(BuildContext context) async {
     try {
-      await ApiService.cerrarSesion();
+      await _usuarioModel.cerrarSesion();
       if (!context.mounted) return;
       Navigator.pushAndRemoveUntil(
         context,

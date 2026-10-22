@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_secundario.dart';
@@ -113,9 +114,11 @@ class PantallaConfirmarPago extends StatelessWidget {
                   const SizedBox(height: 8),
                   GestureDetector(
                     onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaMetodoPago()),
-                  ),
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PantallaMetodoPago(),
+                      ),
+                    ),
                     child: const Text(
                       'Cambiar método de pago',
                       style: TextStyle(
@@ -134,9 +137,9 @@ class PantallaConfirmarPago extends StatelessWidget {
               alPresionar: () {
                 // Figma: Confirmar pago → Seleccionar método de pago
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaMetodoPago()),
-                  );
+                  context,
+                  MaterialPageRoute(builder: (_) => const PantallaMetodoPago()),
+                );
               },
             ),
             const SizedBox(height: 12),
@@ -163,10 +166,14 @@ class _Fila extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF66758D))),
-          Text(valor,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF17243C))),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+          ),
+          Text(
+            valor,
+            style: const TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+          ),
         ],
       ),
     );

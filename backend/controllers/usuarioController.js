@@ -375,6 +375,38 @@ export const loginUsuario = async (req, res) => {
     });
 };
 
+export const obtenerPerfilUsuario = async (req, res) => {
+    const { data: usuario, error } = await buscarUsuarioPorId(
+        req.usuario.id_usuario
+    );
+
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al consultar el perfil',
+            error: error.message
+        });
+    }
+
+    if (!usuario) {
+        return res.status(404).json({
+            mensaje: 'No se encontro el usuario'
+        });
+    }
+
+    return res.status(200).json({
+        usuario: {
+            id_usuario: usuario.id_usuario,
+            nombre: usuario.nombre,
+            apellido: usuario.apellido,
+            correo: usuario.correo,
+            telefono: usuario.telefono,
+            cedula: usuario.cedula,
+            foto: usuario.foto,
+            rol: usuario.rol
+        }
+    });
+};
+
 // Funcion para cambiar el correo del usuario
 export const cambiarCorreoUsuario = async (req, res) => {
 

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+
 import '../nucleo/colores_app.dart';
+import '../models/registro_model.dart';
 import '../nucleo/api_service.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import '../widgets/acceso/seccion_verificacion_registro.dart';
 import 'pantalla_iniciar_sesion.dart';
 
 class PantallaVerificarCorreo extends StatefulWidget {
@@ -17,10 +19,13 @@ class PantallaVerificarCorreo extends StatefulWidget {
 }
 
 class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
+  final _registroModel = const RegistroModel();
   bool _verificando = false;
   bool _reenviando = false;
-  final List<TextEditingController> _digitos =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _digitos = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focos = List.generate(6, (_) => FocusNode());
 
   @override
@@ -44,10 +49,12 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
     }
     setState(() => _verificando = true);
     try {
-      await ApiService.verificarRegistro(widget.correo, codigo);
+      await _registroModel.verificar(widget.correo, codigo);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cuenta verificada. Ya puedes iniciar sesión.')),
+        const SnackBar(
+          content: Text('Cuenta verificada. Ya puedes iniciar sesión.'),
+        ),
       );
       Navigator.pushAndRemoveUntil(
         context,
@@ -56,9 +63,8 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
       );
     } on ApiException catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.mensaje)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.mensaje)));
     } finally {
       if (mounted) setState(() => _verificando = false);
     }
@@ -67,16 +73,15 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
   Future<void> _reenviarCodigo() async {
     setState(() => _reenviando = true);
     try {
-      await ApiService.reenviarCodigoRegistro(widget.correo);
+      await _registroModel.reenviarCodigo(widget.correo);
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Enviamos un nuevo código a tu correo.')),
       );
     } on ApiException catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(error.mensaje)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.mensaje)));
     } finally {
       if (mounted) setState(() => _reenviando = false);
     }
@@ -144,123 +149,10 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
                 ),
               ),
             ),
-            const SizedBox(height: 28),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F0FE),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                children: [
-                  const Text(
-                    'Código enviado a:',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Color(0xFF66758D),
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    widget.correo,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF285FE8),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 28),
-            const Text(
-              'Código de 6 dígitos',
-              style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(6, (i) {
-                return SizedBox(
-                  width: 46,
-                  height: 52,
-                  child: TextField(
-                    controller: _digitos[i],
-                    focusNode: _focos[i],
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    maxLength: 1,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.digitsOnly,
-                    ],
-                    decoration: InputDecoration(
-                      counterText: '',
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: EdgeInsets.zero,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFD5DFEF)),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(color: Color(0xFFD5DFEF)),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Color(0xFF285FE8),
-                          width: 1.5,
-                        ),
-                      ),
-                    ),
-                    onChanged: (v) {
-                      if (v.isNotEmpty && i < 5) {
-                        _focos[i + 1].requestFocus();
-                      }
-                      if (v.isEmpty && i > 0) {
-                        _focos[i - 1].requestFocus();
-                      }
-                    },
-                  ),
-                );
-              }),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F0FE),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: const Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.shield_outlined, size: 18, color: Color(0xFF285FE8)),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      '¿No lo ves? Revisa tu carpeta de spam o espera unos minutos y vuelve a intentarlo.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF5B7AA8),
-                        height: 1.35,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            SeccionVerificacionRegistro(
+              correo: widget.correo,
+              digitos: _digitos,
+              focos: _focos,
             ),
             const Spacer(),
             Center(

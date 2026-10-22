@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../../nucleo/colores_app.dart';
 
 class CampoTexto extends StatelessWidget {
@@ -79,7 +80,10 @@ class CampoTexto extends StatelessWidget {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: ColoresApp.primario, width: 1.5),
+              borderSide: const BorderSide(
+                color: ColoresApp.primario,
+                width: 1.5,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import '../widgets/prestamos/fila_detalle_prestamo.dart';
+import '../widgets/prestamos/tarjeta_progreso_prestamo.dart';
 import 'pantalla_calendario_pagos.dart';
 
 class PantallaDetallePrestamo extends StatelessWidget {
@@ -59,9 +62,13 @@ class PantallaDetallePrestamo extends StatelessWidget {
                     child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Monto total',
-                            style: TextStyle(
-                                fontSize: 13, color: Color(0xFFE4EDFF))),
+                        Text(
+                          'Monto total',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFFE4EDFF),
+                          ),
+                        ),
                         SizedBox(height: 6),
                         Text(
                           '\$1.000.000',
@@ -75,68 +82,47 @@ class PantallaDetallePrestamo extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Cuota mensual',
-                                style: TextStyle(
-                                    fontSize: 13, color: Color(0xFFE4EDFF))),
-                            Text('\$200.000',
-                                style: TextStyle(
-                                    fontSize: 13, color: Colors.white)),
+                            Text(
+                              'Cuota mensual',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFFE4EDFF),
+                              ),
+                            ),
+                            Text(
+                              '\$200.000',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 8),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text('Próximo pago',
-                                style: TextStyle(
-                                    fontSize: 13, color: Color(0xFFE4EDFF))),
-                            Text('20 abril 2026',
-                                style: TextStyle(
-                                    fontSize: 13, color: Colors.white)),
+                            Text(
+                              'Próximo pago',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Color(0xFFE4EDFF),
+                              ),
+                            ),
+                            Text(
+                              '20 abril 2026',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.white,
+                              ),
+                            ),
                           ],
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 14),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFE1E8F3)),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('2 de 12 cuotas',
-                                style: TextStyle(
-                                    fontSize: 14, color: Color(0xFF17243C))),
-                            Text('16%',
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF285FE8))),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(3),
-                          child: const LinearProgressIndicator(
-                            value: 2 / 12,
-                            minHeight: 6,
-                            backgroundColor: Color(0xFFE3E9F2),
-                            valueColor:
-                                AlwaysStoppedAnimation(Color(0xFF285FE8)),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  const TarjetaProgresoPrestamo(),
                   const SizedBox(height: 14),
                   Container(
                     width: double.infinity,
@@ -148,10 +134,16 @@ class PantallaDetallePrestamo extends StatelessWidget {
                     ),
                     child: const Column(
                       children: [
-                        _Fila(label: 'Fecha de inicio', valor: '10 febrero 2026'),
-                        _Fila(label: 'Plazo', valor: '12 meses'),
-                        _Fila(label: 'Tasa de interés', valor: '10%'),
-                        _Fila(label: 'Estado', valor: 'Al día'),
+                        FilaDetallePrestamo(
+                          label: 'Fecha de inicio',
+                          valor: '10 febrero 2026',
+                        ),
+                        FilaDetallePrestamo(label: 'Plazo', valor: '12 meses'),
+                        FilaDetallePrestamo(
+                          label: 'Tasa de interés',
+                          valor: '10%',
+                        ),
+                        FilaDetallePrestamo(label: 'Estado', valor: 'Al día'),
                       ],
                     ),
                   ),
@@ -165,34 +157,14 @@ class PantallaDetallePrestamo extends StatelessWidget {
               texto: 'Ver calendario de pagos',
               alPresionar: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaCalendarioPagos()),
-                  );
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const PantallaCalendarioPagos(),
+                  ),
+                );
               },
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Fila extends StatelessWidget {
-  final String label;
-  final String valor;
-  const _Fila({required this.label, required this.valor});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(label,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF66758D))),
-          Text(valor,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF17243C))),
         ],
       ),
     );

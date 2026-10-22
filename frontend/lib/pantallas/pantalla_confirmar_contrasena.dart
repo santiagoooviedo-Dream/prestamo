@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -8,10 +9,7 @@ import 'pantalla_contrasena_lista.dart';
 class PantallaConfirmarContrasena extends StatefulWidget {
   final String? contrasenaAnterior;
 
-  const PantallaConfirmarContrasena({
-    super.key,
-    this.contrasenaAnterior,
-  });
+  const PantallaConfirmarContrasena({super.key, this.contrasenaAnterior});
 
   @override
   State<PantallaConfirmarContrasena> createState() =>
@@ -55,9 +53,9 @@ class _PantallaConfirmarContrasenaState
 
   void _continuar() {
     Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaContrasenaLista()),
-                  );
+      context,
+      MaterialPageRoute(builder: (_) => const PantallaContrasenaLista()),
+    );
   }
 
   @override

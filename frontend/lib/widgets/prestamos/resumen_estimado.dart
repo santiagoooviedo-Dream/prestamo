@@ -63,8 +63,10 @@ class ResumenEstimado extends StatelessWidget {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE8F0FE),
                   borderRadius: BorderRadius.circular(20),
@@ -94,10 +96,7 @@ class ResumenEstimado extends StatelessWidget {
           const SizedBox(height: 12),
           _fila('Periodicidad', 'Mensual'),
           const SizedBox(height: 12),
-          _fila(
-            'Interés total estimado',
-            '10 % · \$${formato(interes)}',
-          ),
+          _fila('Interés total estimado', '10 % · \$${formato(interes)}'),
           const SizedBox(height: 12),
           _fila('Total a pagar', '\$${formato(total)}', grande: true),
           const SizedBox(height: 12),
@@ -148,8 +147,10 @@ class ResumenEstimado extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF94A0B3))),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
+        ),
         const SizedBox(height: 2),
         Text(
           valor,

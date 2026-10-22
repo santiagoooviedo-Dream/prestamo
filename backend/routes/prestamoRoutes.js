@@ -2,7 +2,7 @@
 import express from 'express';
 
 //importamos las funciones del controlador de prestamos
-import { crearPrestamo, crearCuotas, obtenerMisPrestamos } from '../controllers/prestamoController.js';
+import { crearPrestamo, crearCuotas, obtenerMisPrestamos, obtenerMisCuotas } from '../controllers/prestamoController.js';
 
 //importamos los middleware de autenticacion
 import { verificarToken, verificarAdmin } from '../middleware/authMiddleware.js';
@@ -13,6 +13,11 @@ const router = express.Router();
 router.get('/',
     verificarToken,
     obtenerMisPrestamos
+);
+
+router.get('/cuotas',
+    verificarToken,
+    obtenerMisCuotas
 );
 
 //crear un prestamo a partir de una solicitud aceptada

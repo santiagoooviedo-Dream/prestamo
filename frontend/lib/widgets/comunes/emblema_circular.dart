@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../nucleo/colores_app.dart';
 
 class EmblemaCircular extends StatelessWidget {
@@ -23,10 +24,7 @@ class EmblemaCircular extends StatelessWidget {
           colors: [Color(0xFFDCE8FF), Color(0xFFEDF3FF)],
         ),
         shape: BoxShape.circle,
-        border: Border.all(
-          color: const Color(0xA6EDF3FF),
-          width: 6,
-        ),
+        border: Border.all(color: const Color(0xA6EDF3FF), width: 6),
         boxShadow: const [
           BoxShadow(
             color: Color(0x0D17243C),
@@ -35,11 +33,7 @@ class EmblemaCircular extends StatelessWidget {
           ),
         ],
       ),
-      child: Icon(
-        icono,
-        size: tamanoIcono,
-        color: ColoresApp.primario,
-      ),
+      child: Icon(icono, size: tamanoIcono, color: ColoresApp.primario),
     );
   }
 }

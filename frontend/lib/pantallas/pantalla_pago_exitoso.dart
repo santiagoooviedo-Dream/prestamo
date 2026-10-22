@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -99,7 +100,10 @@ class PantallaPagoExitoso extends StatelessWidget {
                   SizedBox(height: 16),
                   Divider(color: Color(0xFFE3E9F2)),
                   SizedBox(height: 8),
-                  _Fila(label: 'Fecha de pago', valor: '20 abril 2026 · 09:15 a. m.'),
+                  _Fila(
+                    label: 'Fecha de pago',
+                    valor: '20 abril 2026 · 09:15 a. m.',
+                  ),
                   _Fila(label: 'Método de pago', valor: 'Nequi'),
                 ],
               ),
@@ -134,10 +138,14 @@ class _Fila extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF66758D))),
-          Text(valor,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF17243C))),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+          ),
+          Text(
+            valor,
+            style: const TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+          ),
         ],
       ),
     );

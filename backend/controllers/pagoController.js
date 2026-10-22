@@ -1,4 +1,20 @@
-import { buscarCuotaPorId, buscarPrestamoPorId, crearPago, actualizarEstadoCuota, crearMovimiento } from "../models/pagoModel.js";
+import { buscarCuotaPorId, buscarPrestamoPorId, crearPago, actualizarEstadoCuota, crearMovimiento, obtenerMovimientosPorUsuario } from "../models/pagoModel.js";
+
+export const obtenerMisMovimientos = async (req, res) => {
+    const { data, error } = await obtenerMovimientosPorUsuario(
+        req.usuario.id_usuario
+    );
+
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al consultar los movimientos',
+            error: error.message
+        });
+    }
+
+    return res.status(200).json({ movimientos: data });
+};
+
 // Funcion para registrar el pago de una cuota
 export const registrarPago = async (req, res) => {
 

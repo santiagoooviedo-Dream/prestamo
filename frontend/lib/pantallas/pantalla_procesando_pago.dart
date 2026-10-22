@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
 import 'pantalla_pago_exitoso.dart';
@@ -18,9 +19,9 @@ class _PantallaProcesandoPagoState extends State<PantallaProcesandoPago> {
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
       Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaPagoExitoso()),
-                  );
+        context,
+        MaterialPageRoute(builder: (_) => const PantallaPagoExitoso()),
+      );
     });
   }
 
@@ -91,9 +92,7 @@ class _PantallaProcesandoPagoState extends State<PantallaProcesandoPago> {
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const Spacer(flex: 3),
-            const AvisoSeguridad(
-              texto: 'Por favor, no cierres la aplicación.',
-            ),
+            const AvisoSeguridad(texto: 'Por favor, no cierres la aplicación.'),
           ],
         ),
       ),

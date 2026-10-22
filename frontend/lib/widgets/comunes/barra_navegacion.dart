@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../pantallas/pantalla_inicio.dart';
 import '../../pantallas/pantalla_mis_prestamos.dart';
 import '../../pantallas/pantalla_asistente_virtual.dart';
@@ -47,7 +48,8 @@ class BarraNavegacion extends StatelessWidget {
             icono: Icons.home_rounded,
             etiqueta: 'Inicio',
             activo: actual == DestinoNav.inicio,
-            onTap: () => _ir(context, DestinoNav.inicio, const PantallaInicio()),
+            onTap: () =>
+                _ir(context, DestinoNav.inicio, const PantallaInicio()),
           ),
           _Item(
             icono: Icons.account_balance_wallet_outlined,

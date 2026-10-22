@@ -23,4 +23,12 @@ class RegistroModel {
       'contrasena': contrasena,
     });
   }
+
+  Future<void> verificar(String correo, String codigo) {
+    return ApiService.verificarRegistro(correo, codigo);
+  }
+
+  Future<void> reenviarCodigo(String correo) {
+    return ApiService.reenviarCodigoRegistro(correo);
+  }
 }

@@ -1,7 +1,7 @@
 //importamos express para crear las rutas
 import express from 'express';
 //importamos la funcion registrarUsuario del controller usuarioController
-import { registrarUsuario, loginUsuario, cambiarContraseñaUsuario, cambiarCorreoUsuario, solicitarCodigoRecuperacion, verificarCodigoRecuperacion, recuperarContrasena, cambiarFotoUsuario, solicitarRegistro, verificarRegistro, reenviarCodigoRegistro } from '../controllers/usuarioController.js';
+import { registrarUsuario, loginUsuario, cambiarContraseñaUsuario, cambiarCorreoUsuario, solicitarCodigoRecuperacion, verificarCodigoRecuperacion, recuperarContrasena, cambiarFotoUsuario, solicitarRegistro, verificarRegistro, reenviarCodigoRegistro, obtenerPerfilUsuario } from '../controllers/usuarioController.js';
 //importamos la funcion verificarToken del middleware authMiddleware
 import { verificarToken } from '../middleware/authMiddleware.js';
 //importamos la funcion upload del config cloudinary
@@ -125,12 +125,7 @@ router.post('/registrar/reenviar-codigo',
     reenviarCodigoRegistro
 );
 //ruta protegida que requiere un token valido para acceder
-router.get('/perfil', verificarToken, (req,res) => {
-    res.json({
-        mensaje: 'Token validado correctamente',
-        usuario: req.usuario
-    });
-});
+router.get('/perfil', verificarToken, obtenerPerfilUsuario);
 
 //exportamos el router para usarlo en index.js
 export default router;

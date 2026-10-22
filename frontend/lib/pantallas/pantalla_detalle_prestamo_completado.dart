@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 
@@ -71,8 +72,10 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Monto total',
-                      style: TextStyle(fontSize: 13, color: Color(0xFFE4EDFF))),
+                  Text(
+                    'Monto total',
+                    style: TextStyle(fontSize: 13, color: Color(0xFFE4EDFF)),
+                  ),
                   SizedBox(height: 6),
                   Text(
                     '\$600.000',
@@ -96,8 +99,11 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
               ),
               child: const Row(
                 children: [
-                  Icon(Icons.check_circle_outline,
-                      size: 20, color: Color(0xFF168261)),
+                  Icon(
+                    Icons.check_circle_outline,
+                    size: 20,
+                    color: Color(0xFF168261),
+                  ),
                   SizedBox(width: 10),
                   Expanded(
                     child: Text(
@@ -150,10 +156,14 @@ class _Fila extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF66758D))),
-          Text(valor,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF17243C))),
+          Text(
+            label,
+            style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+          ),
+          Text(
+            valor,
+            style: const TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+          ),
         ],
       ),
     );

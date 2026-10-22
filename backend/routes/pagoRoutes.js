@@ -2,13 +2,18 @@
 import express from 'express';
 
 // Importamos la función registrarPago del controlador de pagos
-import { registrarPago } from '../controllers/pagoController.js';
+import { registrarPago, obtenerMisMovimientos } from '../controllers/pagoController.js';
 
 // Importamos el middleware para verificar el token
 import { verificarToken } from '../middleware/authMiddleware.js';
 
 // Creamos el router
 const router = express.Router();
+
+router.get('/movimientos',
+    verificarToken,
+    obtenerMisMovimientos
+);
 
 // Ruta para registrar un nuevo pago
 router.post('/',
@@ -30,4 +35,3 @@ router.post('/',
 
 // Exportamos el router para utilizarlo en index.js
 export default router;
-

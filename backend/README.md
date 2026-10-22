@@ -112,6 +112,11 @@ entorno; las respuestas indican explícitamente si el correo pudo enviarse.
 devuelven sus propios datos. `GET /notificaciones` permite consultar sus
 notificaciones y `PUT /notificaciones/:id` marcar una como leída.
 
+El perfil se consulta con `GET /usuarios/perfil`; los datos se obtienen del
+usuario autenticado. `GET /prestamos/cuotas` devuelve únicamente las cuotas
+asociadas a los préstamos del usuario autenticado. `GET /pagos/movimientos`
+devuelve únicamente sus movimientos de cuenta.
+
 ---
 
 # 📁 Estructura del Proyecto

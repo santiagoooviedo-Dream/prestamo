@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_secundario.dart';
 import '../widgets/comunes/boton_volver.dart';
+import '../widgets/comunes/opcion_metodo.dart';
+import '../models/solicitud_prestamo_model.dart';
 import 'pantalla_validando_solicitud.dart';
 
 class PantallaMetodoDesembolso extends StatefulWidget {
@@ -76,7 +79,7 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 28),
-            _Opcion(
+            OpcionMetodo(
               icono: Icons.payments_outlined,
               titulo: 'Efectivo',
               seleccionado: _sel == 0,
@@ -113,7 +116,7 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
               ),
             ],
             const SizedBox(height: 12),
-            _Opcion(
+            OpcionMetodo(
               icono: Icons.smartphone_outlined,
               titulo: 'Nequi',
               seleccionado: _sel == 1,
@@ -129,95 +132,34 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
               alPresionar: () {
                 final telefono = _telefonoNequiCtrl.text.trim();
                 if (_sel == 1 &&
-                    !RegExp(r'^3\d{9}$').hasMatch(telefono)) {
+                    !SolicitudPrestamoModel.esTelefonoNequiValido(telefono)) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
-                      content: Text('Ingresa un celular colombiano de 10 dígitos que tenga Nequi.'),
+                      content: Text(
+                        'Ingresa un celular colombiano de 10 dígitos que tenga Nequi.',
+                      ),
                     ),
                   );
                   return;
                 }
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => PantallaValidandoSolicitud(
-                        monto: widget.monto,
-                        cuotas: widget.cuotas,
-                        motivo: widget.motivo,
-                        metodoDesembolso: _sel == 0 ? 'efectivo' : 'nequi',
-                        telefonoNequi: _sel == 1 ? telefono : null,
-                      ),
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => PantallaValidandoSolicitud(
+                      monto: widget.monto,
+                      cuotas: widget.cuotas,
+                      motivo: widget.motivo,
+                      metodoDesembolso: _sel == 0 ? 'efectivo' : 'nequi',
+                      telefonoNequi: _sel == 1 ? telefono : null,
                     ),
-                  );
+                  ),
+                );
               },
             ),
             const SizedBox(height: 12),
             BotonSecundario(
               texto: 'Cancelar',
               alPresionar: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Opcion extends StatelessWidget {
-  final IconData icono;
-  final String titulo;
-  final bool seleccionado;
-  final VoidCallback onTap;
-
-  const _Opcion({
-    required this.icono,
-    required this.titulo,
-    required this.seleccionado,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 72,
-        padding: const EdgeInsets.symmetric(horizontal: 18),
-        decoration: BoxDecoration(
-          color: seleccionado ? const Color(0xFFEDF3FF) : Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: seleccionado
-                ? const Color(0xFFD5E3FF)
-                : const Color(0xFFE1E8F3),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icono, size: 24, color: const Color(0xFF285FE8)),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Text(
-                titulo,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF17243C)),
-              ),
-            ),
-            Container(
-              width: 22,
-              height: 22,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: seleccionado
-                      ? const Color(0xFF285FE8)
-                      : const Color(0xFFCCD9F0),
-                  width: 2,
-                ),
-                color: seleccionado ? const Color(0xFF285FE8) : Colors.white,
-              ),
-              child: seleccionado
-                  ? const Icon(Icons.circle, size: 10, color: Colors.white)
-                  : null,
             ),
           ],
         ),

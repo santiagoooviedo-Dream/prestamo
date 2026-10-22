@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -57,7 +58,10 @@ class PantallaSoporte extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: const Color(0xFFEDF3FF),
                         shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFFD6E4FF), width: 6),
+                        border: Border.all(
+                          color: const Color(0xFFD6E4FF),
+                          width: 6,
+                        ),
                       ),
                       child: const Icon(
                         Icons.support_agent_rounded,

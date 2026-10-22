@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -113,9 +114,11 @@ class _PantallaDatosPersonalesState extends State<PantallaDatosPersonales> {
                   texto: 'Continuar',
                   alPresionar: () {
                     Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaSolicitudEnviada()),
-                  );
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PantallaSolicitudEnviada(),
+                      ),
+                    );
                   },
                 ),
                 const SizedBox(height: 32),

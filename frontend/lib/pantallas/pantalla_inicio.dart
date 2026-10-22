@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../widgets/comunes/aviso_seguridad.dart';
 import '../widgets/comunes/barra_navegacion.dart';
+import '../widgets/inicio/tarjeta_acceso.dart';
 import 'pantalla_asistente_virtual.dart';
 import 'pantalla_perfil.dart';
 import 'pantalla_mis_prestamos.dart';
@@ -89,28 +91,30 @@ class PantallaInicio extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _TarjetaAcceso(
+                        child: TarjetaAcceso(
                           icono: Icons.account_balance_wallet_rounded,
                           titulo: 'Solicitar\npréstamo',
                           subtitulo: 'Comienza una solicitud',
-                          onTap: () =>
-                              Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaSolicitarPrestamo()),
-                  ),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PantallaSolicitarPrestamo(),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
-                        child: _TarjetaAcceso(
+                        child: TarjetaAcceso(
                           icono: Icons.headset_mic_rounded,
                           titulo: 'Comunicate con nosotros',
                           subtitulo: 'Estamos para ayudarte',
-                          onTap: () =>
-                              Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaAsistenteVirtual()),
-                  ),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PantallaAsistenteVirtual(),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -119,28 +123,30 @@ class PantallaInicio extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _TarjetaAcceso(
+                        child: TarjetaAcceso(
                           icono: Icons.history_rounded,
                           titulo: 'Historial',
                           subtitulo: 'Consulta tus préstamos',
-                          onTap: () =>
-                              Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaMisPrestamos()),
-                  ),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PantallaMisPrestamos(),
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 14),
                       Expanded(
-                        child: _TarjetaAcceso(
+                        child: TarjetaAcceso(
                           icono: Icons.person_rounded,
                           titulo: 'Mi perfil',
                           subtitulo: 'Administra tu cuenta',
-                          onTap: () =>
-                              Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const PantallaPerfil()),
-                  ),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PantallaPerfil(),
+                            ),
+                          ),
                         ),
                       ),
                     ],
@@ -148,8 +154,7 @@ class PantallaInicio extends StatelessWidget {
                   const SizedBox(height: 20),
 
                   const AvisoSeguridad(
-                    texto:
-                        'Tu seguridad es importante para nosotros. Cuidamos tu información en cada paso.',
+                    texto: 'Tu seguridad es importante para nosotros. Cuidamos tu información en cada paso.',
                   ),
                 ],
               ),
@@ -157,76 +162,6 @@ class PantallaInicio extends StatelessWidget {
           ),
           const BarraNavegacion(actual: DestinoNav.inicio),
         ],
-      ),
-    );
-  }
-}
-
-class _TarjetaAcceso extends StatelessWidget {
-  final IconData icono;
-  final String titulo;
-  final String subtitulo;
-  final VoidCallback onTap;
-
-  const _TarjetaAcceso({
-    required this.icono,
-    required this.titulo,
-    required this.subtitulo,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 174,
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0D17243C),
-              blurRadius: 16,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 52,
-              height: 52,
-              decoration: BoxDecoration(
-                color: const Color(0xFFEDF3FF),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(icono, color: const Color(0xFF285FE8), size: 28),
-            ),
-            const Spacer(),
-            Text(
-              titulo,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
-                height: 1.2,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              subtitulo,
-              style: const TextStyle(
-                fontSize: 11,
-                color: Color(0xFF66758D),
-                height: 1.4,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -59,9 +60,12 @@ class PantallaPrestamosAnteriores extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const PantallaDetallePrestamoCompletado()),
-                      );
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const PantallaDetallePrestamoCompletado(),
+                          ),
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.all(16),
@@ -89,11 +93,14 @@ class PantallaPrestamosAnteriores extends StatelessWidget {
                                       const Spacer(),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 10, vertical: 4),
+                                          horizontal: 10,
+                                          vertical: 4,
+                                        ),
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFEAF7F0),
-                                          borderRadius:
-                                              BorderRadius.circular(100),
+                                          borderRadius: BorderRadius.circular(
+                                            100,
+                                          ),
                                         ),
                                         child: const Text(
                                           'Completado',
@@ -126,8 +133,10 @@ class PantallaPrestamosAnteriores extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            const Icon(Icons.chevron_right,
-                                color: Color(0xFF94A0B3)),
+                            const Icon(
+                              Icons.chevron_right,
+                              color: Color(0xFF94A0B3),
+                            ),
                           ],
                         ),
                       ),

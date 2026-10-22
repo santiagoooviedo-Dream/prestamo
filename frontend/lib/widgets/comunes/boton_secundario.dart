@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../../nucleo/colores_app.dart';
 
 class BotonSecundario extends StatelessWidget {
   final String texto;
   final VoidCallback? alPresionar;
 
-  const BotonSecundario({
-    super.key,
-    required this.texto,
-    this.alPresionar,
-  });
+  const BotonSecundario({super.key, required this.texto, this.alPresionar});
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +25,7 @@ class BotonSecundario extends StatelessWidget {
         ),
         child: Text(
           texto,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
       ),
     );

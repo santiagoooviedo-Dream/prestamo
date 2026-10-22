@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'resumen_estimado.dart';
 
 class CalendarioCuotas extends StatelessWidget {
@@ -53,8 +54,10 @@ class CalendarioCuotas extends StatelessWidget {
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE8F0FE),
                   borderRadius: BorderRadius.circular(20),
@@ -73,8 +76,7 @@ class CalendarioCuotas extends StatelessWidget {
           const SizedBox(height: 12),
           ...List.generate(cuotas, (i) {
             final valor = i == cuotas - 1 ? base + resto : base;
-            final fecha =
-                DateTime(inicio.year, inicio.month + i, 15);
+            final fecha = DateTime(inicio.year, inicio.month + i, 15);
             return Container(
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),

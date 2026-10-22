@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/logo_app_bytes.dart';
 import 'pantalla_bienvenida.dart';
@@ -65,10 +66,7 @@ class _PantallaCargaState extends State<PantallaCarga> {
                 SizedBox(
                   width: 140,
                   height: 140,
-                  child: Image(
-                    image: _logo,
-                    fit: BoxFit.contain,
-                  ),
+                  child: Image(image: _logo, fit: BoxFit.contain),
                 ),
                 const SizedBox(height: 24),
                 const Text(

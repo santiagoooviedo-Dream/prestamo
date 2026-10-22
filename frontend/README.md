@@ -21,12 +21,15 @@ Las compilaciones de producción deben usar una URL HTTPS. El permiso de tráfic
 
 ## Flujos conectados
 
-El inicio de sesión, el registro y la recuperación de contraseña usan la API.
-La recuperación solicita y verifica el código enviado por correo y después
-actualiza la contraseña con el mismo código. El token de acceso se guarda en el
-almacenamiento seguro del dispositivo. El formulario envía solicitudes de
-préstamo reales, con la opción de desembolso en efectivo o Nequi. Las solicitudes,
-los préstamos y las notificaciones se cargan desde el backend.
+El inicio de sesión, el registro, la recuperación y los cambios de correo y
+contraseña usan modelos de `lib/models` conectados con la API. El perfil, las
+solicitudes, los préstamos, las cuotas, los movimientos y las notificaciones se
+cargan del backend. El asistente crea una conversación autenticada y envía los
+mensajes al chatbot.
+
+Los pagos en línea todavía no se pueden confirmar desde la aplicación: el
+backend no integra una pasarela de pago, por lo que el calendario solo consulta
+las cuotas y no marca pagos como realizados.
 
 El usuario debe iniciar sesión antes de solicitar préstamos o consultar sus
 datos. La aprobación la realiza un administrador mediante `PATCH /solicitudes/:id`;

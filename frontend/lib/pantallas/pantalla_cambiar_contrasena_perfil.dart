@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+
+import '../models/contrasena_model.dart';
+import '../models/usuario_model.dart';
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
-import '../widgets/comunes/campo_texto.dart';
+import '../widgets/perfil/formulario_cambio_contrasena.dart';
 
-/// Figma: Cambiar contraseña (PERFIL / SEGURIDAD) — pantalla dedicada
 class PantallaCambiarContrasenaPerfil extends StatefulWidget {
   const PantallaCambiarContrasenaPerfil({super.key});
 
@@ -18,9 +21,26 @@ class _PantallaCambiarContrasenaPerfilState
   final _actualCtrl = TextEditingController();
   final _nuevaCtrl = TextEditingController();
   final _confirmarCtrl = TextEditingController();
+  final _usuarioModel = const UsuarioModel();
   bool _ocultarActual = true;
   bool _ocultarNueva = true;
   bool _ocultarConfirmar = true;
+  bool _guardando = false;
+
+  bool get _valido =>
+      _actualCtrl.text.isNotEmpty &&
+      ContrasenaModel.esValida(_nuevaCtrl.text) &&
+      _nuevaCtrl.text == _confirmarCtrl.text;
+
+  @override
+  void initState() {
+    super.initState();
+    _actualCtrl.addListener(_actualizar);
+    _nuevaCtrl.addListener(_actualizar);
+    _confirmarCtrl.addListener(_actualizar);
+  }
+
+  void _actualizar() => setState(() {});
 
   @override
   void dispose() {
@@ -30,11 +50,31 @@ class _PantallaCambiarContrasenaPerfilState
     super.dispose();
   }
 
+  Future<void> _guardar() async {
+    setState(() => _guardando = true);
+    try {
+      await _usuarioModel.cambiarContrasena(
+        contrasenaActual: _actualCtrl.text,
+        contrasenaNueva: _nuevaCtrl.text,
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Contraseña actualizada correctamente.')),
+      );
+      Navigator.pop(context);
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(error.mensaje)));
+    } finally {
+      if (mounted) setState(() => _guardando = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
-
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
@@ -64,132 +104,35 @@ class _PantallaCambiarContrasenaPerfilState
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF17243C),
-                height: 1.18,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
-              'Por tu seguridad, elige una contraseña fuerte que no hayas usado antes.',
-              style: TextStyle(
-                fontSize: 15,
-                color: Color(0xFF66758D),
-                height: 1.5,
-              ),
+              'Por tu seguridad, elige una contraseña fuerte.',
+              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 28),
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CampoTexto(
-                      etiqueta: 'Contraseña actual',
-                      pista: 'Tu contraseña actual',
-                      controlador: _actualCtrl,
-                      ocultarTexto: _ocultarActual,
-                      iconoIzquierdo: const Icon(
-                        Icons.lock_outline_rounded,
-                        size: 20,
-                        color: ColoresApp.textoSuave,
-                      ),
-                      iconoDerecho: IconButton(
-                        onPressed: () =>
-                            setState(() => _ocultarActual = !_ocultarActual),
-                        icon: Icon(
-                          _ocultarActual
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                          size: 20,
-                          color: ColoresApp.textoSuave,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    CampoTexto(
-                      etiqueta: 'Contraseña nueva',
-                      pista: 'Crea una contraseña',
-                      controlador: _nuevaCtrl,
-                      ocultarTexto: _ocultarNueva,
-                      iconoIzquierdo: const Icon(
-                        Icons.lock_outline_rounded,
-                        size: 20,
-                        color: ColoresApp.textoSuave,
-                      ),
-                      iconoDerecho: IconButton(
-                        onPressed: () =>
-                            setState(() => _ocultarNueva = !_ocultarNueva),
-                        icon: Icon(
-                          _ocultarNueva
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                          size: 20,
-                          color: ColoresApp.textoSuave,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    CampoTexto(
-                      etiqueta: 'Confirmar contraseña',
-                      pista: 'Repite la nueva contraseña',
-                      controlador: _confirmarCtrl,
-                      ocultarTexto: _ocultarConfirmar,
-                      iconoIzquierdo: const Icon(
-                        Icons.check_rounded,
-                        size: 20,
-                        color: Color(0xFF22C55E),
-                      ),
-                      iconoDerecho: IconButton(
-                        onPressed: () => setState(
-                            () => _ocultarConfirmar = !_ocultarConfirmar),
-                        icon: Icon(
-                          _ocultarConfirmar
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
-                          size: 20,
-                          color: ColoresApp.textoSuave,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // Requisitos
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFEDF3FF),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: const Color(0xFFD6E4FF)),
-                      ),
-                      child: const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Tu contraseña debe tener:',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: Color(0xFF17243C),
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            '• Mínimo 8 caracteres  • Mayúsculas y números\n• Un símbolo especial',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF66758D),
-                              height: 1.5,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                child: FormularioCambioContrasena(
+                  actualCtrl: _actualCtrl,
+                  nuevaCtrl: _nuevaCtrl,
+                  confirmarCtrl: _confirmarCtrl,
+                  ocultarActual: _ocultarActual,
+                  ocultarNueva: _ocultarNueva,
+                  ocultarConfirmar: _ocultarConfirmar,
+                  alternarActual: () =>
+                      setState(() => _ocultarActual = !_ocultarActual),
+                  alternarNueva: () =>
+                      setState(() => _ocultarNueva = !_ocultarNueva),
+                  alternarConfirmar: () =>
+                      setState(() => _ocultarConfirmar = !_ocultarConfirmar),
                 ),
               ),
             ),
             BotonPrimario(
-              texto: 'Confirmar',
-              alPresionar: () => Navigator.pop(context),
+              texto: _guardando ? 'Actualizando…' : 'Confirmar',
+              alPresionar: _valido && !_guardando ? _guardar : null,
             ),
           ],
         ),

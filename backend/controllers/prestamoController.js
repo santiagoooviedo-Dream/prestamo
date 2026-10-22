@@ -1,6 +1,6 @@
 //importamos las funciones del modelo
 
-import { buscarSolicitudPorId,crearPrestamoModel,buscarPrestamoPorId,crearCuotasModel,obtenerPrestamosPorUsuario} from "../models/prestamoModel.js";
+import { buscarSolicitudPorId,crearPrestamoModel,buscarPrestamoPorId,crearCuotasModel,obtenerPrestamosPorUsuario,obtenerCuotasPorPrestamos} from "../models/prestamoModel.js";
 
 export const obtenerMisPrestamos = async (req, res) => {
     const { data, error } = await obtenerPrestamosPorUsuario(req.usuario.id_usuario);
@@ -11,6 +11,33 @@ export const obtenerMisPrestamos = async (req, res) => {
         });
     }
     return res.status(200).json({ prestamos: data });
+};
+
+export const obtenerMisCuotas = async (req, res) => {
+    const { data: prestamos, error: errorPrestamos } =
+        await obtenerPrestamosPorUsuario(req.usuario.id_usuario);
+
+    if (errorPrestamos) {
+        return res.status(500).json({
+            mensaje: 'Error al consultar los préstamos',
+            error: errorPrestamos.message
+        });
+    }
+
+    const idsPrestamos = (prestamos || []).map((prestamo) => prestamo.id_prestamo);
+    if (idsPrestamos.length === 0) {
+        return res.status(200).json({ cuotas: [] });
+    }
+
+    const { data: cuotas, error } = await obtenerCuotasPorPrestamos(idsPrestamos);
+    if (error) {
+        return res.status(500).json({
+            mensaje: 'Error al consultar las cuotas',
+            error: error.message
+        });
+    }
+
+    return res.status(200).json({ cuotas });
 };
 
 // Funcion para crear un prestamo a partir de una solicitud aceptada
@@ -121,4 +148,3 @@ export const crearCuotas = async (req, res) => {
         cuotas: data
     });
 };
-

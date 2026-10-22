@@ -11,6 +11,15 @@ export const obtenerPrestamosPorUsuario = async (id_usuario) => {
     return { data, error };
 };
 
+export const obtenerCuotasPorPrestamos = async (id_prestamos) => {
+    const { data, error } = await supabase
+        .from('cuotas')
+        .select('*')
+        .in('id_prestamo', id_prestamos);
+
+    return { data, error };
+};
+
 //funcion para buscar una solicitud por su ID
 export const buscarSolicitudPorId = async (id_solicitud) => {
 

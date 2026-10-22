@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../models/solicitud_prestamo_model.dart';
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
@@ -28,6 +30,7 @@ class PantallaValidandoSolicitud extends StatefulWidget {
 
 class _PantallaValidandoSolicitudState
     extends State<PantallaValidandoSolicitud> {
+  final _solicitudModel = const SolicitudPrestamoModel();
   String? _error;
   bool _enviando = false;
 
@@ -43,7 +46,7 @@ class _PantallaValidandoSolicitudState
       _error = null;
     });
     try {
-      final respuesta = await ApiService.crearSolicitud(
+      final respuesta = await _solicitudModel.crear(
         monto: widget.monto,
         cuotas: widget.cuotas,
         motivo: widget.motivo,
@@ -130,9 +133,7 @@ class _PantallaValidandoSolicitudState
             ),
             const SizedBox(height: 28),
             Text(
-              _error == null
-                  ? 'Enviando tu solicitud'
-                  : 'No se pudo enviar',
+              _error == null ? 'Enviando tu solicitud' : 'No se pudo enviar',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 26,

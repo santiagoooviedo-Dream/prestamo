@@ -142,9 +142,7 @@ class _PantallaConfirmarContrasenaState
                 ),
               ),
             ),
-
             const SizedBox(height: 16),
-
             if (_tieneTexto)
               Container(
                 width: double.infinity,
@@ -188,10 +186,7 @@ class _PantallaConfirmarContrasenaState
                   ],
                 ),
               ),
-
             const Spacer(),
-
-            // Botón siempre azul sólido cuando se puede continuar
             BotonPrimario(
               texto: 'Continuar',
               alPresionar: _coinciden ? _continuar : null,

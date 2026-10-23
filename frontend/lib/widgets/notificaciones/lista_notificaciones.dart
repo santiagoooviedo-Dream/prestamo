@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../models/notificacion_model.dart';
 
 class FiltrosNotificaciones extends StatelessWidget {

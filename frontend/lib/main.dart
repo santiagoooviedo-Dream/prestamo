@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'pantallas/pantalla_carga.dart';
+import 'pantallas_admin/pantalla_admin_bienvenida.dart';
 import 'widgets/comunes/fondo_degradado.dart';
 
 void main() {
@@ -32,7 +33,8 @@ class AppPrestamos extends StatelessWidget {
           child: child ?? const SizedBox.shrink(),
         );
       },
-      home: const PantallaCarga(),
+      // Empieza por bienvenida admin (no por solicitudes)
+      home: const PantallaAdminBienvenida(),
     );
   }
 }

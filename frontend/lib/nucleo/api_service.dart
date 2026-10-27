@@ -16,6 +16,11 @@ class ApiException implements Exception {
 }
 
 class ApiService {
+
+  static const bool useRemote = true;
+
+  static const String _remoteUrl = 'https://prestamo-amigo.onrender.com';
+
   ApiService._();
 
   static const _almacenSeguro = FlutterSecureStorage();
@@ -23,8 +28,8 @@ class ApiService {
   static const _urlConfigurada = String.fromEnvironment('API_BASE_URL');
 
   static String get _baseUrl {
-    if (_urlConfigurada.isNotEmpty) {
-      return _urlConfigurada.replaceFirst(RegExp(r'/$'), '');
+    if (useRemote) {
+      return _remoteUrl;
     }
     if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
       return 'http://10.0.2.2:3000';

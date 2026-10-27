@@ -49,6 +49,11 @@ app.use('/notificaciones', notificacionRoutes);
 //agregamos las ruta de conversaciones
 app.use('/conversaciones',conversacionRoutes)
 
+// Montando las rutas de la API
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 //ruta principal para comprobar que el backend funciona
 app.get('/', (req, res) => {
     res.json({
@@ -73,7 +78,8 @@ app.get('/usuarios', async (req, res) => {
     //enviamos los usuarios
 res.json(data);
 });
-    
+
+
 //obtenemos el puerto desde .env
 const PORT = process.env.PORT || 3000;
 
@@ -81,3 +87,13 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
+
+
+// configuar el prom y que si no conoece la respuesta  y que se pueda copiar el texto de el chat bot
+// solucionar error a la hora de escribir un dato 
+// solucionar pantalla de historial 
+// solucionar la pantalla de la foto de el perfil 
+// crear el panel administrativo
+// limitar los caracteres a el momento de iniciar sesion y a el crear la cuenta
+// mas seguridad a a el momento de cambiar el correo 
+// mas informacion en errores de las pantalals

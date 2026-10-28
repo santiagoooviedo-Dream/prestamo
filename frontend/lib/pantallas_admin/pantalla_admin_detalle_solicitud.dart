@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_solicitudes.dart';
@@ -501,14 +502,45 @@ class PantallaAdminDetalleSolicitud extends StatelessWidget {
                         child: SizedBox(
                           height: 52,
                           child: ElevatedButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      'Solicitud de ${s.nombre} aprobada'),
-                                ),
-                              );
-                              Navigator.pop(context);
+                            onPressed: () async {
+                              try {
+                                final fecha = DateTime.now()
+                                    .add(const Duration(days: 2))
+                                    .toIso8601String();
+                                await ApiService.actualizarEstadoSolicitud(
+                                  idSolicitud: s.idSolicitud,
+                                  estado: 'aceptada',
+                                  fechaDesembolso: fecha,
+                                  lugarRecogida: s.metodoDesembolso == 'efectivo'
+                                      ? 'Punto de atención principal'
+                                      : null,
+                                );
+                                // Crear préstamo y cuotas
+                                try {
+                                  final prestamo = await ApiService
+                                      .crearPrestamoDesdeSolicitud(s.idSolicitud);
+                                  final idP = prestamo['prestamo']?['id_prestamo'] ??
+                                      prestamo['id_prestamo'];
+                                  if (idP != null) {
+                                    await ApiService.crearCuotasPrestamo(
+                                      int.parse(idP.toString()),
+                                    );
+                                  }
+                                } catch (_) {}
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Solicitud de ${s.nombre} aprobada'),
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              } on ApiException catch (e) {
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.mensaje)),
+                                );
+                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: const Color(0xFF285FE8),
@@ -533,14 +565,26 @@ class PantallaAdminDetalleSolicitud extends StatelessWidget {
                         child: SizedBox(
                           height: 52,
                           child: OutlinedButton(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      'Solicitud de ${s.nombre} rechazada'),
-                                ),
-                              );
-                              Navigator.pop(context);
+                            onPressed: () async {
+                              try {
+                                await ApiService.actualizarEstadoSolicitud(
+                                  idSolicitud: s.idSolicitud,
+                                  estado: 'rechazada',
+                                );
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        'Solicitud de ${s.nombre} rechazada'),
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              } on ApiException catch (e) {
+                                if (!context.mounted) return;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text(e.mensaje)),
+                                );
+                              }
                             },
                             style: OutlinedButton.styleFrom(
                               backgroundColor: const Color(0xFFFFF0F2),

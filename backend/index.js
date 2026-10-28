@@ -88,8 +88,7 @@ app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
 
-
-// configuar el prom y que si no conoece la respuesta  y que se pueda copiar el texto de el chat bot
+// que se pueda copiar el texto de el chat bot
 // solucionar error a la hora de escribir un dato 
 // solucionar pantalla de historial 
 // solucionar la pantalla de la foto de el perfil 

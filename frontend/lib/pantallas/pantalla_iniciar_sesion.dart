@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/usuario_model.dart';
 import '../nucleo/api_service.dart';
 import '../widgets/acceso/formulario_inicio_sesion.dart';
+import '../pantallas_admin/pantalla_admin_menu.dart';
 import 'pantalla_inicio.dart';
 import 'pantalla_recuperar_acceso.dart';
 import 'pantalla_registro.dart';
@@ -37,11 +38,19 @@ class _PantallaIniciarSesionState extends State<PantallaIniciarSesion> {
     }
     setState(() => _cargando = true);
     try {
-      await _modelo.iniciarSesion(_cedulaCtrl.text.trim(), _claveCtrl.text);
+      final usuario =
+          await _modelo.iniciarSesion(_cedulaCtrl.text.trim(), _claveCtrl.text);
       if (!mounted) return;
+
+      final rol = (usuario['rol'] ?? '').toString().toLowerCase().trim();
+      final esAdmin = rol == 'admin' || rol == 'administrador';
+
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const PantallaInicio()),
+        MaterialPageRoute(
+          builder: (_) =>
+              esAdmin ? const PantallaAdminMenu() : const PantallaInicio(),
+        ),
         (route) => false,
       );
     } on ApiException catch (error) {

@@ -293,6 +293,203 @@ class ApiService {
     );
   }
 
+
+  /// Registrar pago de una cuota
+  static Future<Map<String, dynamic>> registrarPago({
+    required int idPrestamo,
+    required int idCuota,
+    required num monto,
+    required String metodoPago,
+  }) {
+    return _solicitar(
+      'POST',
+      '/pagos',
+      datos: {
+        'id_prestamos': idPrestamo,
+        'id_cuota': idCuota,
+        'monto': monto,
+        'metodo_pago': metodoPago,
+      },
+    );
+  }
+
+  /// Subir foto de perfil (multipart)
+  static Future<Map<String, dynamic>> cambiarFoto(String rutaArchivo) async {
+    final uri = Uri.parse('$_baseUrl/usuarios/foto');
+    final token = await _leerDatoSeguro('token');
+    if (token == null || token.isEmpty) {
+      throw const ApiException('Inicia sesión para continuar.');
+    }
+    final request = http.MultipartRequest('PUT', uri)
+      ..headers['Authorization'] = 'Bearer $token'
+      ..files.add(await http.MultipartFile.fromPath('foto', rutaArchivo));
+    try {
+      final streamed = await request.send().timeout(const Duration(seconds: 30));
+      final respuesta = await http.Response.fromStream(streamed);
+      final cuerpo = respuesta.body.isEmpty
+          ? <String, dynamic>{}
+          : jsonDecode(respuesta.body);
+      if (cuerpo is! Map<String, dynamic>) {
+        throw const ApiException('El servidor devolvió una respuesta inválida.');
+      }
+      if (respuesta.statusCode < 200 || respuesta.statusCode >= 300) {
+        final mensaje = cuerpo['mensaje'] ?? cuerpo['error'];
+        throw ApiException(
+          mensaje is String ? mensaje : 'No se pudo subir la foto.',
+        );
+      }
+      return cuerpo;
+    } on TimeoutException {
+      throw const ApiException('El servidor tardó demasiado en responder.');
+    } on http.ClientException {
+      throw const ApiException(
+        'No fue posible conectar con el servidor. Verifica tu conexión.',
+      );
+    }
+  }
+
+  // ─── Admin ───────────────────────────────────────────────
+
+  static Future<List<Map<String, dynamic>>> obtenerSolicitudesAdmin() async {
+    final respuesta = await _solicitar('GET', '/solicitudes/admin');
+    final items = respuesta['solicitud'] ?? respuesta['solicitudes'];
+    if (items is! List) {
+      throw const ApiException('La respuesta de solicitudes admin no es válida.');
+    }
+    return items.whereType<Map<String, dynamic>>().toList();
+  }
+
+  static Future<Map<String, dynamic>> actualizarEstadoSolicitud({
+    required int idSolicitud,
+    required String estado,
+    String? fechaDesembolso,
+    String? lugarRecogida,
+  }) {
+    final datos = <String, dynamic>{'estado': estado};
+    if (fechaDesembolso != null) datos['fecha_desembolso'] = fechaDesembolso;
+    if (lugarRecogida != null) datos['lugar_recogida'] = lugarRecogida;
+    return _solicitar('PATCH', '/solicitudes/$idSolicitud', datos: datos);
+  }
+
+  static Future<Map<String, dynamic>> crearPrestamoDesdeSolicitud(int idSolicitud) {
+    return _solicitar('POST', '/prestamos/$idSolicitud');
+  }
+
+  static Future<Map<String, dynamic>> crearCuotasPrestamo(int idPrestamo) {
+    return _solicitar('POST', '/prestamos/$idPrestamo/cuotas');
+  }
+
+  static Future<Map<String, dynamic>> crearNotificacion({
+    required int idUsuario,
+    required String mensaje,
+    String tipo = 'info',
+  }) {
+    return _solicitar(
+      'POST',
+      '/notificaciones',
+      datos: {
+        'id_usuario': idUsuario,
+        'mensaje': mensaje,
+        'tipo': tipo,
+      },
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> obtenerConversacionesAdmin() async {
+    final respuesta = await _solicitar('GET', '/conversaciones/admin');
+    final items = respuesta['conversaciones'] ??
+        respuesta['data'] ??
+        (respuesta is List ? respuesta : null);
+    if (items is List) {
+      return items.whereType<Map<String, dynamic>>().toList();
+    }
+    // Si la respuesta es la lista envuelta de otra forma
+    for (final key in respuesta.keys) {
+      final v = respuesta[key];
+      if (v is List) return v.whereType<Map<String, dynamic>>().toList();
+    }
+    return [];
+  }
+
+  static Future<List<Map<String, dynamic>>> obtenerMisConversaciones() async {
+    final respuesta = await _solicitar('GET', '/conversaciones');
+    for (final key in ['conversaciones', 'data']) {
+      final v = respuesta[key];
+      if (v is List) return v.whereType<Map<String, dynamic>>().toList();
+    }
+    for (final v in respuesta.values) {
+      if (v is List) return v.whereType<Map<String, dynamic>>().toList();
+    }
+    return [];
+  }
+
+  static Future<List<Map<String, dynamic>>> obtenerMensajesConversacion(
+    String idConversacion,
+  ) async {
+    final respuesta =
+        await _solicitar('GET', '/conversaciones/$idConversacion/mensajes');
+    for (final key in ['mensajes', 'data']) {
+      final v = respuesta[key];
+      if (v is List) return v.whereType<Map<String, dynamic>>().toList();
+    }
+    for (final v in respuesta.values) {
+      if (v is List) return v.whereType<Map<String, dynamic>>().toList();
+    }
+    return [];
+  }
+
+  static Future<Map<String, dynamic>> enviarMensajeConversacion({
+    required String idConversacion,
+    required String mensaje,
+  }) {
+    return _solicitar(
+      'POST',
+      '/conversaciones/$idConversacion/mensajes',
+      datos: {'respuesta': mensaje},
+    );
+  }
+
+  static Future<void> cerrarConversacion(String idConversacion) async {
+    await _solicitar('PUT', '/conversaciones/$idConversacion/cerrar');
+  }
+
+  static Future<void> transferirConversacionAAdmin(String idConversacion) async {
+    await _solicitar('PUT', '/conversaciones/$idConversacion/transferir');
+  }
+
+  /// Lista todos los usuarios (ruta temporal del backend GET /usuarios)
+  static Future<List<Map<String, dynamic>>> obtenerUsuarios() async {
+    final uri = Uri.parse('$_baseUrl/usuarios');
+    final token = await _leerDatoSeguro('token');
+    final headers = <String, String>{'Content-Type': 'application/json'};
+    if (token != null && token.isNotEmpty) {
+      headers['Authorization'] = 'Bearer $token';
+    }
+    try {
+      final respuesta = await _cliente
+          .get(uri, headers: headers)
+          .timeout(const Duration(seconds: 20));
+      final cuerpo = respuesta.body.isEmpty ? null : jsonDecode(respuesta.body);
+      if (cuerpo is List) {
+        return cuerpo.whereType<Map<String, dynamic>>().toList();
+      }
+      if (cuerpo is Map<String, dynamic>) {
+        for (final v in cuerpo.values) {
+          if (v is List) {
+            return v.whereType<Map<String, dynamic>>().toList();
+          }
+        }
+      }
+      throw const ApiException('La respuesta de usuarios no es válida.');
+    } on TimeoutException {
+      throw const ApiException('El servidor tardó demasiado en responder.');
+    } on http.ClientException {
+      throw const ApiException(
+        'No fue posible conectar con el servidor. Verifica tu conexión.',
+      );
+    }
+  }
+
   static Future<void> cerrarSesion() async {
     await _borrarDatoSeguro('token');
   }

@@ -9,7 +9,16 @@ import '../widgets/comunes/opcion_metodo.dart';
 import 'pantalla_procesando_pago.dart';
 
 class PantallaMetodoPago extends StatefulWidget {
-  const PantallaMetodoPago({super.key});
+  final int? idPrestamo;
+  final int? idCuota;
+  final num? monto;
+
+  const PantallaMetodoPago({
+    super.key,
+    this.idPrestamo,
+    this.idCuota,
+    this.monto,
+  });
 
   @override
   State<PantallaMetodoPago> createState() => _PantallaMetodoPagoState();
@@ -83,7 +92,12 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const PantallaProcesandoPago(),
+                    builder: (_) => PantallaProcesandoPago(
+                      idPrestamo: widget.idPrestamo,
+                      idCuota: widget.idCuota,
+                      monto: widget.monto,
+                      metodoPago: _sel == 0 ? 'nequi' : 'efectivo',
+                    ),
                   ),
                 );
               },

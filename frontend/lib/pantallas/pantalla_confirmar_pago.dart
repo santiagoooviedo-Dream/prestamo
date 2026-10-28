@@ -8,8 +8,17 @@ import 'pantalla_metodo_pago.dart';
 
 class PantallaConfirmarPago extends StatelessWidget {
   final String metodo;
+  final int? idPrestamo;
+  final int? idCuota;
+  final num? monto;
 
-  const PantallaConfirmarPago({super.key, this.metodo = 'Nequi'});
+  const PantallaConfirmarPago({
+    super.key,
+    this.metodo = 'Nequi',
+    this.idPrestamo,
+    this.idCuota,
+    this.monto,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +125,11 @@ class PantallaConfirmarPago extends StatelessWidget {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => const PantallaMetodoPago(),
+                        builder: (_) => PantallaMetodoPago(
+                          idPrestamo: idPrestamo,
+                          idCuota: idCuota,
+                          monto: monto,
+                        ),
                       ),
                     ),
                     child: const Text(
@@ -138,7 +151,13 @@ class PantallaConfirmarPago extends StatelessWidget {
                 // Figma: Confirmar pago → Seleccionar método de pago
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const PantallaMetodoPago()),
+                  MaterialPageRoute(
+                  builder: (_) => PantallaMetodoPago(
+                    idPrestamo: idPrestamo,
+                    idCuota: idCuota,
+                    monto: monto,
+                  ),
+                ),
                 );
               },
             ),

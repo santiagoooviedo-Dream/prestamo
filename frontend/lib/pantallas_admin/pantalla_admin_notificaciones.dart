@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -20,10 +21,11 @@ class _PantallaAdminNotificacionesState
   int? _usuarioSel;
 
   /// Solo usuarios con solicitud / actividad relevante
+  // (nombre, detalle, id_usuario) — se puede reemplazar por carga real
   static const _destinatarios = [
-    ('Carlos Ruiz', 'Solicitud pendiente · \$1.000.000'),
-    ('Ana Pérez', 'Solicitud pendiente · \$500.000'),
-    ('María López', 'Préstamo completado · \$1.000.000'),
+    ('Carlos Ruiz', 'Solicitud pendiente', 0),
+    ('Ana Pérez', 'Solicitud pendiente', 0),
+    ('María López', 'Préstamo completado', 0),
   ];
 
   @override
@@ -206,13 +208,30 @@ class _PantallaAdminNotificacionesState
               texto: 'Enviar notificación',
               alPresionar: _usuarioSel == null
                   ? null
-                  : () {
-                      final nombre = _destinatarios[_usuarioSel!].$1;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Notificación enviada a $nombre'),
-                        ),
-                      );
+                  : () async {
+                      final d = _destinatarios[_usuarioSel!];
+                      try {
+                        // id de demo embebido en el texto si no hay id real
+                        final id = d.$3;
+                        await ApiService.crearNotificacion(
+                          idUsuario: id,
+                          mensaje: _mensaje.text.trim().isEmpty
+                              ? _titulo.text.trim()
+                              : '${_titulo.text.trim()}: ${_mensaje.text.trim()}',
+                          tipo: 'info',
+                        );
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Notificación enviada a ${d.$1}'),
+                          ),
+                        );
+                      } on ApiException catch (e) {
+                        if (!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.mensaje)),
+                        );
+                      }
                     },
             ),
           ],

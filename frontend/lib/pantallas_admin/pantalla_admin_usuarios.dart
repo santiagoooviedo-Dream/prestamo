@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
+import 'pantalla_admin_perfil.dart';
 
 /// Figma: Usuarios / listado admin
 class PantallaAdminUsuarios extends StatefulWidget {
@@ -115,7 +116,27 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                 itemBuilder: (_, i) {
                   final u = filtrados[i];
                   final activo = u.$3 == 'Activo';
-                  return Container(
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) {
+                            final partes = u.$1.split(' ');
+                            final nom = partes.isNotEmpty ? partes.first : u.$1;
+                            final ape = partes.length > 1
+                                ? partes.sublist(1).join(' ')
+                                : 'Usuario';
+                            return PantallaAdminPerfil(
+                              nombre: nom,
+                              apellidos: ape,
+                              correo: u.$2,
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -180,6 +201,7 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                         ),
                       ],
                     ),
+                  ),
                   );
                 },
               ),

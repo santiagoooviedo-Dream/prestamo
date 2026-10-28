@@ -1,16 +1,30 @@
 import 'package:flutter/material.dart';
 
+import '../models/prestamo_model.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 
-/// Figma: Detalle préstamo completado
 class PantallaDetallePrestamoCompletado extends StatelessWidget {
-  const PantallaDetallePrestamoCompletado({super.key});
+  final Map<String, dynamic> prestamo;
+  final List<Map<String, dynamic>> cuotas;
+
+  const PantallaDetallePrestamoCompletado({
+    super.key,
+    required this.prestamo,
+    required this.cuotas,
+  });
 
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final fechaFin = prestamo['fecha_finalizacion'] ?? prestamo['fecha_fin'];
+    final numeroCuotas =
+        int.tryParse(prestamo['coutas']?.toString() ?? '') ?? cuotas.length;
+    final interes = num.tryParse(prestamo['interes']?.toString() ?? '');
+    final interesPorcentaje = interes == null
+        ? '—'
+        : '${interes > 1 ? interes.toStringAsFixed(0) : (interes * 100).toStringAsFixed(0)}%';
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -62,25 +76,25 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
             const SizedBox(height: 20),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF214EC4), Color(0xFF2865D8)],
+                  colors: [Color(0xFF285FE8), Color(0xFF214EC4)],
                 ),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Monto total',
-                    style: TextStyle(fontSize: 13, color: Color(0xFFE4EDFF)),
+                    style: TextStyle(fontSize: 12, color: Color(0xFFE4EDFF)),
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   Text(
-                    '\$600.000',
-                    style: TextStyle(
-                      fontSize: 32,
+                    '\$${formatoMontoPrestamo(prestamo['monto'])}',
+                    style: const TextStyle(
+                      fontSize: 30,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -88,28 +102,28 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
                 color: const Color(0xFFEAF7F0),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: const Color(0xFFD1FAE5)),
               ),
               child: const Row(
                 children: [
                   Icon(
                     Icons.check_circle_outline,
-                    size: 20,
+                    size: 18,
                     color: Color(0xFF168261),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      'Pagado en su totalidad 15 enero 2026',
+                      'Préstamo pagado en su totalidad',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 11,
                         fontWeight: FontWeight.w500,
                         color: Color(0xFF168261),
                       ),
@@ -118,7 +132,7 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 12),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -127,13 +141,26 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: const Color(0xFFE1E8F3)),
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  _Fila(label: 'Fecha de inicio', valor: '15 enero 2026'),
-                  _Fila(label: 'Fecha de finalización', valor: '15 marzo 2026'),
-                  _Fila(label: 'Plazo', valor: '3 meses'),
-                  _Fila(label: 'Tasa de interés', valor: '10%'),
-                  _Fila(label: 'Cuota mensual', valor: '\$200.000'),
+                  _Fila(
+                    label: 'Fecha de inicio',
+                    valor: formatoFechaPrestamo(prestamo['fecha_inicio']),
+                  ),
+                  _Fila(
+                    label: 'Fecha de finalización',
+                    valor: formatoFechaPrestamo(fechaFin),
+                  ),
+                  _Fila(
+                    label: 'Plazo',
+                    valor: numeroCuotas == 0 ? '—' : '$numeroCuotas meses',
+                  ),
+                  _Fila(label: 'Tasa de interés', valor: interesPorcentaje),
+                  _Fila(
+                    label: 'Cuota mensual',
+                    valor:
+                        '\$${formatoMontoPrestamo(prestamo['coutas_mensual'])}',
+                  ),
                 ],
               ),
             ),
@@ -147,6 +174,7 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
 class _Fila extends StatelessWidget {
   final String label;
   final String valor;
+
   const _Fila({required this.label, required this.valor});
 
   @override
@@ -158,11 +186,11 @@ class _Fila extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 12, color: Color(0xFF66758D)),
           ),
           Text(
             valor,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+            style: const TextStyle(fontSize: 12, color: Color(0xFF17243C)),
           ),
         ],
       ),

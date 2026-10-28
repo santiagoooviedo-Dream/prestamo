@@ -4,6 +4,7 @@ import 'pantalla_admin_usuarios.dart';
 import 'pantalla_admin_solicitudes.dart';
 import 'pantalla_admin_notificaciones.dart';
 import 'pantalla_admin_bienvenida.dart';
+import 'pantalla_admin_cerrar_sesion.dart';
 
 /// Figma: Menu principal administrador
 class PantallaAdminMenu extends StatelessWidget {

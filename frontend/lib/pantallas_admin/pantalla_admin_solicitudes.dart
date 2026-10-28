@@ -38,7 +38,7 @@ class PantallaAdminSolicitudes extends StatelessWidget {
       estado: 'Pendiente',
       fecha: 'Enviado el 18 mayo 2026',
       pendiente: true,
-      motivo: 'Gastos médicos y estabilización familiar',
+      motivo: 'Se cayo mi abuelita de las escaleras',
       cuotas: 6,
     ),
     SolicitudAdmin(

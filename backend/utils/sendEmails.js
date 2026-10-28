@@ -118,6 +118,8 @@ export const enviarCodigoRecuperacion = async (correo, codigo) => {
                 <h1>${codigo}</h1>
 
                 <p>Este codigo sera utilizado para cambiar tu contraseña.</p>
+
+                <p>Por favor ingresalo de forma correcta<p>
             `
         });
 
@@ -186,6 +188,7 @@ export const enviarCodigoVerificacion = async (emailDestino,nombreDestino,codigo
           <p style="color: #888888; font-size: 12px; text-align: center; margin-top: 30px;">
             Si no creaste una cuenta en Prestamo Amigo, puedes ignorar este correo.
           </p>
+
         </div>
       `
             });

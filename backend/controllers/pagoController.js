@@ -11,7 +11,6 @@ export const obtenerMisMovimientos = async (req, res) => {
             error: error.message
         });
     }
-
     return res.status(200).json({ movimientos: data });
 };
 
@@ -99,7 +98,7 @@ const { error: errorMovimiento } =
         id_usuario: prestamo.id_usuario,
         id_prestamo: id_prestamos,
         tipo: 'pago',
-        description: 'Pago de cuota realizado',
+        description: 'Pago de cuota realizado correctamente',
         monto: monto
 
     });

@@ -123,7 +123,7 @@ export const enviarCodigoRecuperacion = async (correo, codigo) => {
             `
         });
 
-        console.log('Correo de recuperacion enviado con exito');
+        console.log('Correo de recuperacion enviado con exito revisa tu correo electronico');
 
         return {
             success: true

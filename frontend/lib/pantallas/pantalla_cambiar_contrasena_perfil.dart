@@ -108,7 +108,7 @@ class _PantallaCambiarContrasenaPerfilState
             ),
             const SizedBox(height: 8),
             const Text(
-              'Por tu seguridad, elige una contraseña fuerte.',
+              'Por tu seguridad, elige una contraseña Segura.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 28),

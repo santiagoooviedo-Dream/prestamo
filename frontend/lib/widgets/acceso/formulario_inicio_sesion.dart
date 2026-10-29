@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 
 import '../../nucleo/colores_app.dart';
@@ -32,8 +33,10 @@ class FormularioInicioSesion extends StatelessWidget {
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           Positioned(
@@ -43,20 +46,31 @@ class FormularioInicioSesion extends StatelessWidget {
               width: 180,
               height: 180,
               decoration: BoxDecoration(
-                color: const Color(0xFFE4EDFF).withValues(alpha: 0.7),
+                color: const Color(0xFFE4EDFF)
+                    .withValues(alpha: 0.7),
                 shape: BoxShape.circle,
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(24, top + 6, 24, 16 + bottom),
+          SingleChildScrollView(
+            keyboardDismissBehavior:
+                ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.fromLTRB(
+              24,
+              top + 6,
+              24,
+              24 + bottom,
+            ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    BotonVolver(alPresionar: () => Navigator.pop(context)),
+                    BotonVolver(
+                      alPresionar: () => Navigator.pop(context),
+                    ),
                     Text(
                       'ACCESO',
                       style: TextStyle(
@@ -87,7 +101,7 @@ class FormularioInicioSesion extends StatelessWidget {
                     height: 1.4,
                   ),
                 ),
-                const Spacer(flex: 2),
+                const SizedBox(height: 24),
                 const Center(
                   child: EmblemaCircular(
                     icono: Icons.lock_outline_rounded,
@@ -95,7 +109,7 @@ class FormularioInicioSesion extends StatelessWidget {
                     tamanoIcono: 44,
                   ),
                 ),
-                const Spacer(flex: 2),
+                const SizedBox(height: 24),
                 CampoTexto(
                   etiqueta: 'Cédula',
                   pista: 'Ingresa tu cédula',
@@ -143,14 +157,19 @@ class FormularioInicioSesion extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 BotonPrimario(
-                  texto: cargando ? 'Conectando…' : 'Iniciar sesión',
+                  texto: cargando
+                      ? 'Conectando…'
+                      : 'Iniciar sesión',
                   alPresionar: cargando ? null : alIniciar,
                 ),
                 const SizedBox(height: 16),
                 const Center(
                   child: Text(
                     '¿No tienes cuenta?',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF66758D),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -175,4 +194,3 @@ class FormularioInicioSesion extends StatelessWidget {
     );
   }
 }
-

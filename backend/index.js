@@ -88,12 +88,22 @@ app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
 
-// que se pueda copiar el texto de el chat bot
+// que se pueda copiar el texto de el chat bot y que se mire mejor a la hora de que se digita una peticion
 // solucionar error a la hora de escribir un dato 
 // solucionar pantalla de historial 
 // solucionar la pantalla de la foto de el perfil 
-// crear el panel administrativo
 // limitar los caracteres a el momento de iniciar sesion y a el crear la cuenta
 // mas seguridad a a el momento de cambiar el correo 
 // mas informacion en errores de las pantalals
 // corregir pantalla de admin 
+// pantalla admin "solicitud prestamo" solo se debe mostrar la solicitudes pendientes 
+// admin seleccionar usuario "solicitudes de prestamo" solo debe mostrar las solicitudes de ese usuario
+// admin pantalla a el momento de cerrar sesion debe mandar a la pantalla de inisiar sesion 
+// poner loogo en pantalla bienvenida admin 
+
+
+// unificar nombres y apellidos 
+// corregir ia y datos que manda xd 
+// limitar solicitudes 
+// Dinero de solicitud superado mensaje de error 
+// corregir error visual de seleccionar numero de couta

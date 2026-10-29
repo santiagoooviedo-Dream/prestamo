@@ -103,7 +103,6 @@ app.listen(PORT, () => {
 
 
 // unificar nombres y apellidos 
-// corregir ia y datos que manda xd 
 // limitar solicitudes 
 // Dinero de solicitud superado mensaje de error 
 // corregir error visual de seleccionar numero de couta

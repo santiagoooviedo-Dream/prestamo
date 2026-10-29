@@ -96,3 +96,4 @@ app.listen(PORT, () => {
 // limitar los caracteres a el momento de iniciar sesion y a el crear la cuenta
 // mas seguridad a a el momento de cambiar el correo 
 // mas informacion en errores de las pantalals
+// corregir pantalla de admin 

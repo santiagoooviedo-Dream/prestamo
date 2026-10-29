@@ -70,7 +70,7 @@ class FormularioInicioSesion extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
                 const Text(
-                  'Qué bueno verte\nde nuevo',
+                  'Inicia sesion',
                   style: TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w700,
@@ -91,7 +91,7 @@ class FormularioInicioSesion extends StatelessWidget {
                 const Center(
                   child: EmblemaCircular(
                     icono: Icons.lock_outline_rounded,
-                    tamano: 120,
+                    tamano: 140,
                     tamanoIcono: 44,
                   ),
                 ),
@@ -175,3 +175,4 @@ class FormularioInicioSesion extends StatelessWidget {
     );
   }
 }
+

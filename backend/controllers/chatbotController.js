@@ -235,7 +235,7 @@ ESTILO DE RESPUESTA
         // Obtenemos la respuesta de Groq
         const respuestaTexto =
             completion.choices[0]?.message?.content ||
-            'No pude generar una respuesta.';
+            'No pude generar una respuesta..';
 
         // Guardamos la respuesta del bot en nuestra tabla mensajes
         const { data: mensajeBot, error: errorMensajeBot } =

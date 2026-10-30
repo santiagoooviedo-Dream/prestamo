@@ -40,7 +40,6 @@ class PantallaAdminBienvenida extends StatelessWidget {
                 ),
               ],
             ),
-            // Empuja el bloque hacia el centro (como Figma)
             const Spacer(flex: 2),
             Container(
               width: double.infinity,

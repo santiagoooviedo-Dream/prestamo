@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../nucleo/colores_app.dart';
 
 class EmblemaCircular extends StatelessWidget {

@@ -79,7 +79,6 @@ app.get('/usuarios', async (req, res) => {
 res.json(data);
 });
 
-
 //obtenemos el puerto desde .env
 const PORT = process.env.PORT || 3000;
 
@@ -88,8 +87,10 @@ app.listen(PORT, () => {
     console.log(`Servidor funcionando en http://localhost:${PORT}`);
 });
 // https://jlombanar.github.io/adso_3169657/
+
 // que se pueda copiar el texto de el chat bot y que se mire mejor a la hora de que se digita una peticion
 // solucionar error a la hora de escribir un dato 
+// corregir pantalla visual de recuperar contraseña -> Colocar codigo 
 // solucionar pantalla de historial 
 // solucionar la pantalla de la foto de el perfil 
 // limitar los caracteres a el momento de iniciar sesion y a el crear la cuenta
@@ -100,9 +101,10 @@ app.listen(PORT, () => {
 // admin seleccionar usuario "solicitudes de prestamo" solo debe mostrar las solicitudes de ese usuario
 // admin pantalla a el momento de cerrar sesion debe mandar a la pantalla de inisiar sesion 
 // poner loogo en pantalla bienvenida admin 
+// a el momento que un administrador Acepta o rechaza un prestamo es muy lento 
 
 
 // unificar nombres y apellidos 
-// limitar solicitudes 
-// Dinero de solicitud superado mensaje de error 
+// limitar solicitudes a 1
+// Dinero de solicitud superado mensaje de error - limite de solo 3 millones 
 // corregir error visual de seleccionar numero de couta

@@ -19,9 +19,8 @@ class PantallaRegistro extends StatefulWidget {
 class _PantallaRegistroState extends State<PantallaRegistro> {
   final _modelo = const RegistroModel();
   final _cedula = TextEditingController();
-  final _nombres = TextEditingController();
-  final _apellidos = TextEditingController();
-  final _correo = TextEditingController();
+  final _nombreCompleto = TextEditingController();
+    final _correo = TextEditingController();
   final _telefono = TextEditingController();
   final _contrasena = TextEditingController();
   bool _ocultar = true;
@@ -38,8 +37,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   @override
   void dispose() {
     _cedula.dispose();
-    _nombres.dispose();
-    _apellidos.dispose();
+    _nombreCompleto.dispose();
     _correo.dispose();
     _telefono.dispose();
     _contrasena.dispose();
@@ -48,9 +46,9 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
 
   Future<void> _registrar() async {
     final correo = _correo.text.trim();
+    final completo = _nombreCompleto.text.trim();
     if (_cedula.text.trim().isEmpty ||
-        _nombres.text.trim().isEmpty ||
-        _apellidos.text.trim().isEmpty ||
+        completo.isEmpty ||
         correo.isEmpty ||
         _telefono.text.trim().isEmpty ||
         !RegistroModel.contrasenaValida(_contrasena.text)) {
@@ -66,10 +64,14 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
 
     setState(() => _registrando = true);
     try {
+      final partes = completo.split(RegExp(r'\s+'));
+      final nombre = partes.isNotEmpty ? partes.first : completo;
+      final apellido =
+          partes.length > 1 ? partes.sublist(1).join(' ') : nombre;
       await _modelo.registrar(
         cedula: _cedula.text.trim(),
-        nombres: _nombres.text.trim(),
-        apellidos: _apellidos.text.trim(),
+        nombres: nombre,
+        apellidos: apellido,
         correo: correo,
         telefono: _telefono.text.trim(),
         contrasena: _contrasena.text,
@@ -149,8 +151,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                 physics: const BouncingScrollPhysics(),
                 child: FormularioRegistro(
                   cedula: _cedula,
-                  nombres: _nombres,
-                  apellidos: _apellidos,
+                  nombreCompleto: _nombreCompleto,
                   correo: _correo,
                   telefono: _telefono,
                   contrasena: _contrasena,

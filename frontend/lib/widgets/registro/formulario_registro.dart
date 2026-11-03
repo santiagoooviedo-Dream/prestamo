@@ -7,8 +7,7 @@ import '../comunes/requisito_contrasena.dart';
 
 class FormularioRegistro extends StatelessWidget {
   final TextEditingController cedula;
-  final TextEditingController nombres;
-  final TextEditingController apellidos;
+  final TextEditingController nombreCompleto;
   final TextEditingController correo;
   final TextEditingController telefono;
   final TextEditingController contrasena;
@@ -18,8 +17,7 @@ class FormularioRegistro extends StatelessWidget {
   const FormularioRegistro({
     super.key,
     required this.cedula,
-    required this.nombres,
-    required this.apellidos,
+    required this.nombreCompleto,
     required this.correo,
     required this.telefono,
     required this.contrasena,
@@ -46,20 +44,9 @@ class FormularioRegistro extends StatelessWidget {
         ),
         const SizedBox(height: 14),
         CampoTexto(
-          etiqueta: 'Nombres',
-          pista: 'Tus nombres',
-          controlador: nombres,
-          iconoIzquierdo: const Icon(
-            Icons.person_outline_rounded,
-            size: 20,
-            color: ColoresApp.textoSuave,
-          ),
-        ),
-        const SizedBox(height: 14),
-        CampoTexto(
-          etiqueta: 'Apellidos',
-          pista: 'Tus apellidos',
-          controlador: apellidos,
+          etiqueta: 'Nombre y apellido',
+          pista: 'Nombre y apellido',
+          controlador: nombreCompleto,
           iconoIzquierdo: const Icon(
             Icons.person_outline_rounded,
             size: 20,

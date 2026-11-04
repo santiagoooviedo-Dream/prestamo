@@ -91,89 +91,104 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final teclado = MediaQuery.viewInsetsOf(context).bottom;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(24, top + 6, 24, 20 + bottom),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                BotonVolver(alPresionar: () => Navigator.pop(context)),
-                const Text(
-                  'VERIFICACIÓN',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: ColoresApp.textoContexto,
-                    letterSpacing: 0.3,
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(24, top > 0 ? 6 : 12, 24, 16 + bottom),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(bottom: teclado > 0 ? 12 : 0),
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          BotonVolver(alPresionar: () => Navigator.pop(context)),
+                          const Text(
+                            'VERIFICACIÓN',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: ColoresApp.textoContexto,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 28),
+                      const Text(
+                        'Revisa tu correo',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF17243C),
+                          height: 1.15,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Ingresa el código que enviamos a tu correo para verificar tu cuenta.',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Color(0xFF66758D),
+                          height: 1.4,
+                        ),
+                      ),
+                      SizedBox(height: teclado > 0 ? 16 : 36),
+                      Center(
+                        child: Container(
+                          width: teclado > 0 ? 64 : 88,
+                          height: teclado > 0 ? 64 : 88,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFE8F0FE),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.mail_outline_rounded,
+                            size: teclado > 0 ? 28 : 40,
+                            color: const Color(0xFF285FE8),
+                          ),
+                        ),
+                      ),
+                      SeccionVerificacionRegistro(
+                        correo: widget.correo,
+                        digitos: _digitos,
+                        focos: _focos,
+                      ),
+                      const SizedBox(height: 24),
+                    ],
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 28),
-            const Text(
-              'Revisa tu correo',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
-                height: 1.15,
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Ingresa el código que enviamos a tu correo para verificar tu cuenta.',
-              style: TextStyle(
-                fontSize: 15,
-                color: Color(0xFF66758D),
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 36),
-            Center(
-              child: Container(
-                width: 88,
-                height: 88,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFE8F0FE),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.mail_outline_rounded,
-                  size: 40,
-                  color: Color(0xFF285FE8),
-                ),
-              ),
-            ),
-            SeccionVerificacionRegistro(
-              correo: widget.correo,
-              digitos: _digitos,
-              focos: _focos,
-            ),
-            const Spacer(),
-            Center(
-              child: GestureDetector(
-                onTap: _reenviando ? null : _reenviarCodigo,
-                child: const Text(
-                  'Reenviar código',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF285FE8),
+              Center(
+                child: GestureDetector(
+                  onTap: _reenviando ? null : _reenviarCodigo,
+                  child: Text(
+                    _reenviando ? 'Reenviando…' : 'Reenviar código',
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF285FE8),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
-            BotonPrimario(
-              texto: _verificando ? 'Verificando…' : 'Verificar cuenta',
-              alPresionar: _verificando ? () {} : _verificar,
-            ),
-          ],
+              const SizedBox(height: 16),
+              BotonPrimario(
+                texto: _verificando ? 'Verificando…' : 'Verificar cuenta',
+                alPresionar: _verificando ? null : _verificar,
+              ),
+            ],
+          ),
         ),
       ),
     );

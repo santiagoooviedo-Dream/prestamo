@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_prestamo/pantallas/pantalla_bienvenida.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_bienvenida.dart';
@@ -96,7 +97,7 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const PantallaAdminBienvenida(),
+                    builder: (_) => const PantallaBienvenida(),
                   ),
                   (_) => false,
                 );

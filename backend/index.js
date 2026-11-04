@@ -89,6 +89,7 @@ app.listen(PORT, () => {
 // https://jlombanar.github.io/adso_3169657/
 
 // que se pueda copiar el texto de el chat bot y que se mire mejor a la hora de que se digita una peticion
+// modificar el metodo de pago (A el momento de que quiere hacer un pago el administrador debe actualizar con un boton)
 // solucionar error a la hora de escribir un dato 
 // corregir pantalla visual de recuperar contraseña -> Colocar codigo 
 // solucionar pantalla de historial 

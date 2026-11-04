@@ -3,7 +3,7 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 
-/// Figma: Monto pagado
+
 class PantallaAdminMontoPagado extends StatelessWidget {
   final int monto;
   final String cuotaTexto;

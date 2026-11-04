@@ -47,20 +47,32 @@ export const enviarConfirmacionSolicitud = async (correo, nombre, solicitud) => 
     return enviarCorreoPrestamo(
         correo,
         `Recibimos tu solicitud de préstamo #${solicitud.id_solicitud}`,
+
         `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#17243C">
           <h2>Solicitud recibida</h2>
-          <p>Hola ${escaparHtml(nombre)}, registramos tu solicitud correctamente.</p>
+
+          <p>Hola ${escaparHtml(nombre)}, registramos tu solicitud correctamente\n.</p>
           <ul>
             <li><strong>Número:</strong> ${escaparHtml(solicitud.id_solicitud)}</li>
+
             <li><strong>Monto solicitado:</strong> $${Number(solicitud.monto_solicitado).toLocaleString('es-CO')} COP</li>
+
             <li><strong>Cuotas:</strong> ${escaparHtml(solicitud.coutas)} mensuales</li>
+
             <li><strong>Motivo:</strong> ${escaparHtml(solicitud.motivo)}</li>
+
             <li><strong>Desembolso elegido:</strong> ${metodo}</li>
+
             <li><strong>Destino:</strong> ${destino}</li>
+
             <li><strong>Fecha de solicitud:</strong> ${escaparHtml(fecha)}</li>
+
             <li><strong>Estado:</strong> En revisión</li>
+
           </ul>
+
           <p>Te enviaremos otro correo y una notificación cuando se tome una decisión. Si se aprueba, allí encontrarás la fecha, la hora y el punto de recogida o el número al que se enviará el dinero.</p>
+
         </div>`
     );
 };
@@ -80,12 +92,19 @@ export const enviarResultadoSolicitud = async (correo, nombre, solicitud) => {
     return enviarCorreoPrestamo(
         correo,
         `Actualización de tu solicitud de préstamo #${solicitud.id_solicitud}`,
+
+
         `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#17243C">
           <h2>Actualización de tu solicitud</h2>
+
           <p>Hola ${escaparHtml(nombre)}, tu solicitud de préstamo #${escaparHtml(solicitud.id_solicitud)} ${estado}.</p>
+
           <p><strong>Monto:</strong> $${Number(solicitud.monto_solicitado).toLocaleString('es-CO')} COP</p>
+
           <p><strong>Cuotas:</strong> ${escaparHtml(solicitud.coutas)} mensuales</p>
+
           ${aprobada ? `<p><strong>Fecha y hora programadas:</strong> ${fecha} (hora de Colombia)</p>${detalleDesembolso}` : '<p>Si necesitas más información, comunícate con nuestro equipo de atención.</p>'}
+
           <p>Este mensaje confirma el resultado de la solicitud. No compartas claves ni códigos de verificación.</p>
         </div>`
     );

@@ -89,6 +89,7 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
           etiqueta: 'Nombre y apellido',
           pista: 'Nombre y apellido',
           controlador: widget.nombreCompleto,
+          formateadores: [LengthLimitingTextInputFormatter(65)],
           iconoIzquierdo: const Icon(
             Icons.person_outline_rounded,
             size: 20,

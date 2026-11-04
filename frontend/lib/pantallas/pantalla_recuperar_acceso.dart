@@ -69,11 +69,11 @@ class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
-    final bottom = MediaQuery.paddingOf(context).bottom;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       resizeToAvoidBottomInset: true,
+
       body: Stack(
         children: [
           Positioned(
@@ -83,93 +83,112 @@ class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
               width: 180,
               height: 180,
               decoration: BoxDecoration(
-                color: const Color(0xFFE4EDFF).withValues(alpha: 0.7),
+                color: const Color(0xFFE4EDFF)
+                    .withValues(alpha: 0.7),
                 shape: BoxShape.circle,
               ),
             ),
           ),
-          SingleChildScrollView(
-            keyboardDismissBehavior:
-                ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.fromLTRB(
-              24,
-              top + 6,
-              24,
-              24 + bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    BotonVolver(
-                      alPresionar: () => Navigator.pop(context),
-                    ),
-                    Text(
-                      'RECUPERACIÓN',
-                      style: TextStyle(
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        color: ColoresApp.textoContexto,
-                        letterSpacing: 0.5,
+
+          SafeArea(
+            bottom: false,
+            child: SingleChildScrollView(
+              keyboardDismissBehavior:
+                  ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.fromLTRB(
+                24,
+                6,
+                24,
+                24,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      BotonVolver(
+                        alPresionar: () => Navigator.pop(context),
                       ),
+                      Text(
+                        'RECUPERACIÓN',
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: ColoresApp.textoContexto,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  const Text(
+                    'Recupera tu acceso',
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF17243C),
+                      height: 1.15,
                     ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Recupera tu acceso',
-                  style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF17243C),
-                    height: 1.15,
                   ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Ingresa tu correo y te enviaremos un código para restablecer tu contraseña.',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Color(0xFF66758D),
-                    height: 1.4,
+
+                  const SizedBox(height: 8),
+
+                  const Text(
+                    'Ingresa tu correo y te enviaremos un código para restablecer tu contraseña.',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Color(0xFF66758D),
+                      height: 1.4,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 32),
-                const Center(
-                  child: EmblemaCircular(
-                    icono: Icons.key_rounded,
-                    tamano: 120,
-                    tamanoIcono: 44,
+
+                  const SizedBox(height: 32),
+
+                  const Center(
+                    child: EmblemaCircular(
+                      icono: Icons.key_rounded,
+                      tamano: 120,
+                      tamanoIcono: 44,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 32),
-                CampoTexto(
-                  etiqueta: 'Correo electrónico',
-                  pista: 'correo@ejemplo.com',
-                  controlador: _correoCtrl,
-                  tipoTeclado: TextInputType.emailAddress,
-                  iconoIzquierdo: const Icon(
-                    Icons.mail_outline_rounded,
-                    size: 20,
-                    color: ColoresApp.textoSuave,
+
+                  const SizedBox(height: 32),
+
+                  CampoTexto(
+                    etiqueta: 'Correo electrónico',
+                    pista: 'correo@ejemplo.com',
+                    controlador: _correoCtrl,
+                    tipoTeclado: TextInputType.emailAddress,
+                    iconoIzquierdo: const Icon(
+                      Icons.mail_outline_rounded,
+                      size: 20,
+                      color: ColoresApp.textoSuave,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                const AvisoSeguridad(
-                  texto: 'Revisa la bandeja de entrada del correo asociado a tu cuenta.',
-                ),
-                const SizedBox(height: 32),
-                BotonPrimario(
-                  texto: _enviando ? 'Enviando…' : 'Enviar código',
-                  alPresionar: _enviando ? null : _enviarCodigo,
-                ),
-              ],
+
+                  const SizedBox(height: 16),
+
+                  const AvisoSeguridad(
+                    texto: 'Revisa la bandeja de entrada del correo asociado a tu cuenta.',
+                  ),
+                ],
+              ),
             ),
           ),
         ],
+      ),
+
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
+          child: BotonPrimario(
+            texto: _enviando ? 'Enviando…' : 'Enviar código',
+            alPresionar: _enviando ? null : _enviarCodigo,
+          ),
+        ),
       ),
     );
   }

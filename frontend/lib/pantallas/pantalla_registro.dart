@@ -20,7 +20,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   final _modelo = const RegistroModel();
   final _cedula = TextEditingController();
   final _nombreCompleto = TextEditingController();
-    final _correo = TextEditingController();
+  final _correo = TextEditingController();
   final _telefono = TextEditingController();
   final _contrasena = TextEditingController();
   bool _ocultar = true;
@@ -71,21 +71,35 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       );
       return;
     }
-    if (cedula.length > 10) {
+    if (cedula.length != 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('La cédula no puede superar 10 dígitos.')),
+        const SnackBar(
+          content: Text('La cédula debe tener exactamente 10 dígitos.'),
+        ),
       );
       return;
     }
     if (!RegExp(r'^\d+$').hasMatch(telefono)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('El teléfono solo debe contener números.')),
+        const SnackBar(
+          content: Text('El teléfono solo debe contener números.'),
+        ),
       );
       return;
     }
-    if (telefono.length > 10) {
+    if (telefono.length != 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('El teléfono no puede superar 10 dígitos.')),
+        const SnackBar(
+          content: Text('El teléfono debe tener exactamente 10 dígitos.'),
+        ),
+      );
+      return;
+    }
+    if (completo.length > 65) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Nombre y apellido no puede superar 65 caracteres.'),
+        ),
       );
       return;
     }
@@ -94,8 +108,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
     try {
       final partes = completo.split(RegExp(r'\s+'));
       final nombre = partes.isNotEmpty ? partes.first : completo;
-      final apellido =
-          partes.length > 1 ? partes.sublist(1).join(' ') : nombre;
+      final apellido = partes.length > 1 ? partes.sublist(1).join(' ') : nombre;
       await _modelo.registrar(
         cedula: cedula,
         nombres: nombre,

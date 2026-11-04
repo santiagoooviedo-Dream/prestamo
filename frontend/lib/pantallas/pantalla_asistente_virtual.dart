@@ -182,7 +182,6 @@ class _PantallaAsistenteVirtualState extends State<PantallaAsistenteVirtual> {
     );
   }
 }
-
 class _Msg {
   final String texto;
   final bool propio;

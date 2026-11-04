@@ -47,10 +47,13 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   Future<void> _registrar() async {
     final correo = _correo.text.trim();
     final completo = _nombreCompleto.text.trim();
-    if (_cedula.text.trim().isEmpty ||
+    final cedula = _cedula.text.trim();
+    final telefono = _telefono.text.trim();
+
+    if (cedula.isEmpty ||
         completo.isEmpty ||
         correo.isEmpty ||
-        _telefono.text.trim().isEmpty ||
+        telefono.isEmpty ||
         !RegistroModel.contrasenaValida(_contrasena.text)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -62,6 +65,31 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       return;
     }
 
+    if (!RegExp(r'^\d+$').hasMatch(cedula)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('La cédula solo debe contener números.')),
+      );
+      return;
+    }
+    if (cedula.length > 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('La cédula no puede superar 10 dígitos.')),
+      );
+      return;
+    }
+    if (!RegExp(r'^\d+$').hasMatch(telefono)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('El teléfono solo debe contener números.')),
+      );
+      return;
+    }
+    if (telefono.length > 10) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('El teléfono no puede superar 10 dígitos.')),
+      );
+      return;
+    }
+
     setState(() => _registrando = true);
     try {
       final partes = completo.split(RegExp(r'\s+'));
@@ -69,11 +97,11 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       final apellido =
           partes.length > 1 ? partes.sublist(1).join(' ') : nombre;
       await _modelo.registrar(
-        cedula: _cedula.text.trim(),
+        cedula: cedula,
         nombres: nombre,
         apellidos: apellido,
         correo: correo,
-        telefono: _telefono.text.trim(),
+        telefono: telefono,
         contrasena: _contrasena.text,
       );
       if (!mounted) return;

@@ -105,7 +105,6 @@ app.listen(PORT, () => {
 // a el momento que un administrador Acepta o rechaza un prestamo es muy lento 
 
 
-// unificar nombres y apellidos 
 // limitar solicitudes a 1
 // Dinero de solicitud superado mensaje de error - limite de solo 3 millones 
 // corregir error visual de seleccionar numero de couta

@@ -12,6 +12,7 @@ class CampoTexto extends StatelessWidget {
   final Widget? iconoIzquierdo;
   final Widget? iconoDerecho;
   final String? Function(String?)? validador;
+  final String? mensajeError;
   final void Function(String)? alCambiar;
   final List<TextInputFormatter>? formateadores;
 
@@ -25,6 +26,7 @@ class CampoTexto extends StatelessWidget {
     this.iconoIzquierdo,
     this.iconoDerecho,
     this.validador,
+    this.mensajeError,
     this.alCambiar,
     this.formateadores,
   });
@@ -64,6 +66,7 @@ class CampoTexto extends StatelessWidget {
             ),
             prefixIcon: iconoIzquierdo,
             suffixIcon: iconoDerecho,
+            errorText: mensajeError,
             filled: true,
             fillColor: ColoresApp.blanco,
             contentPadding: const EdgeInsets.symmetric(

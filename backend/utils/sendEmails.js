@@ -91,7 +91,7 @@ export const enviarResultadoSolicitud = async (correo, nombre, solicitud) => {
 
     return enviarCorreoPrestamo(
         correo,
-        `Actualización de tu solicitud de préstamo #${solicitud.id_solicitud}`,
+        `Actualización de tu solicitud de préstamo `,
 
 
         `<div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;color:#17243C">
@@ -103,7 +103,7 @@ export const enviarResultadoSolicitud = async (correo, nombre, solicitud) => {
 
           <p><strong>Cuotas:</strong> ${escaparHtml(solicitud.coutas)} mensuales</p>
 
-          ${aprobada ? `<p><strong>Fecha y hora programadas:</strong> ${fecha} (hora de Colombia)</p>${detalleDesembolso}` : '<p>Si necesitas más información, comunícate con nuestro equipo de Soporte.</p>'}
+          ${aprobada ? `<p><strong>Fecha y hora programadas:</strong> ${fecha} </p>${detalleDesembolso}` : '<p>Si necesitas más información, comunícate con nuestro equipo de Soporte.</p>'}
 
           <p></p>
         </div>`

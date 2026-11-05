@@ -103,9 +103,9 @@ export const enviarResultadoSolicitud = async (correo, nombre, solicitud) => {
 
           <p><strong>Cuotas:</strong> ${escaparHtml(solicitud.coutas)} mensuales</p>
 
-          ${aprobada ? `<p><strong>Fecha y hora programadas:</strong> ${fecha} (hora de Colombia)</p>${detalleDesembolso}` : '<p>Si necesitas más información, comunícate con nuestro equipo de atención.</p>'}
+          ${aprobada ? `<p><strong>Fecha y hora programadas:</strong> ${fecha} (hora de Colombia)</p>${detalleDesembolso}` : '<p>Si necesitas más información, comunícate con nuestro equipo de Soporte.</p>'}
 
-          <p>Este mensaje confirma el resultado de la solicitud. No compartas claves ni códigos de verificación.</p>
+          <p></p>
         </div>`
     );
 };

@@ -103,6 +103,7 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
+                  // Evita que el teclado tape el código
                   padding: EdgeInsets.only(bottom: teclado > 0 ? 12 : 0),
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,

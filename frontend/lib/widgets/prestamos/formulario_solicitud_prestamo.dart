@@ -37,10 +37,29 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
         const SizedBox(height: 8),
         _campoMonto(),
         const SizedBox(height: 6),
-        const Text(
-          'Mínimo \$100.000 · Máximo \$3.000.000',
-          style: TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
-        ),
+        if (monto > 3000000)
+          const Text(
+            'El monto supera el máximo permitido de \$3.000.000',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFFDC2626),
+            ),
+          )
+        else if (monto > 0 && monto < 100000)
+          const Text(
+            'El monto mínimo es \$100.000',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFFDC2626),
+            ),
+          )
+        else
+          const Text(
+            'Mínimo \$100.000 · Máximo \$3.000.000',
+            style: TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
+          ),
         const SizedBox(height: 20),
         _etiqueta('Número de cuotas'),
         const SizedBox(height: 8),
@@ -76,12 +95,18 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
   );
 
   Widget _campoMonto() {
+    final invalido = monto > 3000000 || (monto > 0 && monto < 100000);
     return Container(
       height: 52,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(
+          color: invalido
+              ? const Color(0xFFEF4444)
+              : const Color(0xFFE1E8F3),
+          width: invalido ? 1.5 : 1,
+        ),
       ),
       child: Row(
         children: [
@@ -163,50 +188,64 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
   Widget _listaCuotas() {
     return Container(
       width: double.infinity,
-      constraints: const BoxConstraints(maxHeight: 280),
+      constraints: const BoxConstraints(maxHeight: 240),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: const Color(0xFFE1E8F3)),
       ),
+      clipBehavior: Clip.antiAlias,
       child: ListView.builder(
         shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        physics: const ClampingScrollPhysics(),
         itemCount: 35,
         itemBuilder: (context, indice) {
           final valor = indice + 2;
           final seleccionado = cuotas == valor;
-          return InkWell(
-            onTap: () => alSeleccionarCuotas(valor),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: indice == 34
-                        ? Colors.transparent
-                        : const Color(0xFFF0F3F8),
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      '$valor cuotas',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: seleccionado
-                            ? FontWeight.w600
-                            : FontWeight.w400,
-                        color: seleccionado
-                            ? const Color(0xFF285FE8)
-                            : const Color(0xFF17243C),
-                      ),
+          return Material(
+            color: seleccionado
+                ? const Color(0xFFF0F5FF)
+                : Colors.transparent,
+            child: InkWell(
+              onTap: () => alSeleccionarCuotas(valor),
+              child: Container(
+                height: 48,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                alignment: Alignment.centerLeft,
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: indice == 34
+                          ? Colors.transparent
+                          : const Color(0xFFF0F3F8),
                     ),
                   ),
-                  if (seleccionado)
-                    const Icon(Icons.check, size: 18, color: Color(0xFF285FE8)),
-                ],
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        '$valor cuotas',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: seleccionado
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                          color: seleccionado
+                              ? const Color(0xFF285FE8)
+                              : const Color(0xFF17243C),
+                        ),
+                      ),
+                    ),
+                    if (seleccionado)
+                      const Icon(
+                        Icons.check,
+                        size: 18,
+                        color: Color(0xFF285FE8),
+                      ),
+                  ],
+                ),
               ),
             ),
           );

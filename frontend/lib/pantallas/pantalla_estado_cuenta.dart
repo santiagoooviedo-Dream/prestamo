@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/cuenta_model.dart';
 import '../nucleo/api_service.dart';
+import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/cuenta/contenido_estado_cuenta.dart';
 
@@ -27,26 +28,41 @@ class _PantallaEstadoCuentaState extends State<PantallaEstadoCuenta> {
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
+    final bottom = MediaQuery.paddingOf(context).bottom;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(24, top + 6, 24, 16),
+        padding: EdgeInsets.fromLTRB(24, top + 6, 24, 16 + bottom),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BotonVolver(alPresionar: () => Navigator.pop(context)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                BotonVolver(alPresionar: () => Navigator.pop(context)),
+                Text(
+                  'MI CUENTA',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: ColoresApp.textoContexto,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 20),
             const Text(
               'Estado de cuenta',
               style: TextStyle(
                 fontSize: 28,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
               ),
             ),
             const SizedBox(height: 6),
             const Text(
-              'Un resumen de tus préstamos y movimientos.',
+              'Un resumen de tu actividad más reciente.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 20),

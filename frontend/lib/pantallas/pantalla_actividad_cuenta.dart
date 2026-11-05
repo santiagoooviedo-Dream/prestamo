@@ -29,10 +29,11 @@ class _PantallaActividadCuentaState extends State<PantallaActividadCuenta> {
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
+    final bottom = MediaQuery.paddingOf(context).bottom;
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: Padding(
-        padding: EdgeInsets.fromLTRB(24, top + 6, 24, 16),
+        padding: EdgeInsets.fromLTRB(24, top + 6, 24, 16 + bottom),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -56,13 +57,13 @@ class _PantallaActividadCuentaState extends State<PantallaActividadCuenta> {
               'Actividad de cuenta',
               style: TextStyle(
                 fontSize: 28,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
               ),
             ),
             const SizedBox(height: 6),
             const Text(
-              'Consulta los movimientos reales de tu cuenta.',
+              'Consulta todos los movimientos de tu cuenta.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 16),

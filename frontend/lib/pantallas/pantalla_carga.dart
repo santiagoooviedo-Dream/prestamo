@@ -62,7 +62,6 @@ class _PantallaCargaState extends State<PantallaCarga> {
             child: Column(
               children: [
                 const Spacer(flex: 2),
-                // Logo real embebido
                 SizedBox(
                   width: 140,
                   height: 140,

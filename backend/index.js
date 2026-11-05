@@ -91,10 +91,7 @@ app.listen(PORT, () => {
 // que se pueda copiar el texto de el chat bot y que se mire mejor a la hora de que se digita una peticion
 // modificar el metodo de pago (A el momento de que quiere hacer un pago el administrador debe actualizar con un boton)
 // solucionar error a la hora de escribir un dato 
-// corregir pantalla visual de recuperar contraseña -> Colocar codigo 
 // solucionar pantalla de historial 
-// solucionar la pantalla de la foto de el perfil 
-// limitar los caracteres a el momento de iniciar sesion y a el crear la cuenta
 // mas seguridad a a el momento de cambiar el correo 
 // mas informacion en errores de las pantalals
 // corregir pantalla de admin 
@@ -103,8 +100,5 @@ app.listen(PORT, () => {
 // admin pantalla a el momento de cerrar sesion debe mandar a la pantalla de inisiar sesion 
 // poner loogo en pantalla bienvenida admin 
 // a el momento que un administrador Acepta o rechaza un prestamo es muy lento 
-
-
-// limitar solicitudes a 1
-// Dinero de solicitud superado mensaje de error - limite de solo 3 millones 
-// corregir error visual de seleccionar numero de couta
+// redondear los numeros
+// acer el tratamiento de datos

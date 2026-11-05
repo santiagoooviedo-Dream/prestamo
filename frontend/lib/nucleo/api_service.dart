@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class ApiException implements Exception {
   final String mensaje;
@@ -314,7 +315,7 @@ class ApiService {
   }
 
   /// Subir foto de perfil (multipart)
-  static Future<Map<String, dynamic>> cambiarFoto(String rutaArchivo) async {
+  static Future<Map<String, dynamic>> cambiarFoto(XFile archivo) async {
     final uri = Uri.parse('$_baseUrl/usuarios/foto');
     final token = await _leerDatoSeguro('token');
     if (token == null || token.isEmpty) {
@@ -322,7 +323,13 @@ class ApiService {
     }
     final request = http.MultipartRequest('PUT', uri)
       ..headers['Authorization'] = 'Bearer $token'
-      ..files.add(await http.MultipartFile.fromPath('foto', rutaArchivo));
+      ..files.add(
+        http.MultipartFile.fromBytes(
+          'foto',
+          await archivo.readAsBytes(),
+          filename: archivo.name,
+        ),
+      );
     try {
       final streamed = await request.send().timeout(const Duration(seconds: 30));
       final respuesta = await http.Response.fromStream(streamed);
@@ -345,6 +352,8 @@ class ApiService {
       throw const ApiException(
         'No fue posible conectar con el servidor. Verifica tu conexión.',
       );
+    } on FormatException {
+      throw const ApiException('El servidor devolvió una respuesta inválida.');
     }
   }
 

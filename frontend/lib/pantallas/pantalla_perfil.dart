@@ -29,7 +29,10 @@ class _PantallaPerfilState extends State<PantallaPerfil> {
       future: _perfil,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return ContenidoPerfil(usuario: snapshot.data!);
+          return ContenidoPerfil(
+            usuario: snapshot.data!,
+            onFotoActualizada: _reintentar,
+          );
         }
         return Scaffold(
           backgroundColor: Colors.transparent,

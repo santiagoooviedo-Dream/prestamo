@@ -13,8 +13,13 @@ import '../../pantallas/pantalla_notificaciones.dart';
 
 class ContenidoPerfil extends StatelessWidget {
   final Map<String, dynamic> usuario;
+  final VoidCallback onFotoActualizada;
 
-  const ContenidoPerfil({super.key, required this.usuario});
+  const ContenidoPerfil({
+    super.key,
+    required this.usuario,
+    required this.onFotoActualizada,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +29,7 @@ class ContenidoPerfil extends StatelessWidget {
       usuario['apellido'],
     ].whereType<String>().where((parte) => parte.isNotEmpty).join(' ');
     final correo = usuario['correo']?.toString() ?? '';
+    final foto = usuario['foto']?.toString();
     final iniciales = nombre
         .split(' ')
         .where((parte) => parte.isNotEmpty)
@@ -65,17 +71,29 @@ class ContenidoPerfil extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   GestureDetector(
-                    onTap: () => _abrir(context, const PantallaCambiarFoto()),
+                    onTap: () async {
+                      final fotoActualizada = await Navigator.push<bool>(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PantallaCambiarFoto(),
+                        ),
+                      );
+                      if (fotoActualizada == true) onFotoActualizada();
+                    },
                     child: CircleAvatar(
                       radius: 48,
                       backgroundColor: const Color(0xFFEDF3FF),
-                      child: Text(
-                        iniciales.isEmpty ? 'U' : iniciales,
-                        style: const TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF285FE8),
-                        ),
+                      child: ClipOval(
+                        child: foto != null && foto.isNotEmpty
+                            ? Image.network(
+                                foto,
+                                width: 96,
+                                height: 96,
+                                fit: BoxFit.cover,
+                                errorBuilder: (_, _, _) =>
+                                    _iniciales(iniciales),
+                              )
+                            : _iniciales(iniciales),
                       ),
                     ),
                   ),
@@ -147,6 +165,17 @@ class ContenidoPerfil extends StatelessWidget {
   void _abrir(BuildContext context, Widget pantalla) {
     Navigator.push(context, MaterialPageRoute(builder: (_) => pantalla));
   }
+
+  Widget _iniciales(String iniciales) => Center(
+    child: Text(
+      iniciales.isEmpty ? 'U' : iniciales,
+      style: const TextStyle(
+        fontSize: 28,
+        fontWeight: FontWeight.w700,
+        color: Color(0xFF285FE8),
+      ),
+    ),
+  );
 }
 
 class _OpcionPerfil extends StatelessWidget {

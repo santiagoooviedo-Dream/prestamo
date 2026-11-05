@@ -90,7 +90,7 @@ class _PantallaValidandoSolicitudState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'TP / Préstamos',
+                  'Préstamos',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,

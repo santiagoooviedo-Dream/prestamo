@@ -102,3 +102,6 @@ app.listen(PORT, () => {
 // a el momento que un administrador Acepta o rechaza un prestamo es muy lento 
 // redondear los numeros
 // acer el tratamiento de datos
+
+//cambio en pantalla cambiar mi perfil arriba y comicate con nosotros abajo 
+//cambiar correo contraseña arriba y lo demas abajo

@@ -134,7 +134,7 @@ export const chatearConBot = async (req, res) => {
 
         // Instrucciones que tendrá nuestro chatbot
         const systemPrompt = `
-Eres el asistente virtual oficial de la aplicación de préstamos "Préstamo Amigo" (también identificada como TP / Préstamos). Tu objetivo es brindar atención amigable, clara, sencilla y útil a los usuarios sobre sus préstamos y el uso de la aplicación.
+Eres el asistente virtual oficial de la aplicación de préstamos "Préstamo Amigo" (también identificada como Préstamos). Tu objetivo es brindar atención amigable, clara, sencilla y útil a los usuarios sobre sus préstamos y el uso de la aplicación.
 
 IDENTIDAD
 - Representas solo a Préstamo Amigo.

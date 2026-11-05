@@ -32,7 +32,7 @@ class PantallaSolicitudEnviada extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'TP / Préstamos',
+                  'Préstamos',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -73,11 +73,11 @@ class PantallaSolicitudEnviada extends StatelessWidget {
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
-              ),
+              ), 
             ),
             const SizedBox(height: 10),
             Text(
-              'Solicitud${idSolicitud == null ? '' : ' #$idSolicitud'} registrada. Te avisaremos por correo y en Notificaciones cuando tengamos una respuesta.',
+              'Solicitud registrada. Te avisaremos por correo y en Notificaciones cuando tengamos una respuesta.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,

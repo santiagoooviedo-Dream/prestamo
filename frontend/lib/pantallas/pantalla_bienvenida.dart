@@ -52,7 +52,7 @@ class PantallaBienvenida extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'TP / Préstamos',
+                      'Préstamos',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,

@@ -6,6 +6,7 @@ import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_secundario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/opcion_metodo.dart';
+import 'pantalla_chat_pago_personal.dart';
 import 'pantalla_procesando_pago.dart';
 
 class PantallaMetodoPago extends StatefulWidget {
@@ -25,7 +26,37 @@ class PantallaMetodoPago extends StatefulWidget {
 }
 
 class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
-  int _sel = 0; // 0 Nequi, 1 Efectivo
+  /// 0 = Nequi, 1 = Pago personal
+  int _sel = 0;
+
+  void _continuar() {
+    if (_sel == 1) {
+      // Pago personal → chat con administrador
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PantallaChatPagoPersonal(
+            idPrestamo: widget.idPrestamo,
+            idCuota: widget.idCuota,
+            monto: widget.monto,
+          ),
+        ),
+      );
+      return;
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PantallaProcesandoPago(
+          idPrestamo: widget.idPrestamo,
+          idCuota: widget.idCuota,
+          monto: widget.monto,
+          metodoPago: 'nequi',
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,30 +108,37 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
             ),
             const SizedBox(height: 12),
             OpcionMetodo(
-              icono: Icons.payments_outlined,
-              titulo: 'Efectivo',
+              icono: Icons.person_outline_rounded,
+              titulo: 'Pago personal',
               seleccionado: _sel == 1,
               onTap: () => setState(() => _sel = 1),
             ),
+            if (_sel == 1) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0F5FF),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: const Color(0xFFD9E5FA)),
+                ),
+                child: const Text(
+                  'Al elegir pago personal se abrirá un chat con un administrador para acordar cuándo puedes realizar el pago. Él validará el abono cuando lo confirmes.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF41618E),
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
             const SizedBox(height: 20),
             const AvisoSeguridad(texto: 'Tus datos de pago están protegidos.'),
             const Spacer(),
             BotonPrimario(
-              texto: 'Continuar',
-              alPresionar: () {
-                // Figma: Seleccionar método → Procesando pago
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => PantallaProcesandoPago(
-                      idPrestamo: widget.idPrestamo,
-                      idCuota: widget.idCuota,
-                      monto: widget.monto,
-                      metodoPago: _sel == 0 ? 'nequi' : 'efectivo',
-                    ),
-                  ),
-                );
-              },
+              texto: _sel == 1 ? 'Chatear con administrador' : 'Continuar',
+              alPresionar: _continuar,
             ),
             const SizedBox(height: 12),
             BotonSecundario(

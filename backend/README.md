@@ -114,8 +114,13 @@ notificaciones y `PUT /notificaciones/:id` marcar una como leída.
 
 El perfil se consulta con `GET /usuarios/perfil`; los datos se obtienen del
 usuario autenticado. `GET /prestamos/cuotas` devuelve únicamente las cuotas
-asociadas a los préstamos del usuario autenticado. `GET /pagos/movimientos`
-devuelve únicamente sus movimientos de cuenta.
+asociadas a los préstamos del usuario autenticado, ordenadas por fecha de pago.
+Al generarlas, la primera cuota usa `fecha_inicio` del préstamo (o la fecha
+actual si no está informada) y cada cuota posterior suma un mes a esa fecha
+base. Si el día no existe en el mes de destino, se usa su último día válido.
+Este cálculo aplica a cuotas nuevas; no modifica fechas de cuotas ya guardadas.
+`GET /pagos/movimientos` devuelve únicamente los movimientos de cuenta del
+usuario autenticado.
 
 ---
 

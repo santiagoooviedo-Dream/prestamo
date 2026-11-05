@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
+
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 
-/// Figma: Chat (soporte)
+/// Chat admin. Si es pago personal, permite validar el abono.
 class PantallaAdminChat extends StatefulWidget {
   final String nombreUsuario;
   final String? mensajeInicialUsuario;
+  final String? idConversacion;
+  final bool esPagoPersonal;
+  final int? idPrestamo;
+  final int? idCuota;
+  final num? monto;
 
   const PantallaAdminChat({
     super.key,
     this.nombreUsuario = 'Usuario',
     this.mensajeInicialUsuario,
+    this.idConversacion,
+    this.esPagoPersonal = false,
+    this.idPrestamo,
+    this.idCuota,
+    this.monto,
   });
 
   @override
@@ -19,22 +32,141 @@ class PantallaAdminChat extends StatefulWidget {
 
 class _PantallaAdminChatState extends State<PantallaAdminChat> {
   final _ctrl = TextEditingController();
-  late final List<_Msg> _msgs;
+  final List<_Msg> _msgs = [];
+  bool _cargando = false;
+  bool _validando = false;
+  bool _pagoValidado = false;
+
+  int? _idPrestamo;
+  int? _idCuota;
+  num? _monto;
 
   @override
   void initState() {
     super.initState();
-    _msgs = [
-      _Msg(
-        widget.mensajeInicialUsuario ??
-            'Tuve un problema al realizar el pago,¿me pueden ayudar?',
-        deUsuario: true,
-      ),
-      const _Msg(
-        'si claro digame con mas detalle que paso',
-        deUsuario: false,
-      ),
-    ];
+    _idPrestamo = widget.idPrestamo;
+    _idCuota = widget.idCuota;
+    _monto = widget.monto;
+
+    if (widget.mensajeInicialUsuario != null) {
+      _msgs.add(_Msg(widget.mensajeInicialUsuario!, deUsuario: true));
+      _extraerRef(widget.mensajeInicialUsuario!);
+    }
+    _cargarMensajes();
+  }
+
+  void _extraerRef(String texto) {
+    // REF_PAGO id_prestamo=1 id_cuota=2 monto=200000
+    final p = RegExp(r'id_prestamo=(\d+)').firstMatch(texto);
+    final c = RegExp(r'id_cuota=(\d+)').firstMatch(texto);
+    final m = RegExp(r'monto=([0-9.]+)').firstMatch(texto);
+    if (p != null) _idPrestamo = int.tryParse(p.group(1)!);
+    if (c != null) _idCuota = int.tryParse(c.group(1)!);
+    if (m != null) _monto = num.tryParse(m.group(1)!);
+  }
+
+  Future<void> _cargarMensajes() async {
+    final id = widget.idConversacion;
+    if (id == null || id.isEmpty) return;
+    setState(() => _cargando = true);
+    try {
+      final lista = await ApiService.obtenerMensajesConversacion(id);
+      if (!mounted) return;
+      final nuevos = <_Msg>[];
+      for (final raw in lista) {
+        final texto = raw['mensaje']?.toString() ??
+            raw['respuesta']?.toString() ??
+            raw['contenido']?.toString() ??
+            '';
+        if (texto.isEmpty) continue;
+        _extraerRef(texto);
+        final deUsuario = (raw['rol']?.toString().toLowerCase() == 'usuario') ||
+            (raw['es_usuario'] == true) ||
+            (raw['de_usuario'] == true) ||
+            (raw['tipo']?.toString().toLowerCase() == 'usuario');
+        nuevos.add(_Msg(texto, deUsuario: deUsuario));
+      }
+      if (nuevos.isNotEmpty) {
+        setState(() {
+          _msgs
+            ..clear()
+            ..addAll(nuevos);
+        });
+      }
+    } catch (_) {
+      // Mantiene mensajes locales
+    } finally {
+      if (mounted) setState(() => _cargando = false);
+    }
+  }
+
+  Future<void> _enviar() async {
+    final t = _ctrl.text.trim();
+    if (t.isEmpty) return;
+    setState(() {
+      _msgs.add(_Msg(t, deUsuario: false));
+      _ctrl.clear();
+    });
+    final id = widget.idConversacion;
+    if (id == null || id.isEmpty) return;
+    try {
+      await ApiService.enviarMensajeConversacion(
+        idConversacion: id,
+        mensaje: t,
+      );
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.mensaje)));
+      }
+    }
+  }
+
+  Future<void> _validarPago() async {
+    if (_idPrestamo == null || _idCuota == null || _monto == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'No se encontraron los datos del préstamo en el chat. Verifica el mensaje de referencia.',
+          ),
+        ),
+      );
+      return;
+    }
+    setState(() => _validando = true);
+    try {
+      await ApiService.registrarPago(
+        idPrestamo: _idPrestamo!,
+        idCuota: _idCuota!,
+        monto: _monto!,
+        metodoPago: 'efectivo',
+      );
+      if (!mounted) return;
+      setState(() => _pagoValidado = true);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Pago personal validado correctamente.')),
+      );
+      // Aviso al usuario en el chat
+      final id = widget.idConversacion;
+      if (id != null && id.isNotEmpty) {
+        const aviso =
+            'Tu pago personal fue validado. La cuota queda registrada como pagada.';
+        setState(() => _msgs.add(const _Msg(aviso, deUsuario: false)));
+        try {
+          await ApiService.enviarMensajeConversacion(
+            idConversacion: id,
+            mensaje: aviso,
+          );
+        } catch (_) {}
+      }
+    } on ApiException catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(e.mensaje)));
+      }
+    } finally {
+      if (mounted) setState(() => _validando = false);
+    }
   }
 
   @override
@@ -43,20 +175,10 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
     super.dispose();
   }
 
-  void _enviar() {
-    final t = _ctrl.text.trim();
-    if (t.isEmpty) return;
-    setState(() {
-      _msgs.add(_Msg(t, deUsuario: false));
-      _ctrl.clear();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final teclado = MediaQuery.viewInsetsOf(context).bottom;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -84,19 +206,41 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
-            const Text(
-              'Chat',
-              style: TextStyle(
-                fontSize: 28,
+            const SizedBox(height: 16),
+            Text(
+              widget.nombreUsuario,
+              style: const TextStyle(
+                fontSize: 24,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
               ),
             ),
-            const SizedBox(height: 20),
+            if (widget.esPagoPersonal) ...[
+              const SizedBox(height: 6),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8F0FE),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'Solicitud de pago personal',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF285FE8),
+                  ),
+                ),
+              ),
+            ],
+            const SizedBox(height: 16),
+            if (_cargando)
+              const LinearProgressIndicator(minHeight: 2)
+            else
+              const SizedBox(height: 2),
             Expanded(
               child: ListView.builder(
-                padding: EdgeInsets.only(bottom: teclado > 0 ? 8 : 0),
                 itemCount: _msgs.length,
                 itemBuilder: (_, i) {
                   final m = _msgs[i];
@@ -110,7 +254,9 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                         maxWidth: MediaQuery.sizeOf(context).width * 0.72,
                       ),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 14),
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
                       decoration: BoxDecoration(
                         color: m.deUsuario
                             ? Colors.white
@@ -118,15 +264,6 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                         borderRadius: BorderRadius.circular(16),
                         border: m.deUsuario
                             ? Border.all(color: const Color(0xFFE1E8F3))
-                            : null,
-                        boxShadow: m.deUsuario
-                            ? const [
-                                BoxShadow(
-                                  color: Color(0x0A17243C),
-                                  blurRadius: 8,
-                                  offset: Offset(0, 2),
-                                ),
-                              ]
                             : null,
                       ),
                       child: Text(
@@ -144,7 +281,25 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                 },
               ),
             ),
-            // Input
+            if (widget.esPagoPersonal && !_pagoValidado) ...[
+              BotonPrimario(
+                texto: _validando ? 'Validando…' : 'Validar pago personal',
+                alPresionar: _validando ? null : _validarPago,
+              ),
+              const SizedBox(height: 10),
+            ],
+            if (_pagoValidado)
+              const Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text(
+                  'Pago validado',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF168261),
+                  ),
+                ),
+              ),
             Row(
               children: [
                 Expanded(

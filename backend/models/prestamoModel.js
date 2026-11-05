@@ -15,7 +15,9 @@ export const obtenerCuotasPorPrestamos = async (id_prestamos) => {
     const { data, error } = await supabase
         .from('cuotas')
         .select('*')
-        .in('id_prestamo', id_prestamos);
+        .in('id_prestamo', id_prestamos)
+        .order('fecha_pago', { ascending: true })
+        .order('numero_cuota', { ascending: true });
 
     return { data, error };
 };

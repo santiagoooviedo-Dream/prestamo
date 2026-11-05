@@ -1,4 +1,5 @@
 import '../nucleo/api_service.dart';
+import 'prestamo_model.dart';
 
 class CuotaPrestamoModel {
   final String idCuota;
@@ -33,8 +34,14 @@ class CuotaPrestamoModel {
     );
   }
 
-  bool get estaPagada =>
-      estado == 'pagada' || estado == 'pagado' || estado == 'completada';
+  bool get estaPagada {
+    final e = estado.toLowerCase().trim();
+    return e == 'pagada' ||
+        e == 'pagado' ||
+        e == 'completada' ||
+        e == 'completado' ||
+        e == 'paid';
+  }
 
   bool get estaVencida {
     if (estaPagada || fecha == null) return false;
@@ -48,63 +55,90 @@ class CuotaPrestamoModel {
 class CalendarioPagosModel {
   const CalendarioPagosModel();
 
+  /// Solo cuotas del préstamo activo, con fechas mes a mes.
   Future<List<CuotaPrestamoModel>> obtenerCuotas() async {
-    final datos = await ApiService.obtenerCuotas();
-    var cuotas = datos.map(CuotaPrestamoModel.desdeApi).toList();
+    final prestamosRaw = await ApiService.obtenerPrestamos();
+    final cuotasRaw = await ApiService.obtenerCuotas();
 
+    final contenedor = PrestamosUsuario(
+      solicitudes: const [],
+      prestamos: prestamosRaw,
+      cuotas: cuotasRaw,
+    );
+    final activos = contenedor.prestamosActivos;
+
+    if (activos.isEmpty) return [];
+
+    // Un préstamo en curso: el más reciente
+    activos.sort((a, b) {
+      final fa = DateTime.tryParse(a['fecha_inicio']?.toString() ?? '');
+      final fb = DateTime.tryParse(b['fecha_inicio']?.toString() ?? '');
+      if (fa == null) return 1;
+      if (fb == null) return -1;
+      return fb.compareTo(fa);
+    });
+    final activo = activos.first;
+    final idActivo = activo['id_prestamo']?.toString();
+    if (idActivo == null || idActivo.isEmpty) return [];
+
+    final totalCuotasPrestamo =
+        int.tryParse(activo['coutas']?.toString() ?? '') ?? 0;
+
+    var cuotas = cuotasRaw
+        .where((c) => c['id_prestamo']?.toString() == idActivo)
+        .map(CuotaPrestamoModel.desdeApi)
+        .toList();
+
+    // Orden por número de cuota
     cuotas.sort((a, b) {
       final na = int.tryParse(a.numero) ?? 0;
       final nb = int.tryParse(b.numero) ?? 0;
-      if (na != nb) return na.compareTo(nb);
-      if (a.fecha == null) return 1;
-      if (b.fecha == null) return -1;
-      return a.fecha!.compareTo(b.fecha!);
+      return na.compareTo(nb);
     });
 
-    // Si el backend puso la misma fecha a todas, distribuir mensualmente
-    if (cuotas.length > 1) {
-      final fechas = cuotas.map((c) => c.fecha).whereType<DateTime>().toList();
-      final todasIguales = fechas.length == cuotas.length &&
-          fechas.every((f) =>
-              f.year == fechas.first.year &&
-              f.month == fechas.first.month &&
-              f.day == fechas.first.day);
-      if (todasIguales) {
-        final base = fechas.first;
-        cuotas = [
-          for (var i = 0; i < cuotas.length; i++)
-            CuotaPrestamoModel(
-              idCuota: cuotas[i].idCuota,
-              idPrestamo: cuotas[i].idPrestamo,
-              numero: cuotas[i].numero,
-              estado: cuotas[i].estado,
-              fecha: DateTime(base.year, base.month + i, base.day),
-              monto: cuotas[i].monto,
-              totalCuotas: cuotas.length,
-            ),
-        ];
-      }
-    }
+    if (cuotas.isEmpty) return [];
 
-    // Completar total de cuotas por préstamo
-    final porPrestamo = <String, int>{};
-    for (final c in cuotas) {
-      porPrestamo[c.idPrestamo] = (porPrestamo[c.idPrestamo] ?? 0) + 1;
-    }
+    // Base: fecha_inicio del préstamo o la primera fecha de cuota
+    final inicio =
+        DateTime.tryParse(activo['fecha_inicio']?.toString() ?? '');
+    final primeraConFecha = cuotas.cast<CuotaPrestamoModel?>().firstWhere(
+          (c) => c?.fecha != null,
+          orElse: () => null,
+        );
+    final base = inicio ??
+        primeraConFecha?.fecha ??
+        DateTime.now();
+
+    // Siempre repartir mes a mes según el número de cuota
+    // cuota 1 → base, cuota 2 → base+1 mes, etc.
+    final total = totalCuotasPrestamo > 0 ? totalCuotasPrestamo : cuotas.length;
+
     return [
-      for (final c in cuotas)
+      for (var i = 0; i < cuotas.length; i++)
         CuotaPrestamoModel(
-          idCuota: c.idCuota,
-          idPrestamo: c.idPrestamo,
-          numero: c.numero,
-          estado: c.estado,
-          fecha: c.fecha,
-          monto: c.monto,
-          totalCuotas: c.totalCuotas > 0
-              ? c.totalCuotas
-              : (porPrestamo[c.idPrestamo] ?? 0),
+          idCuota: cuotas[i].idCuota,
+          idPrestamo: cuotas[i].idPrestamo,
+          numero: cuotas[i].numero,
+          estado: cuotas[i].estado,
+          fecha: _fechaMensual(
+            base,
+            (int.tryParse(cuotas[i].numero) ?? (i + 1)) - 1,
+          ),
+          monto: cuotas[i].monto,
+          totalCuotas: total,
         ),
     ];
+  }
+
+  /// Suma [meses] a [base] sin romper el día (ej. 31 ene → 28/29 feb).
+  static DateTime _fechaMensual(DateTime base, int meses) {
+    final y = base.year;
+    final m = base.month + meses;
+    final year = y + ((m - 1) ~/ 12);
+    final month = ((m - 1) % 12) + 1;
+    final lastDay = DateTime(year, month + 1, 0).day;
+    final day = base.day > lastDay ? lastDay : base.day;
+    return DateTime(year, month, day);
   }
 }
 
@@ -143,9 +177,7 @@ String formatoFechaLarga(DateTime? fecha) {
     'noviembre',
     'diciembre',
   ];
-  // DateTime.weekday: 1=Mon ... 7=Sun
-  final nombreDia = dias[fecha.weekday - 1];
-  return '$nombreDia, ${fecha.day} de ${meses[fecha.month - 1]}';
+  return '${dias[fecha.weekday - 1]}, ${fecha.day} de ${meses[fecha.month - 1]}';
 }
 
 String formatoFechaCorta(DateTime? fecha) {

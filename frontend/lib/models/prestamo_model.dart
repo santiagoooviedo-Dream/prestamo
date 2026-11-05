@@ -46,7 +46,7 @@ class PrestamosUsuario {
     final cuotasPrestamo = cuotasDelPrestamo(prestamo['id_prestamo']);
     final totalCuotas =
         int.tryParse(prestamo['coutas']?.toString() ?? '') ??
-        cuotasPrestamo.length;
+            cuotasPrestamo.length;
     if (totalCuotas == 0 || cuotasPrestamo.length < totalCuotas) return false;
 
     final cuotasPagadas = cuotasPrestamo.where((cuota) {
@@ -54,6 +54,23 @@ class PrestamosUsuario {
       return estadoCuota == 'pagada' || estadoCuota == 'pagado';
     }).length;
     return cuotasPagadas >= totalCuotas;
+  }
+
+  /// Solo se permite una solicitud/préstamo activo a la vez.
+  bool get puedeSolicitarNuevo {
+    if (prestamosActivos.isNotEmpty) return false;
+    for (final s in solicitudes) {
+      final estado = (s['estado'] ?? '').toString().toLowerCase();
+      if (estado == 'pendiente') return false;
+      if (estado == 'aceptada') {
+        final idS = s['id_solicitud']?.toString();
+        final yaTiene = prestamos.any(
+          (p) => p['id_solicitud']?.toString() == idS,
+        );
+        if (!yaTiene) return false;
+      }
+    }
+    return true;
   }
 }
 

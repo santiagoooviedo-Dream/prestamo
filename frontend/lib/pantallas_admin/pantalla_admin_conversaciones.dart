@@ -1,30 +1,44 @@
 import 'package:flutter/material.dart';
+
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_chat.dart';
 
-/// Figma: Conversaciones (soporte admin)
-class PantallaAdminConversaciones extends StatelessWidget {
+/// Conversaciones de soporte (admin) — incluye pagos personales
+class PantallaAdminConversaciones extends StatefulWidget {
   const PantallaAdminConversaciones({super.key});
 
-  static const _items = [
-    _Conv(
-      nombre: 'Nombre usuario',
-      apellidos: 'Apellidos Usuario',
-      asunto: 'Consulta sobre prestamo',
-      preview: 'Hola queria saber cuando sera mi proximo pago',
-      ultimo: 'Último mensaje: 12 mayo 2026',
-      pendiente: true,
-    ),
-    _Conv(
-      nombre: 'Nombre usuario',
-      apellidos: 'Apellidos Usuario',
-      asunto: 'Consulta sobre prestamo',
-      preview: 'Gracias por la ayuda con el pago',
-      ultimo: 'Último mensaje: 12 mayo 2026',
-      pendiente: false,
-    ),
-  ];
+  @override
+  State<PantallaAdminConversaciones> createState() =>
+      _PantallaAdminConversacionesState();
+}
+
+class _PantallaAdminConversacionesState
+    extends State<PantallaAdminConversaciones> {
+  late Future<List<Map<String, dynamic>>> _futuro;
+
+  @override
+  void initState() {
+    super.initState();
+    _futuro = ApiService.obtenerConversacionesAdmin();
+  }
+
+  void _recargar() =>
+      setState(() => _futuro = ApiService.obtenerConversacionesAdmin());
+
+  bool _esPagoPersonal(Map<String, dynamic> c) {
+    final texto = [
+      c['ultimo_mensaje'],
+      c['mensaje'],
+      c['preview'],
+      c['asunto'],
+      c['descripcion'],
+    ].whereType<Object>().map((e) => e.toString().toLowerCase()).join(' ');
+    return texto.contains('pago personal') ||
+        texto.contains('ref_pago') ||
+        texto.contains('id_prestamo');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,149 +81,175 @@ class PantallaAdminConversaciones extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Revisa y gestiona las conversaciones pendientes.',
+              'Revisa chats y valida pagos personales.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.separated(
-                itemCount: _items.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 12),
-                itemBuilder: (_, i) {
-                  final c = _items[i];
-                  final iniciales =
-                      '${c.nombre.isNotEmpty ? c.nombre[0] : ''}${c.apellidos.isNotEmpty ? c.apellidos[0] : ''}'
-                          .toUpperCase();
-
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => PantallaAdminChat(
-                            nombreUsuario: c.nombre,
-                            mensajeInicialUsuario: c.preview,
-                          ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: const Color(0xFFE1E8F3)),
-                      ),
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _futuro,
+                builder: (context, snap) {
+                  if (snap.hasError) {
+                    return Center(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      c.nombre,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
-                                        color: Color(0xFF17243C),
-                                      ),
-                                    ),
-                                    Text(
-                                      c.apellidos,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xFF66758D),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: c.pendiente
-                                      ? const Color(0xFFFFF4E5)
-                                      : const Color(0xFFEAF7F0),
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                child: Text(
-                                  c.pendiente ? 'Pendiente' : 'Cerrado',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: c.pendiente
-                                        ? const Color(0xFFA65B0B)
-                                        : const Color(0xFF168261),
-                                  ),
-                                ),
-                              ),
-                            ],
+                          Text(
+                            snap.error is ApiException
+                                ? (snap.error as ApiException).mensaje
+                                : 'No se pudieron cargar las conversaciones.',
+                            textAlign: TextAlign.center,
                           ),
-                          const SizedBox(height: 12),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFE8F0FE),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    iniciales,
-                                    style: const TextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xFF285FE8),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      c.asunto,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF17243C),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      c.ultimo,
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF94A0B3),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 6),
-                                    Text(
-                                      c.preview,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xFF66758D),
-                                        height: 1.35,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          TextButton(
+                            onPressed: _recargar,
+                            child: const Text('Reintentar'),
                           ),
                         ],
                       ),
+                    );
+                  }
+                  if (!snap.hasData) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  final lista = snap.data!;
+                  if (lista.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No hay conversaciones por ahora.',
+                        style: TextStyle(color: Color(0xFF66758D)),
+                      ),
+                    );
+                  }
+                  return RefreshIndicator(
+                    onRefresh: () async => _recargar(),
+                    child: ListView.separated(
+                      itemCount: lista.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemBuilder: (context, i) {
+                        final c = lista[i];
+                        final nombre = c['nombre']?.toString() ??
+                            c['nombre_usuario']?.toString() ??
+                            c['usuario']?.toString() ??
+                            'Usuario';
+                        final preview = c['ultimo_mensaje']?.toString() ??
+                            c['mensaje']?.toString() ??
+                            c['preview']?.toString() ??
+                            'Sin mensajes';
+                        final id = c['id_conversacion']?.toString() ??
+                            c['id']?.toString() ??
+                            '';
+                        final pago = _esPagoPersonal(c);
+
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PantallaAdminChat(
+                                  idConversacion: id,
+                                  nombreUsuario: nombre,
+                                  mensajeInicialUsuario: preview,
+                                  esPagoPersonal: pago,
+                                ),
+                              ),
+                            ).then((_) => _recargar());
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: pago
+                                    ? const Color(0xFFBFD4FF)
+                                    : const Color(0xFFE1E8F3),
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 44,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                    color: pago
+                                        ? const Color(0xFF285FE8)
+                                        : const Color(0xFFEDF3FF),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Icon(
+                                    pago
+                                        ? Icons.payments_outlined
+                                        : Icons.chat_bubble_outline,
+                                    color: pago
+                                        ? Colors.white
+                                        : const Color(0xFF285FE8),
+                                    size: 22,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            child: Text(
+                                              nombre,
+                                              style: const TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w600,
+                                                color: Color(0xFF17243C),
+                                              ),
+                                            ),
+                                          ),
+                                          if (pago)
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 8,
+                                                vertical: 3,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xFFE8F0FE),
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                              ),
+                                              child: const Text(
+                                                'Pago personal',
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xFF285FE8),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        preview,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Color(0xFF66758D),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Icon(
+                                  Icons.chevron_right,
+                                  color: Color(0xFF94A0B3),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
@@ -220,22 +260,4 @@ class PantallaAdminConversaciones extends StatelessWidget {
       ),
     );
   }
-}
-
-class _Conv {
-  final String nombre;
-  final String apellidos;
-  final String asunto;
-  final String preview;
-  final String ultimo;
-  final bool pendiente;
-
-  const _Conv({
-    required this.nombre,
-    required this.apellidos,
-    required this.asunto,
-    required this.preview,
-    required this.ultimo,
-    required this.pendiente,
-  });
 }

@@ -1,6 +1,7 @@
 //importamos las funciones del modelo
 
 import { buscarSolicitudPorId,crearPrestamoModel,buscarPrestamoPorId,crearCuotasModel,obtenerPrestamosPorUsuario,obtenerCuotasPorPrestamos} from "../models/prestamoModel.js";
+import { sumarMesesAFecha } from "../utils/fechas.js";
 
 export const obtenerMisPrestamos = async (req, res) => {
     const { data, error } = await obtenerPrestamosPorUsuario(req.usuario.id_usuario);
@@ -117,6 +118,12 @@ export const crearCuotas = async (req, res) => {
 
     // Creamos un arreglo para guardar las cuotas
     const cuotas = [];
+    const fechaBase = prestamo.fecha_inicio || new Date().toISOString().slice(0, 10);
+    if (Number.isNaN(new Date(fechaBase).getTime())) {
+        return res.status(500).json({
+            mensaje: 'El prestamo tiene una fecha de inicio invalida'
+        });
+    }
 
     // Repetimos el proceso segun la cantidad de cuotas
     for (let i = 1; i <= prestamo.coutas; i++) {
@@ -125,7 +132,7 @@ export const crearCuotas = async (req, res) => {
             id_prestamo: prestamo.id_prestamo,
             numero_cuota: i,
             monto: prestamo.coutas_mensual,
-            fecha_pago: new Date().toISOString().split('T')[0],
+            fecha_pago: sumarMesesAFecha(fechaBase, i - 1),
             estado: 'pendiente'
         });
     }

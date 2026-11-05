@@ -184,6 +184,22 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                   if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
+                  if (snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(24),
+                        child: Text(
+                          'No tienes un préstamo en curso.\nCuando tengas uno activo, aquí verás sus cuotas.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Color(0xFF66758D),
+                            height: 1.5,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
                   return SingleChildScrollView(
                     child: Column(
                       children: [
@@ -209,7 +225,10 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                                       monto: c.monto,
                                     ),
                                   ),
-                                );
+                                ).then((_) {
+                                  // Al volver del pago, refrescar estados/colores
+                                  if (mounted) _reintentar();
+                                });
                               },
                             ),
                         ] else
@@ -326,8 +345,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
   Widget _celdaDia(int indice, int offset, int diasEnMes) {
     final diaNum = indice - offset + 1;
     if (diaNum < 1 || diaNum > diasEnMes) {
-      // Días del mes anterior/siguiente (grises)
-      return const SizedBox(height: 32);
+      return const SizedBox(height: 36);
     }
     final fecha = DateTime(_mesVisible.year, _mesVisible.month, diaNum);
     final colorCuota = _colorDia(fecha);
@@ -336,24 +354,41 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
         _diaSeleccionado!.month == fecha.month &&
         _diaSeleccionado!.day == fecha.day;
 
+    // Círculo de estado (más visible sobre fondo azul)
+    Color? bordeCirculo = colorCuota;
+    Color fondoCelda = Colors.transparent;
+    if (seleccionado) {
+      fondoCelda = const Color(0xFFE8F0FE);
+      bordeCirculo ??= const Color(0xFF285FE8);
+    }
+
     return GestureDetector(
       onTap: () => _seleccionarDia(fecha),
-      child: Container(
-        height: 32,
-        margin: const EdgeInsets.symmetric(horizontal: 1),
-        decoration: BoxDecoration(
-          color: seleccionado ? const Color(0xFFE8F0FE) : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          '$diaNum',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: seleccionado || colorCuota != null
-                ? FontWeight.w600
-                : FontWeight.w400,
-            color: colorCuota ?? const Color(0xFF17243C),
+      child: SizedBox(
+        height: 36,
+        child: Center(
+          child: Container(
+            width: 32,
+            height: 32,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: fondoCelda,
+              shape: BoxShape.circle,
+              border: bordeCirculo != null
+                  ? Border.all(color: bordeCirculo, width: 2)
+                  : null,
+            ),
+            child: Text(
+              '$diaNum',
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: (seleccionado || colorCuota != null)
+                    ? FontWeight.w700
+                    : FontWeight.w400,
+                // Número siempre oscuro para legibilidad; el estado lo marca el círculo
+                color: const Color(0xFF17243C),
+              ),
+            ),
           ),
         ),
       ),

@@ -106,13 +106,13 @@ class PantallaInicio extends StatelessWidget {
                       const SizedBox(width: 14),
                       Expanded(
                         child: TarjetaAcceso(
-                          icono: Icons.headset_mic_rounded,
-                          titulo: 'Comunicate con nosotros',
-                          subtitulo: 'Estamos para ayudarte',
+                          icono: Icons.person_rounded,
+                          titulo: 'Mi perfil',
+                          subtitulo: 'Administra tu cuenta',
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const PantallaAsistenteVirtual(),
+                              builder: (_) => const PantallaPerfil(),
                             ),
                           ),
                         ),
@@ -138,13 +138,13 @@ class PantallaInicio extends StatelessWidget {
                       const SizedBox(width: 14),
                       Expanded(
                         child: TarjetaAcceso(
-                          icono: Icons.person_rounded,
-                          titulo: 'Mi perfil',
-                          subtitulo: 'Administra tu cuenta',
+                          icono: Icons.headset_mic_rounded,
+                          titulo: 'Comunicate con nosotros',
+                          subtitulo: 'Estamos para ayudarte',
                           onTap: () => Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const PantallaPerfil(),
+                              builder: (_) => const PantallaAsistenteVirtual(),
                             ),
                           ),
                         ),

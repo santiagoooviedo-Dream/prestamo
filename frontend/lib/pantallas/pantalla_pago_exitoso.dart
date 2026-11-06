@@ -6,7 +6,68 @@ import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_inicio.dart';
 
 class PantallaPagoExitoso extends StatelessWidget {
-  const PantallaPagoExitoso({super.key});
+  final num? monto;
+  final String metodoPago;
+  final DateTime? fechaPago;
+
+  const PantallaPagoExitoso({
+    super.key,
+    this.monto,
+    this.metodoPago = 'nequi',
+    this.fechaPago,
+  });
+
+  String get _montoTexto {
+    final valor = (monto ?? 0).round();
+    final s = valor.toString();
+    final buf = StringBuffer();
+    for (var i = 0; i < s.length; i++) {
+      if (i > 0 && (s.length - i) % 3 == 0) buf.write('.');
+      buf.write(s[i]);
+    }
+    return '\$$buf';
+  }
+
+  String get _metodoTexto {
+    final m = metodoPago.toLowerCase();
+    if (m.contains('nequi')) return 'Nequi';
+    if (m.contains('efectivo') || m.contains('personal')) {
+      return 'Pago personal';
+    }
+    if (metodoPago.trim().isEmpty) return '—';
+    return metodoPago[0].toUpperCase() + metodoPago.substring(1);
+  }
+
+  String get _fechaTexto {
+    final f = fechaPago ?? DateTime.now();
+    const meses = [
+      'ene',
+      'feb',
+      'mar',
+      'abr',
+      'may',
+      'jun',
+      'jul',
+      'ago',
+      'sep',
+      'oct',
+      'nov',
+      'dic',
+    ];
+    final h = f.hour % 12 == 0 ? 12 : f.hour % 12;
+    final min = f.minute.toString().padLeft(2, '0');
+    final ampm = f.hour >= 12 ? 'p.m.' : 'a.m.';
+    // Formato corto para que no se parta en dos líneas
+    return '${f.day} ${meses[f.month - 1]} ${f.year} · $h:$min $ampm';
+  }
+
+  void _irInicio(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const PantallaInicio()),
+      (_) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,15 +83,7 @@ class PantallaPagoExitoso extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                BotonVolver(
-                  alPresionar: () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const PantallaInicio()),
-                      (_) => false,
-                    );
-                  },
-                ),
+                BotonVolver(alPresionar: () => _irInicio(context)),
                 Text(
                   'PAGOS / COMPLETADO',
                   style: TextStyle(
@@ -82,42 +135,34 @@ class PantallaPagoExitoso extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: const Color(0xFFE1E8F3)),
               ),
-              child: const Column(
+              child: Column(
                 children: [
-                  Text(
+                  const Text(
                     'Monto pagado',
                     style: TextStyle(fontSize: 13, color: Color(0xFF66758D)),
                   ),
-                  SizedBox(height: 6),
+                  const SizedBox(height: 6),
                   Text(
-                    '\$200.000',
-                    style: TextStyle(
+                    _montoTexto,
+                    style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF17243C),
                     ),
                   ),
-                  SizedBox(height: 16),
-                  Divider(color: Color(0xFFE3E9F2)),
-                  SizedBox(height: 8),
-                  _Fila(
-                    label: 'Fecha de pago',
-                    valor: '20 abril 2026 · 09:15 a. m.',
-                  ),
-                  _Fila(label: 'Método de pago', valor: 'Nequi'),
+                  const SizedBox(height: 16),
+                  const Divider(color: Color(0xFFE8EEF6), height: 1),
+                  const SizedBox(height: 16),
+                  _Detalle(label: 'Fecha de pago', valor: _fechaTexto),
+                  const SizedBox(height: 14),
+                  _Detalle(label: 'Método de pago', valor: _metodoTexto),
                 ],
               ),
             ),
             const Spacer(flex: 3),
             BotonPrimario(
               texto: 'Volver',
-              alPresionar: () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (_) => const PantallaInicio()),
-                  (_) => false,
-                );
-              },
+              alPresionar: () => _irInicio(context),
             ),
           ],
         ),
@@ -126,28 +171,37 @@ class PantallaPagoExitoso extends StatelessWidget {
   }
 }
 
-class _Fila extends StatelessWidget {
+class _Detalle extends StatelessWidget {
   final String label;
   final String valor;
-  const _Fila({required this.label, required this.valor});
+
+  const _Detalle({required this.label, required this.valor});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
-          ),
-          Text(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
             valor,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+            textAlign: TextAlign.right,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF17243C),
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

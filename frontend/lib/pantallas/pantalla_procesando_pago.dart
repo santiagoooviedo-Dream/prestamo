@@ -60,7 +60,13 @@ class _PantallaProcesandoPagoState extends State<PantallaProcesandoPago> {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const PantallaPagoExitoso()),
+        MaterialPageRoute(
+          builder: (_) => PantallaPagoExitoso(
+            monto: monto,
+            metodoPago: widget.metodoPago,
+            fechaPago: DateTime.now(),
+          ),
+        ),
       );
     } on ApiException catch (e) {
       if (mounted) setState(() => _error = e.mensaje);

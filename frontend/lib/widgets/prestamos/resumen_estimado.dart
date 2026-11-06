@@ -13,22 +13,45 @@ class ResumenEstimado extends StatelessWidget {
   });
 
   static String formato(int n) {
-    final s = n.toString();
+    final s = n.abs().toString();
     final buf = StringBuffer();
     for (var i = 0; i < s.length; i++) {
       if (i > 0 && (s.length - i) % 3 == 0) buf.write('.');
       buf.write(s[i]);
     }
-    return buf.toString();
+    return n < 0 ? '-$buf' : buf.toString();
+  }
+
+  /// Reparte [total] en [n] cuotas redondeadas a centenas (ej. 366.700).
+  /// Las primeras quedan iguales; la última ajusta para que sumen el total exacto.
+  static List<int> montosCuotasRedondeados(int total, int n) {
+    if (n <= 0) return const [];
+    if (n == 1) return [total];
+
+    final crudo = total / n;
+    // Centena más cercana (366.666 → 366.700)
+    var base = ((crudo / 100).round() * 100);
+    if (base <= 0) base = total ~/ n;
+
+    final lista = List<int>.filled(n, base);
+    final sumaParcial = base * (n - 1);
+    lista[n - 1] = total - sumaParcial;
+
+    // Seguridad: si la última queda inválida, división entera clásica
+    if (lista[n - 1] <= 0) {
+      final b = total ~/ n;
+      final r = total - b * n;
+      return [for (var i = 0; i < n; i++) i == n - 1 ? b + r : b];
+    }
+    return lista;
   }
 
   @override
   Widget build(BuildContext context) {
     final interes = (monto * tasa).round();
     final total = monto + interes;
-    final cuotaBase = total ~/ cuotas;
-    final resto = total - cuotaBase * cuotas;
-    final cuotaMensual = cuotaBase + (resto > 0 ? 0 : 0); // display base
+    final montos = montosCuotasRedondeados(total, cuotas);
+    final cuotaMensual = montos.isEmpty ? 0 : montos.first;
     final ahora = DateTime.now();
     final inicio = DateTime(ahora.year, ahora.month + 1, 15);
     final fin = DateTime(inicio.year, inicio.month + cuotas - 1, 15);
@@ -82,82 +105,47 @@ class ResumenEstimado extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 14),
           const Text(
             'Simulación con interés simple del 10 % sobre el monto solicitado. Confirma si la tasa es total, mensual o anual antes de solicitar.',
-            style: TextStyle(
-              fontSize: 13,
-              color: Color(0xFF66758D),
-              height: 1.45,
-            ),
+            style: TextStyle(fontSize: 12, color: Color(0xFF94A0B3), height: 1.35),
           ),
-          const SizedBox(height: 16),
-          _fila('Monto solicitado', '\$${formato(monto)}', grande: true),
-          const SizedBox(height: 12),
-          _fila('Periodicidad', 'Mensual'),
-          const SizedBox(height: 12),
-          _fila('Interés total estimado', '10 % · \$${formato(interes)}'),
-          const SizedBox(height: 12),
-          _fila('Total a pagar', '\$${formato(total)}', grande: true),
-          const SizedBox(height: 12),
-          _fila('Cuota mensual', '\$${formato(cuotaBase)}', grande: true),
           const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(child: _fecha('Inicio', fFecha(inicio))),
-              Expanded(child: _fecha('Fin', fFecha(fin))),
-            ],
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'Valores estimados. Última cuota ajustada por redondeo. Tasa y condiciones por confirmar.',
-            style: TextStyle(
-              fontSize: 12,
-              color: Color(0xFF94A0B3),
-              height: 1.4,
-            ),
-          ),
+          _fila('Monto solicitado', '\$${formato(monto)}', grande: true),
+          const SizedBox(height: 8),
+          _fila('Interés total estimado', '10 % · \$${formato(interes)}'),
+          const SizedBox(height: 8),
+          _fila('Total a pagar', '\$${formato(total)}', grande: true),
+          const SizedBox(height: 8),
+          _fila('Cuota mensual', '\$${formato(cuotaMensual)}', grande: true),
+          const SizedBox(height: 8),
+          _fila('Primer pago', fFecha(inicio)),
+          const SizedBox(height: 8),
+          _fila('Último pago', fFecha(fin)),
         ],
       ),
     );
   }
 
   Widget _fila(String label, String valor, {bool grande = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: grande ? 14 : 13,
+              color: const Color(0xFF66758D),
+              fontWeight: grande ? FontWeight.w600 : FontWeight.w400,
+            ),
+          ),
         ),
-        const SizedBox(height: 2),
         Text(
           valor,
           style: TextStyle(
-            fontSize: grande ? 20 : 15,
+            fontSize: grande ? 15 : 13,
             fontWeight: FontWeight.w700,
             color: const Color(0xFF17243C),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _fecha(String label, String valor) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          valor,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF17243C),
           ),
         ),
       ],

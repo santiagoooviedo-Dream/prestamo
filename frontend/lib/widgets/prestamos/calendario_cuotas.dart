@@ -18,8 +18,7 @@ class CalendarioCuotas extends StatelessWidget {
   Widget build(BuildContext context) {
     final interes = (monto * tasa).round();
     final total = monto + interes;
-    final base = total ~/ cuotas;
-    final resto = total - base * cuotas;
+    final montos = ResumenEstimado.montosCuotasRedondeados(total, cuotas);
 
     final ahora = DateTime.now();
     final inicio = DateTime(ahora.year, ahora.month + 1, 15);
@@ -75,7 +74,7 @@ class CalendarioCuotas extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           ...List.generate(cuotas, (i) {
-            final valor = i == cuotas - 1 ? base + resto : base;
+            final valor = montos[i];
             final fecha = DateTime(inicio.year, inicio.month + i, 15);
             return Container(
               margin: const EdgeInsets.only(bottom: 8),

@@ -143,6 +143,7 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => PantallaAdminHistorial(
+                              idUsuario: widget.idUsuario,
                               nombre: widget.nombre,
                               apellidos: widget.apellidos,
                             ),

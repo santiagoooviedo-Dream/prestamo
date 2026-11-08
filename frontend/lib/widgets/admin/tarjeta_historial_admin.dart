@@ -57,21 +57,31 @@ class TarjetaHistorialAdmin extends StatelessWidget {
                     ),
                   ),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEAF7F0),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Text(
-                    item.estado,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF168261),
-                    ),
-                  ),
+                Builder(
+                  builder: (_) {
+                    final rechazado =
+                        item.estado.toLowerCase().contains('rechaz');
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: rechazado
+                            ? const Color(0xFFFFF0F2)
+                            : const Color(0xFFEAF7F0),
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: Text(
+                        item.estado,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: rechazado
+                              ? const Color(0xFFBC4351)
+                              : const Color(0xFF168261),
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

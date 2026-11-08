@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../widgets/admin/tarjeta_destinatario.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/campo_texto.dart';
 
-/// Notificaciones: usuarios que tienen solicitud o actividad (no todos)
 class PantallaAdminNotificaciones extends StatefulWidget {
   const PantallaAdminNotificaciones({super.key});
 
@@ -18,28 +19,167 @@ class _PantallaAdminNotificacionesState
     extends State<PantallaAdminNotificaciones> {
   final _titulo = TextEditingController();
   final _mensaje = TextEditingController();
+  final _busqueda = TextEditingController();
   int? _usuarioSel;
+  bool _cargando = true;
+  bool _enviando = false;
+  String? _error;
+  List<_Dest> _destinatarios = [];
 
-  /// Solo usuarios con solicitud / actividad relevante
-  // (nombre, detalle, id_usuario) — se puede reemplazar por carga real
-  static const _destinatarios = [
-    ('Carlos Ruiz', 'Solicitud pendiente', 0),
-    ('Ana Pérez', 'Solicitud pendiente', 0),
-    ('María López', 'Préstamo completado', 0),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _busqueda.addListener(() => setState(() {}));
+    _cargarDestinatarios();
+  }
 
   @override
   void dispose() {
     _titulo.dispose();
     _mensaje.dispose();
+    _busqueda.dispose();
     super.dispose();
+  }
+
+  List<_Dest> get _filtrados {
+    final q = _busqueda.text.trim().toLowerCase();
+    if (q.isEmpty) return _destinatarios;
+    return _destinatarios.where((d) {
+      return d.nombre.toLowerCase().contains(q) ||
+          d.correo.toLowerCase().contains(q) ||
+          d.cedula.toLowerCase().contains(q);
+    }).toList();
+  }
+
+  Future<void> _cargarDestinatarios() async {
+    setState(() {
+      _cargando = true;
+      _error = null;
+    });
+    try {
+      final raw = await ApiService.obtenerSolicitudesAdmin();
+      final usuarios = <int, Map<String, dynamic>>{};
+      try {
+        for (final u in await ApiService.obtenerUsuarios()) {
+          final id = int.tryParse(u['id_usuario']?.toString() ?? '');
+          if (id != null) usuarios[id] = u;
+        }
+      } catch (_) {}
+
+      final porUsuario = <int, _Dest>{};
+      for (final j in raw) {
+        final idU = int.tryParse(j['id_usuario']?.toString() ?? '') ?? 0;
+        if (idU == 0) continue;
+        final u = usuarios[idU];
+        final nombreRaw = u != null
+            ? '${u['nombre'] ?? ''} ${u['apellido'] ?? ''}'.trim()
+            : (j['nombre']?.toString() ?? '');
+        final nombre = nombreRaw.isEmpty ? 'Usuario #$idU' : nombreRaw;
+        final correo = u?['correo']?.toString() ?? '';
+        final cedula = u?['cedula']?.toString() ?? '';
+        final estado = (j['estado'] ?? 'pendiente').toString().toLowerCase();
+        final detalle = estado == 'pendiente'
+            ? 'Solicitud pendiente'
+            : estado == 'aceptada' || estado == 'aprobada'
+                ? 'Solicitud aceptada'
+                : estado == 'rechazada'
+                    ? 'Solicitud rechazada'
+                    : 'Actividad: $estado';
+        final prev = porUsuario[idU];
+        if (prev == null ||
+            (estado == 'pendiente' && prev.detalle != 'Solicitud pendiente')) {
+          porUsuario[idU] = _Dest(
+            id: idU,
+            nombre: nombre,
+            detalle: detalle,
+            correo: correo,
+            cedula: cedula,
+          );
+        }
+      }
+
+      final lista = porUsuario.values.toList()
+        ..sort((a, b) => a.nombre.compareTo(b.nombre));
+
+      if (!mounted) return;
+      setState(() {
+        _destinatarios = lista;
+        _cargando = false;
+      });
+    } on ApiException catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.mensaje;
+          _cargando = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _error = 'No se pudieron cargar los destinatarios.';
+          _cargando = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _enviar() async {
+    final id = _usuarioSel;
+    final titulo = _titulo.text.trim();
+    final cuerpo = _mensaje.text.trim();
+    if (id == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Elige un destinatario.')),
+      );
+      return;
+    }
+    if (titulo.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Escribe un título para la notificación.')),
+      );
+      return;
+    }
+    if (cuerpo.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Escribe el mensaje.')),
+      );
+      return;
+    }
+    // Título y cuerpo separados para que el usuario vea el título elegido
+    final texto = '$titulo\n\n$cuerpo';
+    setState(() => _enviando = true);
+    try {
+      await ApiService.crearNotificacion(
+        idUsuario: id,
+        mensaje: texto,
+        tipo: 'admin',
+      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Notificación enviada.')),
+      );
+      _titulo.clear();
+      _mensaje.clear();
+      setState(() => _usuarioSel = null);
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.mensaje)));
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo enviar la notificación.')),
+      );
+    } finally {
+      if (mounted) setState(() => _enviando = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final teclado = MediaQuery.viewInsetsOf(context).bottom;
+    final lista = _filtrados;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -72,19 +212,36 @@ class _PantallaAdminNotificacionesState
               'Notificaciones',
               style: TextStyle(
                 fontSize: 28,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
               ),
             ),
             const SizedBox(height: 8),
             const Text(
-              'Elige un usuario con solicitud o actividad para enviarle un mensaje.',
+              'Elige un usuario y escribe el título y mensaje.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 16),
+            TextField(
+              controller: _busqueda,
+              decoration: InputDecoration(
+                hintText: 'Buscar por nombre, correo o cédula',
+                filled: true,
+                fillColor: Colors.white,
+                prefixIcon: const Icon(Icons.search, color: Color(0xFF94A0B3)),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(color: Color(0xFFE1E8F3)),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                  borderSide: const BorderSide(color: Color(0xFFE1E8F3)),
+                ),
+              ),
+            ),
+            const SizedBox(height: 14),
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(bottom: teclado > 0 ? 12 : 0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -97,146 +254,66 @@ class _PantallaAdminNotificacionesState
                       ),
                     ),
                     const SizedBox(height: 10),
-                    ...List.generate(_destinatarios.length, (i) {
-                      final d = _destinatarios[i];
-                      final sel = _usuarioSel == i;
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: InkWell(
-                          onTap: () => setState(() => _usuarioSel = i),
-                          borderRadius: BorderRadius.circular(16),
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: sel
-                                    ? const Color(0xFF285FE8)
-                                    : const Color(0xFFE1E8F3),
-                                width: sel ? 1.5 : 1,
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor: const Color(0xFFE8F0FE),
-                                  child: Text(
-                                    d.$1[0],
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xFF285FE8),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        d.$1,
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xFF17243C),
-                                        ),
-                                      ),
-                                      Text(
-                                        d.$2,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFF66758D),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                if (sel)
-                                  const Icon(Icons.check_circle,
-                                      color: Color(0xFF285FE8), size: 22),
-                              ],
-                            ),
-                          ),
+                    if (_cargando)
+                      const Center(child: CircularProgressIndicator())
+                    else if (_error != null)
+                      Text(_error!,
+                          style: const TextStyle(color: Color(0xFFDC2626)))
+                    else if (lista.isEmpty)
+                      const Text(
+                        'No hay destinatarios con ese filtro.',
+                        style: TextStyle(color: Color(0xFF66758D)),
+                      )
+                    else
+                      ...lista.map(
+                        (d) => TarjetaDestinatario(
+                          nombre: d.nombre,
+                          detalle: d.detalle,
+                          seleccionado: _usuarioSel == d.id,
+                          onTap: () => setState(() => _usuarioSel = d.id),
                         ),
-                      );
-                    }),
+                      ),
                     const SizedBox(height: 12),
                     CampoTexto(
                       etiqueta: 'Título',
                       pista: 'Ej. Recordatorio de pago',
                       controlador: _titulo,
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Mensaje',
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
-                      ),
+                    const SizedBox(height: 12),
+                    CampoTexto(
+                      etiqueta: 'Mensaje',
+                      pista: 'Escribe el mensaje...',
+                      controlador: _mensaje,
+                      maxLineas: 4,
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      constraints: const BoxConstraints(minHeight: 120),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: const Color(0xFFE1E8F3)),
-                      ),
-                      child: TextField(
-                        controller: _mensaje,
-                        maxLines: 5,
-                        decoration: const InputDecoration(
-                          hintText: 'Escribe el mensaje…',
-                          hintStyle: TextStyle(
-                              fontSize: 15, color: Color(0xFF94A0B3)),
-                          border: InputBorder.none,
-                          contentPadding: EdgeInsets.all(16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                   ],
                 ),
               ),
             ),
             BotonPrimario(
-              texto: 'Enviar notificación',
-              alPresionar: _usuarioSel == null
-                  ? null
-                  : () async {
-                      final d = _destinatarios[_usuarioSel!];
-                      try {
-                        // id de demo embebido en el texto si no hay id real
-                        final id = d.$3;
-                        await ApiService.crearNotificacion(
-                          idUsuario: id,
-                          mensaje: _mensaje.text.trim().isEmpty
-                              ? _titulo.text.trim()
-                              : '${_titulo.text.trim()}: ${_mensaje.text.trim()}',
-                          tipo: 'info',
-                        );
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('Notificación enviada a ${d.$1}'),
-                          ),
-                        );
-                      } on ApiException catch (e) {
-                        if (!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(e.mensaje)),
-                        );
-                      }
-                    },
+              texto: _enviando ? 'Enviando…' : 'Enviar notificación',
+              alPresionar: _enviando ? null : _enviar,
+              cargando: _enviando,
             ),
           ],
         ),
       ),
     );
   }
+}
+
+class _Dest {
+  final int id;
+  final String nombre;
+  final String detalle;
+  final String correo;
+  final String cedula;
+
+  _Dest({
+    required this.id,
+    required this.nombre,
+    required this.detalle,
+    this.correo = '',
+    this.cedula = '',
+  });
 }

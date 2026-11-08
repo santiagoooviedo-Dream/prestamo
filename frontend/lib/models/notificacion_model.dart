@@ -22,17 +22,36 @@ class NotificacionModel {
   });
 
   factory NotificacionModel.desdeApi(Map<String, dynamic> dato) {
-    final tipo = dato['tipo']?.toString() ?? 'info';
-    final cuerpo =
+    final tipo = (dato['tipo']?.toString() ?? 'info').toLowerCase();
+    final mensajeRaw =
         dato['mensaje']?.toString() ?? 'Tienes una nueva notificación.';
-    final mensaje = cuerpo.toLowerCase();
-    final titulo = mensaje.contains('aprob')
-        ? 'Solicitud aprobada'
-        : mensaje.contains('rechaz')
-        ? 'Actualización de solicitud'
-        : tipo == 'pago'
-        ? 'Actualización de pago'
-        : 'Actualización de solicitud';
+
+    // Formato admin: "Título\n\nCuerpo"
+    String titulo;
+    String cuerpo;
+    final sep = mensajeRaw.indexOf('\n\n');
+    if (sep > 0) {
+      titulo = mensajeRaw.substring(0, sep).trim();
+      cuerpo = mensajeRaw.substring(sep + 2).trim();
+      if (titulo.isEmpty) titulo = 'Notificación';
+      if (cuerpo.isEmpty) cuerpo = mensajeRaw;
+    } else {
+      // Notificaciones del sistema (sin título propio)
+      final lower = mensajeRaw.toLowerCase();
+      if (lower.contains('aprob')) {
+        titulo = 'Solicitud aprobada';
+      } else if (lower.contains('rechaz')) {
+        titulo = 'Solicitud rechazada';
+      } else if (tipo == 'pago') {
+        titulo = 'Actualización de pago';
+      } else if (tipo == 'admin') {
+        titulo = 'Mensaje del administrador';
+      } else {
+        titulo = 'Notificación';
+      }
+      cuerpo = mensajeRaw;
+    }
+
     final fecha = DateTime.tryParse(dato['fecha']?.toString() ?? '');
     final local = fecha?.toLocal();
 
@@ -45,21 +64,21 @@ class NotificacionModel {
           : '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')}/${local.year} · ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}',
       icono: tipo == 'pago'
           ? Icons.payments_outlined
-          : Icons.account_balance_wallet_outlined,
+          : Icons.notifications_outlined,
       categoria: tipo == 'pago' ? 'pagos' : 'prestamos',
       leida: dato['leida'] == true,
     );
   }
 
   NotificacionModel marcarComoLeida() => NotificacionModel(
-    id: id,
-    titulo: titulo,
-    cuerpo: cuerpo,
-    tiempo: tiempo,
-    icono: icono,
-    categoria: categoria,
-    leida: true,
-  );
+        id: id,
+        titulo: titulo,
+        cuerpo: cuerpo,
+        tiempo: tiempo,
+        icono: icono,
+        categoria: categoria,
+        leida: true,
+      );
 }
 
 class NotificacionesModel {

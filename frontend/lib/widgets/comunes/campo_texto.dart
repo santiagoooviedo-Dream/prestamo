@@ -15,6 +15,7 @@ class CampoTexto extends StatelessWidget {
   final String? mensajeError;
   final void Function(String)? alCambiar;
   final List<TextInputFormatter>? formateadores;
+  final int maxLineas;
 
   const CampoTexto({
     super.key,
@@ -29,14 +30,18 @@ class CampoTexto extends StatelessWidget {
     this.mensajeError,
     this.alCambiar,
     this.formateadores,
+    this.maxLineas = 1,
   });
 
   @override
   Widget build(BuildContext context) {
+    final error = mensajeError;
+    final tieneError = error != null && error.isNotEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (etiqueta != null) ...[
+        if (etiqueta != null && etiqueta!.isNotEmpty) ...[
           Text(
             etiqueta!,
             style: const TextStyle(
@@ -47,11 +52,11 @@ class CampoTexto extends StatelessWidget {
           ),
           const SizedBox(height: 8),
         ],
-        TextFormField(
+        TextField(
           controller: controlador,
-          obscureText: ocultarTexto,
-          keyboardType: tipoTeclado,
-          validator: validador,
+          obscureText: ocultarTexto && maxLineas <= 1,
+          keyboardType: maxLineas > 1 ? TextInputType.multiline : tipoTeclado,
+          maxLines: ocultarTexto ? 1 : maxLineas,
           onChanged: alCambiar,
           inputFormatters: formateadores,
           style: const TextStyle(
@@ -66,7 +71,7 @@ class CampoTexto extends StatelessWidget {
             ),
             prefixIcon: iconoIzquierdo,
             suffixIcon: iconoDerecho,
-            errorText: mensajeError,
+            errorText: tieneError ? error : null,
             filled: true,
             fillColor: ColoresApp.blanco,
             contentPadding: const EdgeInsets.symmetric(

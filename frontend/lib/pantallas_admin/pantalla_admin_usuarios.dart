@@ -207,6 +207,10 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                                               cedula:
                                                   u['cedula']?.toString() ??
                                                       '',
+                                              fechaRegistro: _fmtFecha(
+                                                u['created_at'] ??
+                                                    u['fecha_registro'],
+                                              ),
                                             );
                                           },
                                         ),
@@ -279,4 +283,24 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
       ),
     );
   }
+}
+
+String _fmtFecha(dynamic raw) {
+  final f = DateTime.tryParse(raw?.toString() ?? '');
+  if (f == null) return '';
+  const m = [
+    'enero',
+    'febrero',
+    'marzo',
+    'abril',
+    'mayo',
+    'junio',
+    'julio',
+    'agosto',
+    'septiembre',
+    'octubre',
+    'noviembre',
+    'diciembre',
+  ];
+  return '${f.day} ${m[f.month - 1]} ${f.year}';
 }

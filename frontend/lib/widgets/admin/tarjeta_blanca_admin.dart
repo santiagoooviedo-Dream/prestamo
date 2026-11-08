@@ -29,46 +29,79 @@ class FilaDatoAdmin extends StatelessWidget {
   final String etiqueta;
   final String valor;
   final bool ultimo;
+  /// Si es true, el valor va debajo (mejor para correos largos).
+  final bool valorAbajo;
 
   const FilaDatoAdmin({
     super.key,
     required this.etiqueta,
     required this.valor,
     this.ultimo = false,
+    this.valorAbajo = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 12),
       decoration: BoxDecoration(
         border: ultimo
             ? null
             : const Border(bottom: BorderSide(color: Color(0xFFF0F3F8))),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Text(
-              etiqueta,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+      child: valorAbajo
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  etiqueta,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF66758D),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  valor,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF17243C),
+                    height: 1.3,
+                  ),
+                ),
+              ],
+            )
+          : Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 100,
+                  child: Text(
+                    etiqueta,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF66758D),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    valor,
+                    textAlign: TextAlign.right,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF17243C),
+                      height: 1.35,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Text(
-              valor,
-              textAlign: TextAlign.right,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../widgets/admin/tarjeta_conversacion_admin.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_chat.dart';
 
-/// Conversaciones de soporte (admin) — incluye pagos personales
 class PantallaAdminConversaciones extends StatefulWidget {
   const PantallaAdminConversaciones({super.key});
 
@@ -16,24 +16,136 @@ class PantallaAdminConversaciones extends StatefulWidget {
 
 class _PantallaAdminConversacionesState
     extends State<PantallaAdminConversaciones> {
-  late Future<List<Map<String, dynamic>>> _futuro;
+  bool _cargando = true;
+  String? _error;
+  List<_ConvItem> _items = [];
 
   @override
   void initState() {
     super.initState();
-    _futuro = ApiService.obtenerConversacionesAdmin();
+    _cargar();
   }
 
-  void _recargar() =>
-      setState(() => _futuro = ApiService.obtenerConversacionesAdmin());
+  Future<void> _cargar() async {
+    setState(() {
+      _cargando = true;
+      _error = null;
+    });
+    try {
+      final raw = await ApiService.obtenerConversacionesAdmin();
+      final usuarios = <int, Map<String, dynamic>>{};
+      try {
+        for (final u in await ApiService.obtenerUsuarios()) {
+          final id = int.tryParse(u['id_usuario']?.toString() ?? '');
+          if (id != null) usuarios[id] = u;
+        }
+      } catch (_) {}
 
-  bool _esPagoPersonal(Map<String, dynamic> c) {
+      // Solo conversaciones transferidas al administrador (modo == admin)
+      final conAdmin = raw.where((c) {
+        final modo = (c['modo'] ?? '').toString().toLowerCase();
+        final estado = (c['estado'] ?? '').toString().toLowerCase();
+        // modo admin = ya pidió hablar con un humano / pago personal transferido
+        if (modo == 'admin') return true;
+        // por si el backend usa otros flags
+        if (modo.contains('admin') || modo == 'humano') return true;
+        if (estado == 'admin' || estado == 'transferida') return true;
+        return false;
+      }).toList();
+
+      final items = <_ConvItem>[];
+      for (final c in conAdmin) {
+        final idConv = c['id_conversacion']?.toString() ??
+            c['id']?.toString() ??
+            '';
+        if (idConv.isEmpty) continue;
+
+        final idUser = int.tryParse(
+          c['id_usuario']?.toString() ??
+              c['usuario_id']?.toString() ??
+              (c['usuario'] is Map
+                  ? c['usuario']['id_usuario']?.toString() ?? ''
+                  : '') ??
+              '',
+        );
+        final u = idUser != null ? usuarios[idUser] : null;
+        final nombre = _nombreDe(c, u);
+
+        var preview = c['ultimo_mensaje']?.toString() ??
+            c['mensaje']?.toString() ??
+            c['preview']?.toString() ??
+            c['asunto']?.toString() ??
+            '';
+        if (preview.isEmpty) {
+          try {
+            final msgs = await ApiService.obtenerMensajesConversacion(idConv);
+            if (msgs.isNotEmpty) {
+              final last = msgs.last;
+              preview = last['mensaje']?.toString() ??
+                  last['respuesta']?.toString() ??
+                  last['contenido']?.toString() ??
+                  '';
+            }
+          } catch (_) {}
+        }
+        if (preview.isEmpty) preview = 'Sin mensajes';
+
+        final pago = _esPagoPersonal(c, preview);
+        items.add(_ConvItem(
+          id: idConv,
+          nombre: nombre,
+          preview: preview,
+          esPago: pago,
+        ));
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _items = items;
+        _cargando = false;
+      });
+    } on ApiException catch (e) {
+      if (mounted) {
+        setState(() {
+          _error = e.mensaje;
+          _cargando = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() {
+          _error = 'No se pudieron cargar las conversaciones.';
+          _cargando = false;
+        });
+      }
+    }
+  }
+
+  String _nombreDe(Map<String, dynamic> c, Map<String, dynamic>? u) {
+    if (u != null) {
+      final n = '${u['nombre'] ?? ''} ${u['apellido'] ?? ''}'.trim();
+      if (n.isNotEmpty) return n;
+    }
+    final nested = c['usuario'];
+    if (nested is Map) {
+      final n = '${nested['nombre'] ?? ''} ${nested['apellido'] ?? ''}'.trim();
+      if (n.isNotEmpty) return n;
+    }
+    for (final k in ['nombre', 'nombre_usuario', 'correo']) {
+      final v = c[k]?.toString().trim();
+      if (v != null && v.isNotEmpty && v.toLowerCase() != 'usuario') {
+        return v;
+      }
+    }
+    return 'Usuario';
+  }
+
+  bool _esPagoPersonal(Map<String, dynamic> c, String preview) {
     final texto = [
-      c['ultimo_mensaje'],
-      c['mensaje'],
-      c['preview'],
+      preview,
       c['asunto'],
       c['descripcion'],
+      c['tipo'],
     ].whereType<Object>().map((e) => e.toString().toLowerCase()).join(' ');
     return texto.contains('pago personal') ||
         texto.contains('ref_pago') ||
@@ -81,183 +193,82 @@ class _PantallaAdminConversacionesState
             ),
             const SizedBox(height: 8),
             const Text(
-              'Revisa chats y valida pagos personales.',
+              'Solo chats transferidos al administrador y pagos personales.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: FutureBuilder<List<Map<String, dynamic>>>(
-                future: _futuro,
-                builder: (context, snap) {
-                  if (snap.hasError) {
-                    return Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            snap.error is ApiException
-                                ? (snap.error as ApiException).mensaje
-                                : 'No se pudieron cargar las conversaciones.',
-                            textAlign: TextAlign.center,
-                          ),
-                          TextButton(
-                            onPressed: _recargar,
-                            child: const Text('Reintentar'),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  if (!snap.hasData) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final lista = snap.data!;
-                  if (lista.isEmpty) {
-                    return const Center(
-                      child: Text(
-                        'No hay conversaciones por ahora.',
-                        style: TextStyle(color: Color(0xFF66758D)),
-                      ),
-                    );
-                  }
-                  return RefreshIndicator(
-                    onRefresh: () async => _recargar(),
-                    child: ListView.separated(
-                      itemCount: lista.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 10),
-                      itemBuilder: (context, i) {
-                        final c = lista[i];
-                        final nombre = c['nombre']?.toString() ??
-                            c['nombre_usuario']?.toString() ??
-                            c['usuario']?.toString() ??
-                            'Usuario';
-                        final preview = c['ultimo_mensaje']?.toString() ??
-                            c['mensaje']?.toString() ??
-                            c['preview']?.toString() ??
-                            'Sin mensajes';
-                        final id = c['id_conversacion']?.toString() ??
-                            c['id']?.toString() ??
-                            '';
-                        final pago = _esPagoPersonal(c);
-
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(16),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => PantallaAdminChat(
-                                  idConversacion: id,
-                                  nombreUsuario: nombre,
-                                  mensajeInicialUsuario: preview,
-                                  esPagoPersonal: pago,
-                                ),
-                              ),
-                            ).then((_) => _recargar());
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: pago
-                                    ? const Color(0xFFBFD4FF)
-                                    : const Color(0xFFE1E8F3),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 44,
-                                  height: 44,
-                                  decoration: BoxDecoration(
-                                    color: pago
-                                        ? const Color(0xFF285FE8)
-                                        : const Color(0xFFEDF3FF),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Icon(
-                                    pago
-                                        ? Icons.payments_outlined
-                                        : Icons.chat_bubble_outline,
-                                    color: pago
-                                        ? Colors.white
-                                        : const Color(0xFF285FE8),
-                                    size: 22,
-                                  ),
-                                ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              nombre,
-                                              style: const TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w600,
-                                                color: Color(0xFF17243C),
-                                              ),
-                                            ),
-                                          ),
-                                          if (pago)
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                horizontal: 8,
-                                                vertical: 3,
-                                              ),
-                                              decoration: BoxDecoration(
-                                                color: const Color(0xFFE8F0FE),
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: const Text(
-                                                'Pago personal',
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Color(0xFF285FE8),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        preview,
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 13,
-                                          color: Color(0xFF66758D),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const Icon(
-                                  Icons.chevron_right,
-                                  color: Color(0xFF94A0B3),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
+            const SizedBox(height: 16),
+            Expanded(child: _cuerpo()),
           ],
         ),
       ),
     );
   }
+
+  Widget _cuerpo() {
+    if (_cargando) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_error!, textAlign: TextAlign.center),
+            TextButton(onPressed: _cargar, child: const Text('Reintentar')),
+          ],
+        ),
+      );
+    }
+    if (_items.isEmpty) {
+      return const Center(
+        child: Text(
+          'No hay conversaciones con el administrador.',
+          style: TextStyle(color: Color(0xFF66758D)),
+        ),
+      );
+    }
+    return RefreshIndicator(
+      onRefresh: _cargar,
+      child: ListView.separated(
+        itemCount: _items.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        itemBuilder: (_, i) {
+          final it = _items[i];
+          return TarjetaConversacionAdmin(
+            nombre: it.nombre,
+            preview: it.preview,
+            esPagoPersonal: it.esPago,
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PantallaAdminChat(
+                    idConversacion: it.id,
+                    nombreUsuario: it.nombre,
+                    mensajeInicialUsuario:
+                        it.preview == 'Sin mensajes' ? null : it.preview,
+                    esPagoPersonal: it.esPago,
+                  ),
+                ),
+              ).then((_) => _cargar());
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ConvItem {
+  final String id;
+  final String nombre;
+  final String preview;
+  final bool esPago;
+
+  _ConvItem({
+    required this.id,
+    required this.nombre,
+    required this.preview,
+    required this.esPago,
+  });
 }

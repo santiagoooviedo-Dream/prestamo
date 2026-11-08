@@ -90,9 +90,6 @@ app.listen(PORT, () => {
 
 // que se pueda copiar el texto de el chat bot y que se mire mejor a la hora de que se digita una peticion
 // modificar el metodo de pago (A el momento de que quiere hacer un pago el administrador debe actualizar con un boton)
-// solucionar error a la hora de escribir un dato 
-// solucionar pantalla de historial 
-// mas seguridad a a el momento de cambiar el correo 
 // mas informacion en errores de las pantalals
 // corregir pantalla de admin 
 // pantalla admin "solicitud prestamo" solo se debe mostrar la solicitudes pendientes 
@@ -100,8 +97,3 @@ app.listen(PORT, () => {
 // admin pantalla a el momento de cerrar sesion debe mandar a la pantalla de inisiar sesion 
 // poner loogo en pantalla bienvenida admin 
 // a el momento que un administrador Acepta o rechaza un prestamo es muy lento 
-// redondear los numeros
-// acer el tratamiento de datos
-
-//cambio en pantalla cambiar mi perfil arriba y comicate con nosotros abajo 
-//cambiar correo contraseña arriba y lo demas abajo

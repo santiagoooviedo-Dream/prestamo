@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
+import '../widgets/admin/tarjeta_historial_admin.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_monto_pagado.dart';
 
@@ -20,29 +22,29 @@ class PantallaAdminHistorial extends StatelessWidget {
     return ('$a$b').toUpperCase();
   }
 
+  static const _items = [
+    ItemHistorialAdmin(
+      titulo: 'Préstamo 06 mayo 2026',
+      monto: 200000,
+      cuotaTexto: 'Cuota 2 de 12',
+      estado: 'Completado',
+      fechaPago: '20 abril 2026',
+      metodo: 'Nequi **** 1234',
+    ),
+    ItemHistorialAdmin(
+      titulo: 'Préstamo 06 mayo 2026',
+      monto: 135000,
+      cuotaTexto: 'Cuota 1 de 12',
+      estado: 'Completado',
+      fechaPago: '20 marzo 2026',
+      metodo: 'Nequi **** 1234',
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
-
-    final items = [
-      _Item(
-        titulo: 'Préstamo 06 mayo 2026',
-        monto: 200000,
-        cuotaTexto: 'Cuota 2 de 12',
-        estado: 'Completado',
-        fechaPago: '20 abril 2026',
-        metodo: 'Nequi **** 1234',
-      ),
-      _Item(
-        titulo: 'Préstamo 06 mayo 2026',
-        monto: 135000,
-        cuotaTexto: 'Cuota 1 de 12',
-        estado: 'Completado',
-        fechaPago: '20 marzo 2026',
-        metodo: 'Nequi **** 1234',
-      ),
-    ];
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -84,145 +86,29 @@ class PantallaAdminHistorial extends StatelessWidget {
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 18),
-
-            // Card identidad
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(14),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE1E8F3)),
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFE8F0FE),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: Text(
-                        _iniciales,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF285FE8),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          nombre,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF17243C),
-                          ),
-                        ),
-                        Text(
-                          apellidos,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            color: Color(0xFF66758D),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            _cardUsuario(),
             const SizedBox(height: 14),
-
             Expanded(
               child: ListView.separated(
-                itemCount: items.length,
+                itemCount: _items.length,
                 separatorBuilder: (_, __) => const SizedBox(height: 12),
                 itemBuilder: (_, i) {
-                  final it = items[i];
-                  return GestureDetector(
+                  final it = _items[i];
+                  return TarjetaHistorialAdmin(
+                    item: it,
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => PantallaAdminMontoPagado(
                             monto: it.monto,
-                            cuotaTexto: it.cuotaTexto,
+                            tipoPrestamo: it.cuotaTexto,
                             fechaPago: it.fechaPago,
                             metodo: it.metodo,
                           ),
                         ),
                       );
                     },
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: const Color(0xFFE1E8F3)),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  it.titulo,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF17243C),
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFEAF7F0),
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                child: Text(
-                                  it.estado,
-                                  style: const TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF168261),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            '\$${_fmt(it.monto)}',
-                            style: const TextStyle(
-                              fontSize: 26,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xFF17243C),
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            it.cuotaTexto,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Color(0xFF66758D),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   );
                 },
               ),
@@ -233,31 +119,57 @@ class PantallaAdminHistorial extends StatelessWidget {
     );
   }
 
-  static String _fmt(int n) {
-    final s = n.toString();
-    final b = StringBuffer();
-    for (var i = 0; i < s.length; i++) {
-      if (i > 0 && (s.length - i) % 3 == 0) b.write('.');
-      b.write(s[i]);
-    }
-    return b.toString();
+  Widget _cardUsuario() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xFFE1E8F3)),
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: const BoxDecoration(
+              color: Color(0xFFE8F0FE),
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              child: Text(
+                _iniciales,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF285FE8),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  nombre,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF17243C),
+                  ),
+                ),
+                Text(
+                  apellidos,
+                  style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
-}
-
-class _Item {
-  final String titulo;
-  final int monto;
-  final String cuotaTexto;
-  final String estado;
-  final String fechaPago;
-  final String metodo;
-
-  const _Item({
-    required this.titulo,
-    required this.monto,
-    required this.cuotaTexto,
-    required this.estado,
-    required this.fechaPago,
-    required this.metodo,
-  });
 }

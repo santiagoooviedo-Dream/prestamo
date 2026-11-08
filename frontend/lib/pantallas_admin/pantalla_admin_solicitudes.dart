@@ -1,70 +1,21 @@
 import 'package:flutter/material.dart';
+
+import '../models/solicitud_admin.dart';
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../widgets/admin/tarjeta_solicitud_admin.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_detalle_solicitud.dart';
 
-class SolicitudAdmin {
-  final int idSolicitud;
-  final int idUsuario;
-  final String nombre;
-  final String apellidos;
-  final int monto;
-  final String estado;
-  final String fecha;
-  final bool pendiente;
-  final String motivo;
-  final int cuotas;
-  final String metodoDesembolso;
-  final String? telefonoNequi;
-
-  const SolicitudAdmin({
-    required this.idSolicitud,
-    required this.idUsuario,
-    required this.nombre,
-    required this.apellidos,
-    required this.monto,
-    required this.estado,
-    required this.fecha,
-    required this.pendiente,
-    required this.motivo,
-    required this.cuotas,
-    this.metodoDesembolso = 'efectivo',
-    this.telefonoNequi,
-  });
-
-  factory SolicitudAdmin.fromJson(
-    Map<String, dynamic> j, {
-    Map<String, dynamic>? usuario,
-  }) {
-    final estado = (j['estado'] ?? 'pendiente').toString().toLowerCase();
-    final nombre = usuario?['nombre']?.toString() ??
-        j['nombre']?.toString() ??
-        'Usuario';
-    final apellido = usuario?['apellido']?.toString() ??
-        j['apellido']?.toString() ??
-        '#${j['id_usuario'] ?? ''}';
-    return SolicitudAdmin(
-      idSolicitud: int.tryParse(j['id_solicitud']?.toString() ?? '') ?? 0,
-      idUsuario: int.tryParse(j['id_usuario']?.toString() ?? '') ?? 0,
-      nombre: nombre,
-      apellidos: apellido,
-      monto: int.tryParse(j['monto_solicitado']?.toString() ?? '') ?? 0,
-      estado: estado,
-      fecha: j['created_at']?.toString() ??
-          j['fecha']?.toString() ??
-          '',
-      pendiente: estado == 'pendiente',
-      motivo: j['motivo']?.toString() ?? '',
-      cuotas: int.tryParse(j['coutas']?.toString() ?? '') ?? 0,
-      metodoDesembolso: j['metodo_desembolso']?.toString() ?? 'efectivo',
-      telefonoNequi: j['telefono_nequi']?.toString(),
-    );
-  }
-}
-
 class PantallaAdminSolicitudes extends StatefulWidget {
-  const PantallaAdminSolicitudes({super.key});
+  final int? idUsuarioFiltro;
+  final String? nombreUsuario;
+
+  const PantallaAdminSolicitudes({
+    super.key,
+    this.idUsuarioFiltro,
+    this.nombreUsuario,
+  });
 
   @override
   State<PantallaAdminSolicitudes> createState() =>
@@ -89,24 +40,25 @@ class _PantallaAdminSolicitudesState extends State<PantallaAdminSolicitudes> {
     });
     try {
       final raw = await ApiService.obtenerSolicitudesAdmin();
-      Map<int, Map<String, dynamic>> usuarios = {};
+      final usuarios = <int, Map<String, dynamic>>{};
       try {
-        final lista = await ApiService.obtenerUsuarios();
-        for (final u in lista) {
+        for (final u in await ApiService.obtenerUsuarios()) {
           final id = int.tryParse(u['id_usuario']?.toString() ?? '');
           if (id != null) usuarios[id] = u;
         }
       } catch (_) {}
-      final list = raw
-          .map((j) {
-            final idU = int.tryParse(j['id_usuario']?.toString() ?? '') ?? 0;
-            return SolicitudAdmin.fromJson(j, usuario: usuarios[idU]);
-          })
-          .toList();
-      list.sort((a, b) {
-        if (a.pendiente != b.pendiente) return a.pendiente ? -1 : 1;
-        return b.idSolicitud.compareTo(a.idSolicitud);
-      });
+
+      var list = raw.map((j) {
+        final idU = int.tryParse(j['id_usuario']?.toString() ?? '') ?? 0;
+        return SolicitudAdmin.fromJson(j, usuario: usuarios[idU]);
+      }).where((s) => s.pendiente).toList();
+
+      final filtro = widget.idUsuarioFiltro;
+      if (filtro != null) {
+        list = list.where((s) => s.idUsuario == filtro).toList();
+      }
+      list.sort((a, b) => b.idSolicitud.compareTo(a.idSolicitud));
+
       if (mounted) {
         setState(() {
           _solicitudes = list;
@@ -130,20 +82,16 @@ class _PantallaAdminSolicitudesState extends State<PantallaAdminSolicitudes> {
     }
   }
 
-  static String _fmt(int n) {
-    final s = n.toString();
-    final b = StringBuffer();
-    for (var i = 0; i < s.length; i++) {
-      if (i > 0 && (s.length - i) % 3 == 0) b.write('.');
-      b.write(s[i]);
-    }
-    return b.toString();
-  }
-
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final titulo = widget.nombreUsuario != null
+        ? 'Solicitudes de ${widget.nombreUsuario}'
+        : 'Solicitudes de préstamo';
+    final sub = widget.idUsuarioFiltro != null
+        ? 'Solo solicitudes pendientes de este usuario.'
+        : 'Solo se muestran solicitudes pendientes.';
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -171,175 +119,70 @@ class _PantallaAdminSolicitudesState extends State<PantallaAdminSolicitudes> {
               ],
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Solicitudes de préstamo',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Revisa y gestiona las solicitudes enviadas.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: _cargando
-                  ? const Center(child: CircularProgressIndicator())
-                  : _error != null
-                      ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(_error!,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      color: Color(0xFFDC2626))),
-                              const SizedBox(height: 12),
-                              TextButton(
-                                  onPressed: _cargar,
-                                  child: const Text('Reintentar')),
-                            ],
-                          ),
-                        )
-                      : _solicitudes.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'No hay solicitudes por ahora.',
-                                style: TextStyle(color: Color(0xFF66758D)),
-                              ),
-                            )
-                          : RefreshIndicator(
-                              onRefresh: _cargar,
-                              child: ListView.separated(
-                                itemCount: _solicitudes.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: 12),
-                                itemBuilder: (_, i) =>
-                                    _tarjeta(context, _solicitudes[i]),
-                              ),
-                            ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _tarjeta(BuildContext context, SolicitudAdmin s) {
-    return GestureDetector(
-      onTap: () async {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => PantallaAdminDetalleSolicitud(solicitud: s),
-          ),
-        );
-        _cargar();
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(18),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x0A17243C),
-              blurRadius: 16,
-              offset: Offset(0, 5),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 22,
-                  backgroundColor: const Color(0xFFE8F0FE),
-                  child: Text(
-                    s.nombre.isNotEmpty ? s.nombre[0].toUpperCase() : '?',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF285FE8),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        s.nombre,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF17243C),
-                        ),
-                      ),
-                      Text(
-                        s.apellidos,
-                        style: const TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFF66758D),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  decoration: BoxDecoration(
-                    color: s.pendiente
-                        ? const Color(0xFFFFF4E5)
-                        : s.estado == 'aceptada'
-                            ? const Color(0xFFEAF7F0)
-                            : const Color(0xFFFFF0F2),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: Text(
-                    s.estado,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: s.pendiente
-                          ? const Color(0xFFA65B0B)
-                          : s.estado == 'aceptada'
-                              ? const Color(0xFF168261)
-                              : const Color(0xFFBC4351),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 14),
-            const Text(
-              'Préstamo solicitado',
-              style: TextStyle(fontSize: 13, color: Color(0xFF94A0B3)),
-            ),
-            const SizedBox(height: 4),
             Text(
-              '\$${_fmt(s.monto)}',
+              titulo,
               style: const TextStyle(
-                fontSize: 24,
+                fontSize: 26,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
               ),
             ),
             const SizedBox(height: 6),
             Text(
-              '${s.cuotas} cuotas · #${s.idSolicitud}',
-              style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+              sub,
+              style: const TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
+            const SizedBox(height: 16),
+            Expanded(child: _cuerpo()),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _cuerpo() {
+    if (_cargando) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(_error!, textAlign: TextAlign.center),
+            TextButton(onPressed: _cargar, child: const Text('Reintentar')),
+          ],
+        ),
+      );
+    }
+    if (_solicitudes.isEmpty) {
+      return const Center(
+        child: Text(
+          'No hay solicitudes pendientes.',
+          style: TextStyle(color: Color(0xFF66758D)),
+        ),
+      );
+    }
+    return RefreshIndicator(
+      onRefresh: _cargar,
+      child: ListView.separated(
+        itemCount: _solicitudes.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 10),
+        itemBuilder: (_, i) {
+          final s = _solicitudes[i];
+          return TarjetaSolicitudAdmin(
+            solicitud: s,
+            onTap: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => PantallaAdminDetalleSolicitud(solicitud: s),
+                ),
+              );
+              _cargar();
+            },
+          );
+        },
       ),
     );
   }

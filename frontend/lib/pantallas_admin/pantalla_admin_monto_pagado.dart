@@ -1,39 +1,89 @@
 import 'package:flutter/material.dart';
+
+import '../models/solicitud_admin.dart';
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../widgets/admin/tarjeta_blanca_admin.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 
-
-class PantallaAdminMontoPagado extends StatelessWidget {
-  final int monto;
-  final String cuotaTexto;
-  final String fechaPago;
+class PantallaAdminMontoPagado extends StatefulWidget {
+  final int? idPrestamo;
+  final int? idCuota;
+  final num monto;
   final String metodo;
   final String tipoPrestamo;
+  final String fechaPago;
 
   const PantallaAdminMontoPagado({
     super.key,
-    this.monto = 200000,
-    this.cuotaTexto = 'Cuota 2 de 12',
-    this.fechaPago = '20 abril 2026',
-    this.metodo = 'Nequi **** 1234',
+    this.idPrestamo,
+    this.idCuota,
+    this.monto = 0,
+    this.metodo = 'Pago personal',
     this.tipoPrestamo = 'Préstamo personal',
+    this.fechaPago = '',
   });
 
-  static String _fmt(int n) {
-    final s = n.toString();
-    final b = StringBuffer();
-    for (var i = 0; i < s.length; i++) {
-      if (i > 0 && (s.length - i) % 3 == 0) b.write('.');
-      b.write(s[i]);
+  @override
+  State<PantallaAdminMontoPagado> createState() =>
+      _PantallaAdminMontoPagadoState();
+}
+
+class _PantallaAdminMontoPagadoState extends State<PantallaAdminMontoPagado> {
+  bool _validando = false;
+  bool _listo = false;
+
+  Future<void> _confirmar() async {
+    if (_listo) {
+      Navigator.pop(context, true);
+      return;
     }
-    return b.toString();
+    final idP = widget.idPrestamo;
+    final idC = widget.idCuota;
+    if (idP == null || idC == null) {
+      setState(() => _listo = true);
+      return;
+    }
+    setState(() => _validando = true);
+    try {
+      await ApiService.registrarPago(
+        idPrestamo: idP,
+        idCuota: idC,
+        monto: widget.monto,
+        metodoPago: widget.metodo.toLowerCase().contains('nequi')
+            ? 'nequi'
+            : 'efectivo',
+      );
+      if (!mounted) return;
+      setState(() {
+        _validando = false;
+        _listo = true;
+      });
+    } on ApiException catch (e) {
+      if (!mounted) return;
+      setState(() => _validando = false);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.mensaje)));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _validando = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No se pudo validar el pago.')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
+    final f = DateTime.now();
+    final fecha = widget.fechaPago.isEmpty
+        ? '${f.day}/${f.month}/${f.year}'
+        : widget.fechaPago;
+    final montoTxt =
+        '\$${SolicitudAdmin.formatoMonto(widget.monto.round())}';
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -71,113 +121,77 @@ class PantallaAdminMontoPagado extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Revisa los detalles del pago antes de continuar.',
+              'Revisa y confirma el pago del usuario.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 24),
-
-            // Card azul
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 20),
+              padding: const EdgeInsets.all(22),
               decoration: BoxDecoration(
                 color: const Color(0xFF285FE8),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'Monto pagado',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFFD6E4FF),
-                    ),
+                    'Monto recibido',
+                    style: TextStyle(fontSize: 13, color: Color(0xFFD6E4FF)),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 6),
                   Text(
-                    '\$${_fmt(monto)}',
+                    montoTxt,
                     style: const TextStyle(
-                      fontSize: 36,
+                      fontSize: 32,
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    cuotaTexto,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFFD6E4FF),
                     ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 16),
-
-            // Detalles del pago
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(18, 16, 18, 8),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFFE1E8F3)),
-              ),
+            TarjetaBlancaAdmin(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Detalles del pago',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF17243C),
-                    ),
+                  FilaDatoAdmin(etiqueta: 'Fecha de pago', valor: fecha),
+                  FilaDatoAdmin(
+                    etiqueta: 'Préstamo',
+                    valor: widget.tipoPrestamo,
                   ),
-                  const SizedBox(height: 12),
-                  _fila('Fecha de pago', fechaPago),
-                  _fila('Préstamo', tipoPrestamo),
-                  _fila('Método de pago', metodo, ultimo: true),
+                  FilaDatoAdmin(
+                    etiqueta: 'Método',
+                    valor: widget.metodo,
+                    ultimo: true,
+                  ),
                 ],
               ),
             ),
+            if (_listo)
+              const Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: Text(
+                  'Pago validado. La cuota quedó como pagada.',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF168261),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
             const Spacer(),
             BotonPrimario(
-              texto: 'Confirmar',
-              alPresionar: () => Navigator.pop(context),
+              texto: _validando
+                  ? 'Validando…'
+                  : _listo
+                      ? 'Listo'
+                      : 'Confirmar pago',
+              alPresionar: _validando ? null : _confirmar,
+              cargando: _validando,
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _fila(String k, String v, {bool ultimo = false}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      decoration: BoxDecoration(
-        border: ultimo
-            ? null
-            : const Border(bottom: BorderSide(color: Color(0xFFF0F3F8))),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              k,
-              style: const TextStyle(fontSize: 14, color: Color(0xFF66758D)),
-            ),
-          ),
-          Text(
-            v,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF17243C),
-            ),
-          ),
-        ],
       ),
     );
   }

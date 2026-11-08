@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:front_prestamo/pantallas/pantalla_bienvenida.dart';
+
+import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../pantallas/pantalla_iniciar_sesion.dart';
+import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
-import 'pantalla_admin_bienvenida.dart';
 import 'pantalla_admin_menu.dart';
 
 class PantallaAdminCerrarSesion extends StatelessWidget {
   const PantallaAdminCerrarSesion({super.key});
+
+  Future<void> _cerrar(BuildContext context) async {
+    try {
+      await ApiService.cerrarSesion();
+    } catch (_) {}
+    if (!context.mounted) return;
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const PantallaIniciarSesion()),
+      (_) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +42,7 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
                   },
                 ),
                 const Text(
-                  'SALIR',
+                  'ADMINISTRADOR',
                   style: TextStyle(
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
@@ -37,147 +51,53 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
                 ),
               ],
             ),
-            const Spacer(),
-            Container(
-              width: 112,
-              height: 112,
-              decoration: const BoxDecoration(
-                color: Color(0xFFFFF0F2),
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.logout_rounded,
-                size: 48,
-                color: Color(0xFFBC4351),
-              ),
-            ),
-            const SizedBox(height: 24),
+            const Spacer(flex: 2),
+            const Icon(Icons.logout_rounded, size: 64, color: Color(0xFF285FE8)),
+            const SizedBox(height: 20),
             const Text(
-              '¿Cerrar sesión?',
-              textAlign: TextAlign.center,
+              'Cerrar sesión',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             const Text(
-              'Podrás volver a ingresar cuando quieras con tus credenciales de administrador.',
+              '¿Seguro que deseas salir del panel de administrador?',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15,
-                color: Color(0xFF66758D),
-                height: 1.5,
-              ),
+              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
-            const SizedBox(height: 28),
-            _opcion(
-              context,
-              Icons.person_outline_rounded,
-              'Seguir en la cuenta',
-              'Volver al menú principal',
-              () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const PantallaAdminMenu(),
-                  ),
-                  (_) => false,
-                );
-              },
+            const Spacer(flex: 2),
+            BotonPrimario(
+              texto: 'Cerrar sesión',
+              alPresionar: () => _cerrar(context),
             ),
             const SizedBox(height: 12),
-            _opcion(
-              context,
-              Icons.logout_rounded,
-              'Cerrar sesión',
-              'Salir del panel administrador',
-              () {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const PantallaBienvenida(),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: OutlinedButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => const PantallaAdminMenu()),
+                    (_) => false,
+                  );
+                },
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF285FE8),
+                  side: const BorderSide(color: Color(0xFFD0DBF0)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
                   ),
-                  (_) => false,
-                );
-              },
-              peligro: true,
-            ),
-            const Spacer(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _opcion(
-    BuildContext context,
-    IconData icono,
-    String titulo,
-    String sub,
-    VoidCallback onTap, {
-    bool peligro = false,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: peligro
-                ? const Color(0xFFF0D5DB)
-                : const Color(0xFFE1E8F3),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: peligro
-                    ? const Color(0xFFFFF0F2)
-                    : const Color(0xFFE8F0FE),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                icono,
-                color: peligro
-                    ? const Color(0xFFBC4351)
-                    : const Color(0xFF285FE8),
+                ),
+                child: const Text(
+                  'Seguir en la cuenta',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
               ),
             ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    titulo,
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      color: peligro
-                          ? const Color(0xFFBC4351)
-                          : const Color(0xFF17243C),
-                    ),
-                  ),
-                  Text(
-                    sub,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF66758D),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Color(0xFF94A0B3)),
           ],
         ),
       ),

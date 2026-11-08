@@ -7,6 +7,7 @@ import 'pantalla_admin_conversaciones.dart';
 
 /// Figma: Perfil de usuario (admin)
 class PantallaAdminPerfil extends StatelessWidget {
+  final int? idUsuario;
   final String nombre;
   final String apellidos;
   final String correo;
@@ -18,6 +19,7 @@ class PantallaAdminPerfil extends StatelessWidget {
 
   const PantallaAdminPerfil({
     super.key,
+    this.idUsuario,
     this.nombre = 'Nombre usuario',
     this.apellidos = 'Apellidos Usuario',
     this.correo = 'algo@gmail.com',
@@ -181,7 +183,10 @@ class PantallaAdminPerfil extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const PantallaAdminSolicitudes(),
+                            builder: (_) => PantallaAdminSolicitudes(
+                              idUsuarioFiltro: idUsuario,
+                              nombreUsuario: '$nombre $apellidos'.trim(),
+                            ),
                           ),
                         );
                       },

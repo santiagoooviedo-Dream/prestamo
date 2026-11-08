@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
+import '../widgets/comunes/logo_app_bytes.dart';
 import 'pantalla_admin_menu.dart';
 
 /// Figma: Inicio de sesión administrador — contenido centrado y más abajo
@@ -18,9 +20,9 @@ class PantallaAdminBienvenida extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(24, top + 8, 24, 20 + bottom),
         child: Column(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Text(
                   'Préstamos',
                   style: TextStyle(
@@ -53,8 +55,9 @@ class PantallaAdminBienvenida extends StatelessWidget {
                   Container(
                     width: 96,
                     height: 96,
+                    padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF285FE8),
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: const [
                         BoxShadow(
@@ -64,15 +67,9 @@ class PantallaAdminBienvenida extends StatelessWidget {
                         ),
                       ],
                     ),
-                    child: const Center(
-                      child: Text(
-                        'TP',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                        ),
-                      ),
+                    child: Image(
+                      image: MemoryImage(logoAppBytes),
+                      fit: BoxFit.contain,
                     ),
                   ),
                   const SizedBox(height: 14),

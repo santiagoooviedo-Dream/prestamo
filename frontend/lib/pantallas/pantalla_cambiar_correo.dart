@@ -22,6 +22,7 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
   final _contrasenaCtrl = TextEditingController();
   final _usuarioModel = const UsuarioModel();
   bool _guardando = false;
+  bool _ocultar = true;
 
   @override
   void dispose() {
@@ -83,7 +84,7 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 BotonVolver(alPresionar: () => Navigator.pop(context)),
-                Text(
+                const Text(
                   'PERFIL / CORREO',
                   style: TextStyle(
                     fontSize: 11,
@@ -94,25 +95,92 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
                 ),
               ],
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             const Text(
               'Cambiar correo',
               style: TextStyle(
                 fontSize: 28,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             const Text(
               'Confirma el nuevo correo con tu contraseña actual.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 24),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Contraseña primero, con ojito (campo propio para evitar el error)
+                    const Text(
+                      'Contraseña actual',
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        color: ColoresApp.textoPrincipal,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: _contrasenaCtrl,
+                      obscureText: _ocultar,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: ColoresApp.textoPrincipal,
+                      ),
+                      decoration: InputDecoration(
+                        hintText: 'Contraseña actual',
+                        hintStyle: const TextStyle(
+                          color: ColoresApp.textoSuave,
+                          fontSize: 15,
+                        ),
+                        prefixIcon: const Icon(
+                          Icons.lock_outline_rounded,
+                          size: 20,
+                          color: ColoresApp.textoSuave,
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() => _ocultar = !_ocultar);
+                          },
+                          icon: Icon(
+                            _ocultar
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
+                            size: 20,
+                            color: ColoresApp.textoSuave,
+                          ),
+                        ),
+                        filled: true,
+                        fillColor: ColoresApp.blanco,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide:
+                              const BorderSide(color: ColoresApp.bordeInput),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide:
+                              const BorderSide(color: ColoresApp.bordeInput),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(14),
+                          borderSide: const BorderSide(
+                            color: ColoresApp.primario,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
                     CampoTexto(
                       etiqueta: 'Correo nuevo',
                       pista: 'Tu nuevo correo',
@@ -136,21 +204,10 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
                         color: Color(0xFF22C55E),
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    CampoTexto(
-                      etiqueta: 'Contraseña actual',
-                      pista: 'Contraseña actual',
-                      controlador: _contrasenaCtrl,
-                      ocultarTexto: true,
-                      iconoIzquierdo: const Icon(
-                        Icons.lock_outline_rounded,
-                        size: 20,
-                        color: ColoresApp.textoSuave,
-                      ),
-                    ),
                     const SizedBox(height: 20),
                     const AvisoSeguridad(
-                      texto: 'El backend actualizará tu correo después de validar tu contraseña.',
+                      texto:
+                          'Tras confirmar, se validará tu contraseña y se actualizará el correo.',
                     ),
                   ],
                 ),
@@ -159,6 +216,7 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
             BotonPrimario(
               texto: _guardando ? 'Actualizando…' : 'Guardar correo',
               alPresionar: _guardando ? null : _guardar,
+              cargando: _guardando,
             ),
           ],
         ),

@@ -196,6 +196,8 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                                                 ? partes.sublist(1).join(' ')
                                                 : '';
                                             return PantallaAdminPerfil(
+                                              idUsuario: int.tryParse(
+                                                    u['id_usuario']?.toString() ?? ''),
                                               nombre: nom,
                                               apellidos: ape,
                                               correo: correo,

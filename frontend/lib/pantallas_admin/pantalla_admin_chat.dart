@@ -80,11 +80,20 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
             '';
         if (texto.isEmpty) continue;
         _extraerRef(texto);
-        final deUsuario = (raw['rol']?.toString().toLowerCase() == 'usuario') ||
-            (raw['es_usuario'] == true) ||
-            (raw['de_usuario'] == true) ||
-            (raw['tipo']?.toString().toLowerCase() == 'usuario');
-        nuevos.add(_Msg(texto, deUsuario: deUsuario));
+        final remitente =
+            (raw['remitente'] ?? raw['rol'] ?? raw['tipo'] ?? '')
+                .toString()
+                .toLowerCase()
+                .trim();
+        // Vista admin: mensajes del usuario a la izquierda, del admin a la derecha
+        final deUsuario = remitente != 'admin' &&
+            remitente != 'administrador' &&
+            remitente != 'agente';
+        // Si no viene remitente, intentar flags legacy
+        final deUsuarioFinal = remitente.isEmpty
+            ? true // sin remitente: se asume mensaje del usuario
+            : deUsuario;
+        nuevos.add(_Msg(texto, deUsuario: deUsuarioFinal));
       }
       if (nuevos.isNotEmpty) {
         setState(() {

@@ -98,15 +98,21 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
       if (!mounted) return;
       setState(() {
         _idConversacion = id;
-        _msgs.add(_Msg(intro, propio: true));
-        _msgs.add(
-          const _Msg(
-            'Un administrador revisará tu solicitud de pago personal y te responderá aquí. Indica el día y la hora en que puedes acercarte.',
-            propio: false,
-          ),
-        );
         _cargando = false;
       });
+      await _cargarMensajes();
+      if (!mounted) return;
+      if (_msgs.isEmpty) {
+        setState(() {
+          _msgs.add(_Msg(intro, propio: true));
+          _msgs.add(
+            const _Msg(
+              'Un administrador revisará tu solicitud de pago personal y te responderá aquí. Indica el día y la hora en que puedes acercarte.',
+              propio: false,
+            ),
+          );
+        });
+      }
     } on ApiException catch (e) {
       if (!mounted) return;
       setState(() {
@@ -120,6 +126,36 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
         _cargando = false;
       });
     }
+  }
+
+
+  Future<void> _cargarMensajes() async {
+    final id = _idConversacion;
+    if (id == null) return;
+    try {
+      final lista = await ApiService.obtenerMensajesConversacion(id);
+      if (!mounted || lista.isEmpty) return;
+      final nuevos = <_Msg>[];
+      for (final raw in lista) {
+        final texto = raw['mensaje']?.toString() ??
+            raw['respuesta']?.toString() ??
+            raw['contenido']?.toString() ??
+            '';
+        if (texto.isEmpty) continue;
+        final remitente =
+            (raw['remitente'] ?? '').toString().toLowerCase().trim();
+        // usuario = derecha (azul); admin/bot = izquierda (blanco)
+        final propio = remitente == 'usuario' || remitente == 'user';
+        nuevos.add(_Msg(texto, propio: propio));
+      }
+      if (nuevos.isEmpty) return;
+      setState(() {
+        _msgs
+          ..clear()
+          ..addAll(nuevos);
+      });
+      _scrollAlFinal();
+    } catch (_) {}
   }
 
   Future<void> _enviar() async {

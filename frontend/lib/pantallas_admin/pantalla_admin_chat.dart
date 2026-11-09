@@ -14,6 +14,7 @@ class PantallaAdminChat extends StatefulWidget {
   final int? idPrestamo;
   final int? idCuota;
   final num? monto;
+  final int? idUsuario;
 
   const PantallaAdminChat({
     super.key,
@@ -24,6 +25,7 @@ class PantallaAdminChat extends StatefulWidget {
     this.idPrestamo,
     this.idCuota,
     this.monto,
+    this.idUsuario,
   });
 
   @override
@@ -36,10 +38,15 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
   bool _cargando = false;
   bool _validando = false;
   bool _pagoValidado = false;
+  /// Se activa si en cualquier mensaje del chat se detecta REF_PAGO / datos de cuota
+  bool _esPagoPersonalDetectado = false;
 
   int? _idPrestamo;
   int? _idCuota;
   num? _monto;
+
+  bool get _mostrarBotonValidar =>
+      (widget.esPagoPersonal || _esPagoPersonalDetectado) && !_pagoValidado;
 
   @override
   void initState() {
@@ -47,10 +54,14 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
     _idPrestamo = widget.idPrestamo;
     _idCuota = widget.idCuota;
     _monto = widget.monto;
+    _esPagoPersonalDetectado = widget.esPagoPersonal;
 
     if (widget.mensajeInicialUsuario != null) {
       _msgs.add(_Msg(widget.mensajeInicialUsuario!, deUsuario: true));
       _extraerRef(widget.mensajeInicialUsuario!);
+      if (_idPrestamo != null && _idCuota != null) {
+        _esPagoPersonalDetectado = true;
+      }
     }
     _cargarMensajes();
   }
@@ -95,11 +106,36 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
             : deUsuario;
         nuevos.add(_Msg(texto, deUsuario: deUsuarioFinal));
       }
+      // Si ya existe un mensaje de validación, ocultar el botón
+      final yaValidado = nuevos.any((m) {
+        final t = m.texto.toLowerCase();
+        return t.contains('pago personal fue validado') ||
+            t.contains('pago verificado') ||
+            t.contains('queda registrada como pagada');
+      });
+      if (yaValidado) {
+        _pagoValidado = true;
+      }
+
+      // Detectar pago personal aunque el último mensaje no tenga REF_PAGO
+      // (el usuario pudo escribir mensajes adicionales después)
+      final hayRefPago = nuevos.any((m) {
+        final t = m.texto.toLowerCase();
+        return t.contains('ref_pago') ||
+            t.contains('id_prestamo') ||
+            t.contains('pago personal');
+      });
+
       if (nuevos.isNotEmpty) {
         setState(() {
           _msgs
             ..clear()
             ..addAll(nuevos);
+          // Si encontramos datos de pago en cualquier mensaje, activar modo pago
+          if (hayRefPago ||
+              (_idPrestamo != null && _idCuota != null && _monto != null)) {
+            _esPagoPersonalDetectado = true;
+          }
         });
       }
     } catch (_) {
@@ -155,16 +191,32 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Pago personal validado correctamente.')),
       );
-      // Aviso al usuario en el chat
+      // Aviso claro en el chat
       final id = widget.idConversacion;
       if (id != null && id.isNotEmpty) {
         const aviso =
-            'Tu pago personal fue validado. La cuota queda registrada como pagada.';
+            '✅ Pago verificado. Tu pago personal fue validado correctamente y la cuota ya quedó registrada como pagada.';
         setState(() => _msgs.add(const _Msg(aviso, deUsuario: false)));
         try {
           await ApiService.enviarMensajeConversacion(
             idConversacion: id,
             mensaje: aviso,
+          );
+        } catch (_) {}
+      }
+
+      // Notificación al usuario
+      final idUser = widget.idUsuario;
+      if (idUser != null) {
+        try {
+          final montoTxt = _monto == null
+              ? ''
+              : '\$${_monto!.round().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]}.')}';
+          await ApiService.crearNotificacion(
+            idUsuario: idUser,
+            mensaje:
+                'Pago de cuota confirmado\n\nTu pago personal de $montoTxt fue validado. La cuota ya aparece como pagada en tu estado de cuenta y calendario.',
+            tipo: 'pago',
           );
         } catch (_) {}
       }
@@ -290,25 +342,14 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                 },
               ),
             ),
-            if (widget.esPagoPersonal && !_pagoValidado) ...[
+            if (_mostrarBotonValidar) ...[
               BotonPrimario(
                 texto: _validando ? 'Validando…' : 'Validar pago personal',
                 alPresionar: _validando ? null : _validarPago,
               ),
               const SizedBox(height: 10),
             ],
-            if (_pagoValidado)
-              const Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: Text(
-                  'Pago validado',
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF168261),
-                  ),
-                ),
-              ),
+            // Confirmación de pago solo en el mensaje del chat (sin texto verde).
             Row(
               children: [
                 Expanded(

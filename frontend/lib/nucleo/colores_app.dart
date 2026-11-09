@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// Colores exactos del diseño Figma - TP Préstamos
 class ColoresApp {
   ColoresApp._();
 

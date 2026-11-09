@@ -5,7 +5,6 @@ import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/logo_app_bytes.dart';
 import 'pantalla_admin_menu.dart';
 
-/// Figma: Inicio de sesión administrador — contenido centrado y más abajo
 class PantallaAdminBienvenida extends StatelessWidget {
   const PantallaAdminBienvenida({super.key});
 

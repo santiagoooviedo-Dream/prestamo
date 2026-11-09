@@ -7,7 +7,6 @@ import '../widgets/soporte/chat_widgets.dart';
 import 'pantalla_inicio.dart';
 import 'pantalla_mis_conversaciones.dart';
 
-/// Figma: Asistente virtual (SOPORTE)
 class PantallaAsistenteVirtual extends StatefulWidget {
   const PantallaAsistenteVirtual({super.key});
 

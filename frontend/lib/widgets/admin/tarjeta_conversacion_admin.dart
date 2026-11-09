@@ -4,6 +4,7 @@ class TarjetaConversacionAdmin extends StatelessWidget {
   final String nombre;
   final String preview;
   final bool esPagoPersonal;
+  final bool yaValidado;
   final VoidCallback onTap;
 
   const TarjetaConversacionAdmin({
@@ -11,20 +12,29 @@ class TarjetaConversacionAdmin extends StatelessWidget {
     required this.nombre,
     required this.preview,
     required this.esPagoPersonal,
+    this.yaValidado = false,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
+    final Color fondo = yaValidado ? const Color(0xFFEAF7F0) : Colors.white;
+    final Color borde =
+        yaValidado ? const Color(0xFFB7E4C7) : const Color(0xFFE1E8F3);
+    final Color iconoFondo =
+        yaValidado ? const Color(0xFFD1FAE5) : const Color(0xFFE8F0FE);
+    final Color iconoColor =
+        yaValidado ? const Color(0xFF168261) : const Color(0xFF285FE8);
+
     return InkWell(
       borderRadius: BorderRadius.circular(16),
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: fondo,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
+          border: Border.all(color: borde),
         ),
         child: Row(
           children: [
@@ -32,14 +42,16 @@ class TarjetaConversacionAdmin extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F0FE),
+                color: iconoFondo,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
-                esPagoPersonal
-                    ? Icons.payments_outlined
-                    : Icons.chat_bubble_outline_rounded,
-                color: const Color(0xFF285FE8),
+                yaValidado
+                    ? Icons.check_circle_outline_rounded
+                    : (esPagoPersonal
+                        ? Icons.payments_outlined
+                        : Icons.chat_bubble_outline_rounded),
+                color: iconoColor,
                 size: 22,
               ),
             ),
@@ -62,7 +74,27 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                           ),
                         ),
                       ),
-                      if (esPagoPersonal)
+                      if (yaValidado)
+                        Container(
+                          margin: const EdgeInsets.only(left: 6),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFD1FAE5),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Text(
+                            'Verificado',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF168261),
+                            ),
+                          ),
+                        )
+                      else if (esPagoPersonal)
                         Container(
                           margin: const EdgeInsets.only(left: 6),
                           padding: const EdgeInsets.symmetric(
@@ -89,15 +121,22 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                     preview,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF66758D),
+                      color: yaValidado
+                          ? const Color(0xFF168261)
+                          : const Color(0xFF66758D),
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right, color: Color(0xFF94A0B3)),
+            Icon(
+              Icons.chevron_right,
+              color: yaValidado
+                  ? const Color(0xFF168261)
+                  : const Color(0xFF94A0B3),
+            ),
           ],
         ),
       ),

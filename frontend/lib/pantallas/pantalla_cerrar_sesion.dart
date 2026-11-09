@@ -6,7 +6,6 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_bienvenida.dart';
 
-/// Figma: Cerrar sesión (MI CUENTA / SALIR)
 class PantallaCerrarSesion extends StatelessWidget {
   const PantallaCerrarSesion({super.key});
   static const _usuarioModel = UsuarioModel();

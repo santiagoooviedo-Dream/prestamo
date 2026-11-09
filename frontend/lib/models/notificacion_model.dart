@@ -62,10 +62,8 @@ class NotificacionModel {
       tiempo: local == null
           ? ''
           : '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')}/${local.year} · ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}',
-      icono: tipo == 'pago'
-          ? Icons.payments_outlined
-          : Icons.notifications_outlined,
-      categoria: tipo == 'pago' ? 'pagos' : 'prestamos',
+      icono: _iconoDe(tipo, mensajeRaw),
+      categoria: _categoriaDe(tipo, mensajeRaw),
       leida: dato['leida'] == true,
     );
   }
@@ -79,6 +77,27 @@ class NotificacionModel {
         categoria: categoria,
         leida: true,
       );
+
+  static IconData _iconoDe(String tipo, String mensaje) {
+    final lower = mensaje.toLowerCase();
+    if (tipo == 'pago' || lower.contains('pago')) {
+      return Icons.payments_outlined;
+    }
+    if (lower.contains('aprob')) return Icons.check_circle_outline;
+    if (lower.contains('rechaz')) return Icons.cancel_outlined;
+    if (lower.contains('desembolso') || lower.contains('recib')) {
+      return Icons.account_balance_wallet_outlined;
+    }
+    return Icons.notifications_outlined;
+  }
+
+  static String _categoriaDe(String tipo, String mensaje) {
+    final lower = mensaje.toLowerCase();
+    if (tipo == 'pago' || lower.contains('pago') || lower.contains('cuota')) {
+      return 'pagos';
+    }
+    return 'prestamos';
+  }
 }
 
 class NotificacionesModel {

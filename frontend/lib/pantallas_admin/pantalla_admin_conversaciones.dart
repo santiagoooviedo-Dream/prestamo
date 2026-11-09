@@ -7,7 +7,15 @@ import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_chat.dart';
 
 class PantallaAdminConversaciones extends StatefulWidget {
-  const PantallaAdminConversaciones({super.key});
+  /// Si se pasa, solo muestra las conversaciones de ese usuario.
+  final int? idUsuarioFiltro;
+  final String? nombreUsuario;
+
+  const PantallaAdminConversaciones({
+    super.key,
+    this.idUsuarioFiltro,
+    this.nombreUsuario,
+  });
 
   @override
   State<PantallaAdminConversaciones> createState() =>
@@ -41,11 +49,26 @@ class _PantallaAdminConversacionesState
         }
       } catch (_) {}
 
-      // Filtro ESTRICTO: solo conversaciones con modo == 'admin'.
-      // (según tu tabla de base de datos ese es el campo que marca la transferencia)
+      // 1. Solo conversaciones transferidas al admin (modo == 'admin')
+      // 2. Si venimos del perfil de un usuario, filtrar solo las de ese usuario
       final conAdmin = raw.where((c) {
         final modo = (c['modo'] ?? '').toString().toLowerCase().trim();
-        return modo == 'admin';
+        if (modo != 'admin') return false;
+
+        // Filtro por usuario (cuando se abre desde el perfil)
+        final filtroId = widget.idUsuarioFiltro;
+        if (filtroId != null) {
+          final idUser = int.tryParse(
+            c['id_usuario']?.toString() ??
+                c['usuario_id']?.toString() ??
+                (c['usuario'] is Map
+                    ? c['usuario']['id_usuario']?.toString() ?? ''
+                    : '') ??
+                '',
+          );
+          if (idUser != filtroId) return false;
+        }
+        return true;
       }).toList();
 
       final items = <_ConvItem>[];
@@ -71,26 +94,47 @@ class _PantallaAdminConversacionesState
             c['preview']?.toString() ??
             c['asunto']?.toString() ??
             '';
-        if (preview.isEmpty) {
-          try {
-            final msgs = await ApiService.obtenerMensajesConversacion(idConv);
-            if (msgs.isNotEmpty) {
+        var todosLosTextos = preview;
+        try {
+          final msgs = await ApiService.obtenerMensajesConversacion(idConv);
+          if (msgs.isNotEmpty) {
+            if (preview.isEmpty) {
               final last = msgs.last;
               preview = last['mensaje']?.toString() ??
                   last['respuesta']?.toString() ??
                   last['contenido']?.toString() ??
                   '';
             }
-          } catch (_) {}
-        }
+            // Revisar TODOS los mensajes para detectar pago personal
+            // (aunque el último mensaje sea solo "hola" o similar)
+            final buffer = StringBuffer(preview);
+            for (final msg in msgs) {
+              buffer.write(' ');
+              buffer.write(msg['mensaje'] ?? '');
+              buffer.write(' ');
+              buffer.write(msg['respuesta'] ?? '');
+              buffer.write(' ');
+              buffer.write(msg['contenido'] ?? '');
+            }
+            todosLosTextos = buffer.toString();
+          }
+        } catch (_) {}
         if (preview.isEmpty) preview = 'Sin mensajes';
 
-        final pago = _esPagoPersonal(c, preview);
+        final pago = _esPagoPersonal(c, todosLosTextos);
+        final lowerAll = todosLosTextos.toLowerCase();
+        final yaValidado = lowerAll.contains('pago personal fue validado') ||
+            lowerAll.contains('pago verificado') ||
+            lowerAll.contains('queda registrada como pagada') ||
+            lowerAll.contains('cuota ya quedó registrada');
+
         items.add(_ConvItem(
           id: idConv,
           nombre: nombre,
           preview: preview,
           esPago: pago,
+          yaValidado: yaValidado,
+          idUsuario: idUser,
         ));
       }
 
@@ -203,18 +247,22 @@ class _PantallaAdminConversacionesState
               ],
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Conversaciones',
-              style: TextStyle(
-                fontSize: 28,
+            Text(
+              widget.nombreUsuario != null && widget.nombreUsuario!.isNotEmpty
+                  ? 'Conversaciones de ${widget.nombreUsuario}'
+                  : 'Conversaciones',
+              style: const TextStyle(
+                fontSize: 26,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF17243C),
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Solo chats transferidos al administrador y pagos personales.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+            Text(
+              widget.idUsuarioFiltro != null
+                  ? 'Solo chats de este usuario transferidos al administrador.'
+                  : 'Solo chats transferidos al administrador y pagos personales.',
+              style: const TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 16),
             Expanded(child: _cuerpo()),
@@ -258,7 +306,19 @@ class _PantallaAdminConversacionesState
             nombre: it.nombre,
             preview: it.preview,
             esPagoPersonal: it.esPago,
+            yaValidado: it.yaValidado,
             onTap: () {
+              // Extraer datos de REF_PAGO del preview si existen
+              int? idPrestamo;
+              int? idCuota;
+              num? monto;
+              final p = RegExp(r'id_prestamo=(\d+)').firstMatch(it.preview);
+              final c = RegExp(r'id_cuota=(\d+)').firstMatch(it.preview);
+              final m = RegExp(r'monto=([0-9.]+)').firstMatch(it.preview);
+              if (p != null) idPrestamo = int.tryParse(p.group(1)!);
+              if (c != null) idCuota = int.tryParse(c.group(1)!);
+              if (m != null) monto = num.tryParse(m.group(1)!);
+
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -267,7 +327,14 @@ class _PantallaAdminConversacionesState
                     nombreUsuario: it.nombre,
                     mensajeInicialUsuario:
                         it.preview == 'Sin mensajes' ? null : it.preview,
-                    esPagoPersonal: it.esPago,
+                    esPagoPersonal: it.esPago ||
+                        idPrestamo != null ||
+                        it.preview.toLowerCase().contains('ref_pago') ||
+                        it.preview.toLowerCase().contains('pago personal'),
+                    idPrestamo: idPrestamo,
+                    idCuota: idCuota,
+                    monto: monto,
+                    idUsuario: it.idUsuario,
                   ),
                 ),
               ).then((_) => _cargar());
@@ -284,11 +351,15 @@ class _ConvItem {
   final String nombre;
   final String preview;
   final bool esPago;
+  final bool yaValidado;
+  final int? idUsuario;
 
   _ConvItem({
     required this.id,
     required this.nombre,
     required this.preview,
     required this.esPago,
+    this.yaValidado = false,
+    this.idUsuario,
   });
 }

@@ -140,10 +140,84 @@ class CuentaModel {
       ApiService.obtenerCuotas(),
       ApiService.obtenerMovimientos(),
     ]);
+    final prestamos = datos[0];
+    final cuotas = datos[1];
+    final movimientosApi = datos[2].map(MovimientoCuenta.desdeApi).toList();
+
+    // Enriquecer con desembolsos y pagos derivados si la API no los trae todos
+    final enriquecidos = <MovimientoCuenta>[...movimientosApi];
+    final idsYaVistos = enriquecidos
+        .map((m) => '${m.titulo}|${m.monto}|${m.fecha}')
+        .toSet();
+
+    // 1. Desembolso por cada préstamo activo/completado
+    for (final p in prestamos) {
+      final monto = double.tryParse(p['monto']?.toString() ?? '') ?? 0;
+      if (monto <= 0) continue;
+      final fechaRaw = p['fecha_inicio']?.toString() ??
+          p['fecha_desembolso']?.toString() ??
+          p['created_at']?.toString() ??
+          '';
+      final fechaDate = DateTime.tryParse(fechaRaw);
+      final key = 'Desembolso|$monto|$fechaRaw';
+      if (idsYaVistos.contains(key)) continue;
+      idsYaVistos.add(key);
+      enriquecidos.add(
+        MovimientoCuenta(
+          titulo: 'Desembolso',
+          descripcion: 'Recibiste el dinero de tu préstamo',
+          fecha: fechaRaw,
+          fechaDate: fechaDate,
+          monto: monto,
+          positivo: true,
+          tipoIcono: 'desembolso',
+          tipo: 'desembolso',
+        ),
+      );
+    }
+
+    // 2. Pagos de cuotas marcadas como pagadas
+    for (final c in cuotas) {
+      final estado = (c['estado'] ?? '').toString().toLowerCase();
+      if (estado != 'pagada' && estado != 'pagado') continue;
+      final monto = double.tryParse(
+            c['monto']?.toString() ??
+                c['valor']?.toString() ??
+                c['cuota']?.toString() ??
+                '',
+          ) ??
+          0;
+      if (monto <= 0) continue;
+      final fechaRaw = c['fecha_pago']?.toString() ??
+          c['fecha_pagada']?.toString() ??
+          c['updated_at']?.toString() ??
+          '';
+      final fechaDate = DateTime.tryParse(fechaRaw);
+      final nro = c['numero_cuota']?.toString() ?? c['nro']?.toString() ?? '';
+      final titulo = 'Pago de cuota';
+      final key = '$titulo|$monto|$fechaRaw';
+      if (idsYaVistos.contains(key)) continue;
+      idsYaVistos.add(key);
+      enriquecidos.add(
+        MovimientoCuenta(
+          titulo: titulo,
+          descripcion: nro.isEmpty
+              ? 'Cuota de tu préstamo'
+              : 'Cuota #$nro de tu préstamo',
+          fecha: fechaRaw,
+          fechaDate: fechaDate,
+          monto: monto,
+          positivo: false,
+          tipoIcono: 'pago',
+          tipo: 'pago',
+        ),
+      );
+    }
+
     return CuentaEstado(
-      prestamos: datos[0],
-      cuotas: datos[1],
-      movimientos: datos[2].map(MovimientoCuenta.desdeApi).toList(),
+      prestamos: prestamos,
+      cuotas: cuotas,
+      movimientos: enriquecidos,
     );
   }
 }

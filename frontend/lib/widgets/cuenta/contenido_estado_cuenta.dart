@@ -5,7 +5,6 @@ import '../../pantallas/pantalla_actividad_cuenta.dart';
 import '../../pantallas/pantalla_calendario_pagos.dart';
 import '../comunes/boton_primario.dart';
 
-/// Estado de cuenta — layout Figma
 class ContenidoEstadoCuenta extends StatelessWidget {
   final CuentaEstado estado;
 

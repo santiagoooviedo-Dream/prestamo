@@ -170,11 +170,17 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                       icono: Icons.notifications_none_rounded,
                       titulo: 'Soporte',
                       onTap: () {
+                        final nombreCompleto =
+                            '${widget.nombre} ${widget.apellidos}'.trim();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) =>
-                                const PantallaAdminConversaciones(),
+                            builder: (_) => PantallaAdminConversaciones(
+                              idUsuarioFiltro: widget.idUsuario,
+                              nombreUsuario: nombreCompleto.isEmpty
+                                  ? null
+                                  : nombreCompleto,
+                            ),
                           ),
                         );
                       },

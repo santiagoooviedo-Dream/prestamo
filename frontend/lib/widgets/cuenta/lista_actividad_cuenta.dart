@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../models/cuenta_model.dart';
 
-/// Actividad de cuenta — agrupada por mes (Figma)
 class ListaActividadCuenta extends StatefulWidget {
   final List<MovimientoCuenta> movimientos;
 

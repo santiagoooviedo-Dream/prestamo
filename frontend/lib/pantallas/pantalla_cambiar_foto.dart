@@ -9,7 +9,6 @@ import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 
-/// Figma: Cambiar foto (PERFIL / FOTO)
 class PantallaCambiarFoto extends StatefulWidget {
   const PantallaCambiarFoto({super.key});
 

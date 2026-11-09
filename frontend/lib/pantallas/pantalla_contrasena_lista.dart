@@ -4,7 +4,6 @@ import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_iniciar_sesion.dart';
 
-/// Figma: Recuperación 2 de 2 — ¡Todo listo!
 class PantallaContrasenaLista extends StatelessWidget {
   const PantallaContrasenaLista({super.key});
 

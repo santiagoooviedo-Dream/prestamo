@@ -148,7 +148,6 @@ class PantallaConfirmarPago extends StatelessWidget {
             BotonPrimario(
               texto: 'Confirmar pago',
               alPresionar: () {
-                // Figma: Confirmar pago → Seleccionar método de pago
                 Navigator.push(
                   context,
                   MaterialPageRoute(

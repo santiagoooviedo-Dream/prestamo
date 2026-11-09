@@ -43,7 +43,9 @@ class ListaMisPrestamos extends StatelessWidget {
         }).toList() ??
         const <Map<String, dynamic>>[];
 
-    return ListView(
+    return RefreshIndicator(
+      onRefresh: () async => alReintentar(),
+      child: ListView(
       padding: EdgeInsets.fromLTRB(24, top + 6, 24, 16),
       children: [
         Row(
@@ -94,6 +96,7 @@ class ListaMisPrestamos extends StatelessWidget {
             _TarjetaPrestamoActual(
               prestamo: prestamo,
               cuotas: datos!.cuotasDelPrestamo(prestamo['id_prestamo']),
+              alActualizar: alReintentar,
             )
           else
             const _EstadoVacio(),
@@ -106,7 +109,7 @@ class ListaMisPrestamos extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => const PantallaPrestamosAnteriores(),
               ),
-            ),
+            ).then((_) => alReintentar()),
           ),
         ],
         const SizedBox(height: 20),
@@ -118,7 +121,7 @@ class ListaMisPrestamos extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => const PantallaCalendarioPagos(),
               ),
-            ),
+            ).then((_) => alReintentar()),
           )
         else
           BotonPrimario(
@@ -131,6 +134,7 @@ class ListaMisPrestamos extends StatelessWidget {
             ),
           ),
       ],
+    ),
     );
   }
 }
@@ -138,8 +142,13 @@ class ListaMisPrestamos extends StatelessWidget {
 class _TarjetaPrestamoActual extends StatelessWidget {
   final Map<String, dynamic> prestamo;
   final List<Map<String, dynamic>> cuotas;
+  final VoidCallback? alActualizar;
 
-  const _TarjetaPrestamoActual({required this.prestamo, required this.cuotas});
+  const _TarjetaPrestamoActual({
+    required this.prestamo,
+    required this.cuotas,
+    this.alActualizar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +168,7 @@ class _TarjetaPrestamoActual extends StatelessWidget {
               builder: (_) =>
                   PantallaDetallePrestamo(prestamo: prestamo, cuotas: cuotas),
             ),
-          ),
+          ).then((_) => alActualizar?.call()),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -190,11 +199,11 @@ class _TarjetaPrestamoActual extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Cuotas pendientes',
+                      'Cuotas pagadas',
                       style: TextStyle(fontSize: 11, color: Color(0xFFE4EDFF)),
                     ),
                     Text(
-                      total == 0 ? '—' : '$pendientes de $total',
+                      total == 0 ? '—' : '$pagadas de $total',
                       style: const TextStyle(fontSize: 11, color: Colors.white),
                     ),
                   ],
@@ -211,7 +220,7 @@ class _TarjetaPrestamoActual extends StatelessWidget {
               builder: (_) =>
                   PantallaDetallePrestamo(prestamo: prestamo, cuotas: cuotas),
             ),
-          ),
+          ).then((_) => alActualizar?.call()),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -442,8 +451,15 @@ class _FilaDato extends StatelessWidget {
 }
 
 bool _estaPagada(Map<String, dynamic> cuota) {
-  final estado = cuota['estado']?.toString().toLowerCase();
-  return estado == 'pagada' || estado == 'pagado';
+  final estado = (cuota['estado'] ?? '').toString().toLowerCase().trim();
+  if (estado.isEmpty) return false;
+  return estado == 'pagada' ||
+      estado == 'pagado' ||
+      estado == 'pagadas' ||
+      estado == 'completada' ||
+      estado == 'completado' ||
+      estado == 'paid' ||
+      estado.contains('pagad');
 }
 
 class _EstadoCarga extends StatelessWidget {

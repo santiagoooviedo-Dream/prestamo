@@ -4,8 +4,13 @@ import '../comunes/boton_volver.dart';
 
 class CabeceraAsistente extends StatelessWidget {
   final VoidCallback alVolver;
+  final VoidCallback? alVerAnteriores;
 
-  const CabeceraAsistente({super.key, required this.alVolver});
+  const CabeceraAsistente({
+    super.key,
+    required this.alVolver,
+    this.alVerAnteriores,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,35 @@ class CabeceraAsistente extends StatelessWidget {
           'Estamos aquí para resolver tus dudas.',
           style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
         ),
+        if (alVerAnteriores != null) ...[
+          const SizedBox(height: 10),
+          GestureDetector(
+            onTap: alVerAnteriores,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFEDF3FF),
+                borderRadius: BorderRadius.circular(100),
+                border: Border.all(color: const Color(0xFFD6E4FF)),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.history_rounded, size: 16, color: Color(0xFF285FE8)),
+                  SizedBox(width: 6),
+                  Text(
+                    'Ver conversaciones anteriores',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF285FE8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: 16),
       ],
     );

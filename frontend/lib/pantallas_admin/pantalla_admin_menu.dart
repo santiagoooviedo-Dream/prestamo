@@ -101,12 +101,11 @@ class PantallaAdminMenu extends StatelessWidget {
               height: 54,
               child: OutlinedButton(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const PantallaAdminBienvenida(),
+                      builder: (_) => const PantallaAdminCerrarSesion(),
                     ),
-                    (_) => false,
                   );
                 },
                 style: OutlinedButton.styleFrom(

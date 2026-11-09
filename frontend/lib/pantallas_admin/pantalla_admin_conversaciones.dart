@@ -41,16 +41,11 @@ class _PantallaAdminConversacionesState
         }
       } catch (_) {}
 
-      // Solo conversaciones transferidas al administrador (modo == admin)
+      // Filtro ESTRICTO: solo conversaciones con modo == 'admin'.
+      // (según tu tabla de base de datos ese es el campo que marca la transferencia)
       final conAdmin = raw.where((c) {
-        final modo = (c['modo'] ?? '').toString().toLowerCase();
-        final estado = (c['estado'] ?? '').toString().toLowerCase();
-        // modo admin = ya pidió hablar con un humano / pago personal transferido
-        if (modo == 'admin') return true;
-        // por si el backend usa otros flags
-        if (modo.contains('admin') || modo == 'humano') return true;
-        if (estado == 'admin' || estado == 'transferida') return true;
-        return false;
+        final modo = (c['modo'] ?? '').toString().toLowerCase().trim();
+        return modo == 'admin';
       }).toList();
 
       final items = <_ConvItem>[];
@@ -146,10 +141,35 @@ class _PantallaAdminConversacionesState
       c['asunto'],
       c['descripcion'],
       c['tipo'],
+      c['modo'],
+      c['categoria'],
+      c['origen'],
     ].whereType<Object>().map((e) => e.toString().toLowerCase()).join(' ');
-    return texto.contains('pago personal') ||
+
+    // Detectar por palabras clave comunes de pago presencial / personal
+    if (texto.contains('pago personal') ||
+        texto.contains('pago presencial') ||
+        texto.contains('pagar en persona') ||
+        texto.contains('pagar mi cuota') ||
+        texto.contains('quiero pagar') ||
         texto.contains('ref_pago') ||
-        texto.contains('id_prestamo');
+        texto.contains('id_prestamo') ||
+        texto.contains('id_cuota')) {
+      return true;
+    }
+
+    // Si el backend marca el tipo explícitamente
+    final tipo = (c['tipo'] ?? c['categoria'] ?? '').toString().toLowerCase();
+    if (tipo.contains('pago') || tipo == 'personal' || tipo == 'presencial') {
+      return true;
+    }
+
+    // Si viene con id_prestamo o id_cuota asociado
+    if (c['id_prestamo'] != null || c['id_cuota'] != null) {
+      return true;
+    }
+
+    return false;
   }
 
   @override

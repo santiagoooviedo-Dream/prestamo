@@ -50,8 +50,12 @@ class PrestamosUsuario {
     if (totalCuotas == 0 || cuotasPrestamo.length < totalCuotas) return false;
 
     final cuotasPagadas = cuotasPrestamo.where((cuota) {
-      final estadoCuota = cuota['estado']?.toString().toLowerCase();
-      return estadoCuota == 'pagada' || estadoCuota == 'pagado';
+      final estadoCuota = (cuota['estado'] ?? '').toString().toLowerCase();
+      return estadoCuota == 'pagada' ||
+          estadoCuota == 'pagado' ||
+          estadoCuota.contains('pagad') ||
+          estadoCuota == 'completada' ||
+          estadoCuota == 'completado';
     }).length;
     return cuotasPagadas >= totalCuotas;
   }

@@ -37,10 +37,16 @@ class PantallaDetallePrestamo extends StatelessWidget {
     final proximoPago = pendientes.isEmpty
         ? '—'
         : formatoFechaPrestamo(pendientes.first['fecha_pago']);
-    final interes = num.tryParse(prestamo['interes']?.toString() ?? '');
-    final interesPorcentaje = interes == null
-        ? '—'
-        : '${interes > 1 ? interes.toStringAsFixed(0) : (interes * 100).toStringAsFixed(0)}%';
+    // La app usa tasa fija del 10%. Si el backend no envía el campo o llega 0, mostramos 10%.
+    final interesRaw = num.tryParse(
+      prestamo['interes']?.toString() ??
+          prestamo['tasa_interes']?.toString() ??
+          prestamo['tasa']?.toString() ??
+          '',
+    );
+    final interes = (interesRaw == null || interesRaw == 0) ? 0.10 : interesRaw;
+    final interesPorcentaje =
+        '${interes > 1 ? interes.toStringAsFixed(0) : (interes * 100).toStringAsFixed(0)}%';
     final estadoRecibido = prestamo['estado']?.toString() ?? '';
     final estado = estadoRecibido.isEmpty ? 'Activo' : estadoRecibido;
 

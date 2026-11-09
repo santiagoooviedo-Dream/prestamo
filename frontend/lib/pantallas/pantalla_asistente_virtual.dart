@@ -5,6 +5,7 @@ import '../nucleo/api_service.dart';
 import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/soporte/chat_widgets.dart';
 import 'pantalla_inicio.dart';
+import 'pantalla_mis_conversaciones.dart';
 
 /// Figma: Asistente virtual (SOPORTE)
 class PantallaAsistenteVirtual extends StatefulWidget {
@@ -105,6 +106,14 @@ class _PantallaAsistenteVirtualState extends State<PantallaAsistenteVirtual> {
                       MaterialPageRoute(builder: (_) => const PantallaInicio()),
                       (_) => false,
                     ),
+                    alVerAnteriores: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const PantallaMisConversaciones(),
+                        ),
+                      );
+                    },
                   ),
                   Expanded(
                     child: ListView(

@@ -72,13 +72,8 @@ class PantallaBienvenida extends StatelessWidget {
                 ),
 
                 const SizedBox(height: 20),
-
                 const LogoBienvenida(),
-
-                // Un poco de aire (no todo el espacio vacío)
                 const Spacer(flex: 2),
-
-                // Textos más grandes para ocupar el medio
                 const Text(
                   'Tus préstamos, sin complicaciones.',
                   style: TextStyle(
@@ -132,7 +127,6 @@ class PantallaBienvenida extends StatelessWidget {
                   ),
                 ),
 
-                // Pequeño aire antes de botones
                 const Spacer(flex: 1),
 
                 BotonPrimario(

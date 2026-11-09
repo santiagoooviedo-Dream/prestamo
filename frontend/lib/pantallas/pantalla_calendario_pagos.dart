@@ -7,7 +7,6 @@ import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_metodo_pago.dart';
 
-/// Calendario de pagos (Figma): mes + leyenda + detalle + pagar
 class PantallaCalendarioPagos extends StatefulWidget {
   const PantallaCalendarioPagos({super.key});
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
-import '../pantallas/pantalla_iniciar_sesion.dart';
+import '../pantallas/pantalla_bienvenida.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_menu.dart';
@@ -17,7 +17,7 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
     if (!context.mounted) return;
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (_) => const PantallaIniciarSesion()),
+      MaterialPageRoute(builder: (_) => const PantallaBienvenida()),
       (_) => false,
     );
   }

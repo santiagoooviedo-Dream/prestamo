@@ -125,7 +125,7 @@ class PantallaInicio extends StatelessWidget {
                       Expanded(
                         child: TarjetaAcceso(
                           icono: Icons.history_rounded,
-                          titulo: 'Historial',
+                          titulo: 'Prestamos',
                           subtitulo: 'Consulta tus préstamos',
                           onTap: () => Navigator.push(
                             context,

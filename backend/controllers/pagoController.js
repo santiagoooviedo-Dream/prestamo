@@ -118,3 +118,33 @@ res.status(201).json({
 });
 
 };
+
+// Subir comprobante de pago Nequi (imagen a Cloudinary vía multer)
+export const subirComprobante = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                mensaje: 'Debes enviar la imagen del comprobante'
+            });
+        }
+
+        // multer-storage-cloudinary deja la URL en path / secure_url / url
+        const url = req.file.path || req.file.secure_url || req.file.url || null;
+
+        if (!url) {
+            return res.status(500).json({
+                mensaje: 'No se pudo obtener la URL del comprobante'
+            });
+        }
+
+        return res.status(201).json({
+            mensaje: 'Comprobante subido correctamente',
+            url
+        });
+    } catch (error) {
+        return res.status(500).json({
+            mensaje: 'Error al subir el comprobante',
+            error: error.message
+        });
+    }
+};

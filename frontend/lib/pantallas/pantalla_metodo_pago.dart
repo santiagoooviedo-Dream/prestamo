@@ -7,7 +7,7 @@ import '../widgets/comunes/boton_secundario.dart';
 import '../widgets/comunes/boton_volver.dart';
 import '../widgets/comunes/opcion_metodo.dart';
 import 'pantalla_chat_pago_personal.dart';
-import 'pantalla_procesando_pago.dart';
+import 'pantalla_pago_nequi.dart';
 
 class PantallaMetodoPago extends StatefulWidget {
   final int? idPrestamo;
@@ -45,14 +45,14 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
       return;
     }
 
+    // Nequi semi-manual: instrucciones + comprobante → admin valida
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => PantallaProcesandoPago(
+        builder: (_) => PantallaPagoNequi(
           idPrestamo: widget.idPrestamo,
           idCuota: widget.idCuota,
           monto: widget.monto,
-          metodoPago: 'nequi',
         ),
       ),
     );

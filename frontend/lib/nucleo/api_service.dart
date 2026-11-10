@@ -314,6 +314,53 @@ class ApiService {
     );
   }
 
+  /// Subir comprobante de pago Nequi (multipart).
+  /// Backend: POST /pagos/comprobante  campo "comprobante"
+  static Future<Map<String, dynamic>> subirComprobantePago(
+    XFile archivo,
+  ) async {
+    final uri = Uri.parse('$_baseUrl/pagos/comprobante');
+    final token = await _leerDatoSeguro('token');
+    if (token == null || token.isEmpty) {
+      throw const ApiException('Inicia sesión para continuar.');
+    }
+    final request = http.MultipartRequest('POST', uri)
+      ..headers['Authorization'] = 'Bearer $token'
+      ..files.add(
+        http.MultipartFile.fromBytes(
+          'comprobante',
+          await archivo.readAsBytes(),
+          filename: archivo.name.isNotEmpty ? archivo.name : 'comprobante.jpg',
+        ),
+      );
+    try {
+      final streamed =
+          await request.send().timeout(const Duration(seconds: 30));
+      final respuesta = await http.Response.fromStream(streamed);
+      final cuerpo = respuesta.body.isEmpty
+          ? <String, dynamic>{}
+          : jsonDecode(respuesta.body);
+      if (cuerpo is! Map<String, dynamic>) {
+        throw const ApiException('El servidor devolvió una respuesta inválida.');
+      }
+      if (respuesta.statusCode < 200 || respuesta.statusCode >= 300) {
+        final mensaje = cuerpo['mensaje'] ?? cuerpo['error'];
+        throw ApiException(
+          mensaje is String ? mensaje : 'No se pudo subir el comprobante.',
+        );
+      }
+      return cuerpo;
+    } on TimeoutException {
+      throw const ApiException('El servidor tardó demasiado en responder.');
+    } on http.ClientException {
+      throw const ApiException(
+        'No fue posible conectar con el servidor. Verifica tu conexión.',
+      );
+    } on FormatException {
+      throw const ApiException('El servidor devolvió una respuesta inválida.');
+    }
+  }
+
   /// Subir foto de perfil (multipart)
   static Future<Map<String, dynamic>> cambiarFoto(XFile archivo) async {
     final uri = Uri.parse('$_baseUrl/usuarios/foto');

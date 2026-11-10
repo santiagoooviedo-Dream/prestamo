@@ -67,13 +67,20 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
   }
 
   void _extraerRef(String texto) {
-    // REF_PAGO id_prestamo=1 id_cuota=2 monto=200000
+    // REF_PAGO / REF_NEQUI id_prestamo=1 id_cuota=2 monto=200000
     final p = RegExp(r'id_prestamo=(\d+)').firstMatch(texto);
     final c = RegExp(r'id_cuota=(\d+)').firstMatch(texto);
     final m = RegExp(r'monto=([0-9.]+)').firstMatch(texto);
     if (p != null) _idPrestamo = int.tryParse(p.group(1)!);
     if (c != null) _idCuota = int.tryParse(c.group(1)!);
     if (m != null) _monto = num.tryParse(m.group(1)!);
+  }
+
+  bool get _esNequi {
+    return _msgs.any((m) {
+      final t = m.texto.toLowerCase();
+      return t.contains('ref_nequi') || t.contains('pago por nequi');
+    });
   }
 
   Future<void> _cargarMensajes() async {
@@ -122,8 +129,11 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
       final hayRefPago = nuevos.any((m) {
         final t = m.texto.toLowerCase();
         return t.contains('ref_pago') ||
+            t.contains('ref_nequi') ||
             t.contains('id_prestamo') ||
-            t.contains('pago personal');
+            t.contains('pago personal') ||
+            t.contains('pago por nequi') ||
+            t.contains('comprobante');
       });
 
       if (nuevos.isNotEmpty) {
@@ -201,9 +211,10 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
       // Aviso claro en el chat
       final id = widget.idConversacion;
       if (id != null && id.isNotEmpty) {
-        const aviso =
-            '✅ Pago verificado. Tu pago personal fue validado correctamente y la cuota ya quedó registrada como pagada.';
-        setState(() => _msgs.add(const _Msg(aviso, deUsuario: false)));
+        final aviso = _esNequi
+            ? '✅ Pago Nequi verificado. Tu transferencia fue validada y la cuota ya quedó registrada como pagada.'
+            : '✅ Pago verificado. Tu pago personal fue validado correctamente y la cuota ya quedó registrada como pagada.';
+        setState(() => _msgs.add(_Msg(aviso, deUsuario: false)));
         try {
           await ApiService.enviarMensajeConversacion(
             idConversacion: id,
@@ -222,7 +233,7 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
           await ApiService.crearNotificacion(
             idUsuario: idUser,
             mensaje:
-                'Pago de cuota confirmado\n\nTu pago personal de $montoTxt fue validado. La cuota ya aparece como pagada en tu estado de cuenta y calendario.',
+                'Pago de cuota confirmado\n\nTu pago ${_esNequi ? "Nequi" : "personal"} de $montoTxt fue validado. La cuota ya aparece como pagada en tu estado de cuenta y calendario.',
             tipo: 'pago',
           );
         } catch (_) {}
@@ -351,7 +362,11 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
             ),
             if (_mostrarBotonValidar) ...[
               BotonPrimario(
-                texto: _validando ? 'Validando…' : 'Validar pago personal',
+                texto: _validando
+                    ? 'Validando…'
+                    : (_esNequi
+                        ? 'Validar pago Nequi'
+                        : 'Validar pago personal'),
                 alPresionar: _validando ? null : _validarPago,
               ),
               const SizedBox(height: 10),

@@ -133,6 +133,7 @@ class _PantallaAdminConversacionesState
         final pago = _esPagoPersonal(c, todosLosTextos);
         final lowerAll = todosLosTextos.toLowerCase();
         final yaValidado = lowerAll.contains('pago personal fue validado') ||
+            lowerAll.contains('pago nequi verificado') ||
             lowerAll.contains('pago verificado') ||
             lowerAll.contains('queda registrada como pagada') ||
             lowerAll.contains('cuota ya quedó registrada');
@@ -206,6 +207,9 @@ class _PantallaAdminConversacionesState
         texto.contains('pagar mi cuota') ||
         texto.contains('quiero pagar') ||
         texto.contains('ref_pago') ||
+        texto.contains('ref_nequi') ||
+        texto.contains('pago por nequi') ||
+        texto.contains('comprobante') ||
         texto.contains('id_prestamo') ||
         texto.contains('id_cuota')) {
       return true;
@@ -339,7 +343,9 @@ class _PantallaAdminConversacionesState
                     esPagoPersonal: it.esPago ||
                         idPrestamo != null ||
                         it.preview.toLowerCase().contains('ref_pago') ||
-                        it.preview.toLowerCase().contains('pago personal'),
+                        it.preview.toLowerCase().contains('ref_nequi') ||
+                        it.preview.toLowerCase().contains('pago personal') ||
+                        it.preview.toLowerCase().contains('pago por nequi'),
                     idPrestamo: idPrestamo,
                     idCuota: idCuota,
                     monto: monto,

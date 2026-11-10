@@ -83,6 +83,35 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
     });
   }
 
+  static final _urlRe = RegExp(
+    r'https?://[^\s)]+',
+    caseSensitive: false,
+  );
+
+  List<String> _extraerUrls(String texto) {
+    return _urlRe
+        .allMatches(texto)
+        .map((m) => m.group(0)!)
+        .where((u) {
+          final l = u.toLowerCase();
+          return l.contains('cloudinary') ||
+              l.endsWith('.jpg') ||
+              l.endsWith('.jpeg') ||
+              l.endsWith('.png') ||
+              l.endsWith('.webp') ||
+              l.contains('/image/');
+        })
+        .toList();
+  }
+
+  String _textoSinUrls(String texto) {
+    var t = texto;
+    for (final u in _extraerUrls(texto)) {
+      t = t.replaceAll(u, '').replaceAll('Comprobante:', '').replaceAll('Comprobante :', '');
+    }
+    return t.replaceAll(RegExp(r'\n{3,}'), '\n\n').trim();
+  }
+
   Future<void> _cargarMensajes() async {
     final id = widget.idConversacion;
     if (id == null || id.isEmpty) return;
@@ -294,7 +323,7 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                 color: Color(0xFF17243C),
               ),
             ),
-            if (widget.esPagoPersonal) ...[
+            if (widget.esPagoPersonal || _esPagoPersonalDetectado) ...[
               const SizedBox(height: 6),
               Container(
                 padding:
@@ -303,9 +332,11 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                   color: const Color(0xFFE8F0FE),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text(
-                  'Solicitud de pago personal',
-                  style: TextStyle(
+                child: Text(
+                  _esNequi
+                      ? 'Pago Nequi · comprobante'
+                      : 'Solicitud de pago personal',
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: Color(0xFF285FE8),
@@ -345,15 +376,69 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                             ? Border.all(color: const Color(0xFFE1E8F3))
                             : null,
                       ),
-                      child: Text(
-                        m.texto,
-                        style: TextStyle(
-                          fontSize: 14,
-                          height: 1.4,
-                          color: m.deUsuario
+                      child: Builder(
+                        builder: (context) {
+                          final urls = _extraerUrls(m.texto);
+                          final texto = urls.isEmpty
+                              ? m.texto
+                              : _textoSinUrls(m.texto);
+                          final colorTxt = m.deUsuario
                               ? const Color(0xFF17243C)
-                              : Colors.white,
-                        ),
+                              : Colors.white;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (texto.isNotEmpty)
+                                Text(
+                                  texto,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    height: 1.4,
+                                    color: colorTxt,
+                                  ),
+                                ),
+                              for (final url in urls) ...[
+                                if (texto.isNotEmpty)
+                                  const SizedBox(height: 10),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: Image.network(
+                                    url,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                    loadingBuilder: (ctx, child, progress) {
+                                      if (progress == null) return child;
+                                      return Container(
+                                        height: 140,
+                                        alignment: Alignment.center,
+                                        color: const Color(0xFFF3F6FC),
+                                        child: const SizedBox(
+                                          width: 22,
+                                          height: 22,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    errorBuilder: (_, __, ___) => Container(
+                                      height: 80,
+                                      alignment: Alignment.center,
+                                      color: const Color(0xFFF3F6FC),
+                                      child: const Text(
+                                        'No se pudo cargar el comprobante',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF66758D),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          );
+                        },
                       ),
                     ),
                   );

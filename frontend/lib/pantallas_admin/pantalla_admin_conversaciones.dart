@@ -80,7 +80,8 @@ class _PantallaAdminConversacionesState
         return esAdmin;
       }).toList();
 
-      final items = <_ConvItem>[];
+      // Cargar mensajes en paralelo (antes era 1 request por chat en serie)
+      final futures = <Future<_ConvItem?>>[];
       for (final c in conAdmin) {
         final idConv = c['id_conversacion']?.toString() ??
             c['id']?.toString() ??
@@ -98,55 +99,60 @@ class _PantallaAdminConversacionesState
         final u = idUser != null ? usuarios[idUser] : null;
         final nombre = _nombreDe(c, u);
 
-        var preview = c['ultimo_mensaje']?.toString() ??
-            c['mensaje']?.toString() ??
-            c['preview']?.toString() ??
-            c['asunto']?.toString() ??
-            '';
-        var todosLosTextos = preview;
-        try {
-          final msgs = await ApiService.obtenerMensajesConversacion(idConv);
-          if (msgs.isNotEmpty) {
-            if (preview.isEmpty) {
-              final last = msgs.last;
-              preview = last['mensaje']?.toString() ??
-                  last['respuesta']?.toString() ??
-                  last['contenido']?.toString() ??
-                  '';
+        futures.add(() async {
+          var preview = c['ultimo_mensaje']?.toString() ??
+              c['mensaje']?.toString() ??
+              c['preview']?.toString() ??
+              c['asunto']?.toString() ??
+              '';
+          var todosLosTextos = preview;
+          try {
+            final msgs =
+                await ApiService.obtenerMensajesConversacion(idConv);
+            if (msgs.isNotEmpty) {
+              if (preview.isEmpty) {
+                final last = msgs.last;
+                preview = last['mensaje']?.toString() ??
+                    last['respuesta']?.toString() ??
+                    last['contenido']?.toString() ??
+                    '';
+              }
+              final buffer = StringBuffer(preview);
+              for (final msg in msgs) {
+                buffer.write(' ');
+                buffer.write(msg['mensaje'] ?? '');
+                buffer.write(' ');
+                buffer.write(msg['respuesta'] ?? '');
+                buffer.write(' ');
+                buffer.write(msg['contenido'] ?? '');
+              }
+              todosLosTextos = buffer.toString();
             }
-            // Revisar TODOS los mensajes para detectar pago personal
-            // (aunque el último mensaje sea solo "hola" o similar)
-            final buffer = StringBuffer(preview);
-            for (final msg in msgs) {
-              buffer.write(' ');
-              buffer.write(msg['mensaje'] ?? '');
-              buffer.write(' ');
-              buffer.write(msg['respuesta'] ?? '');
-              buffer.write(' ');
-              buffer.write(msg['contenido'] ?? '');
-            }
-            todosLosTextos = buffer.toString();
-          }
-        } catch (_) {}
-        if (preview.isEmpty) preview = 'Sin mensajes';
+          } catch (_) {}
+          if (preview.isEmpty) preview = 'Sin mensajes';
 
-        final pago = _esPagoPersonal(c, todosLosTextos);
-        final lowerAll = todosLosTextos.toLowerCase();
-        final yaValidado = lowerAll.contains('pago personal fue validado') ||
-            lowerAll.contains('pago nequi verificado') ||
-            lowerAll.contains('pago verificado') ||
-            lowerAll.contains('queda registrada como pagada') ||
-            lowerAll.contains('cuota ya quedó registrada');
+          final pago = _esPagoPersonal(c, todosLosTextos);
+          final lowerAll = todosLosTextos.toLowerCase();
+          final yaValidado =
+              lowerAll.contains('pago personal fue validado') ||
+                  lowerAll.contains('pago nequi verificado') ||
+                  lowerAll.contains('pago verificado') ||
+                  lowerAll.contains('queda registrada como pagada') ||
+                  lowerAll.contains('cuota ya quedó registrada');
 
-        items.add(_ConvItem(
-          id: idConv,
-          nombre: nombre,
-          preview: preview,
-          esPago: pago,
-          yaValidado: yaValidado,
-          idUsuario: idUser,
-        ));
+          return _ConvItem(
+            id: idConv,
+            nombre: nombre,
+            preview: preview,
+            esPago: pago,
+            yaValidado: yaValidado,
+            idUsuario: idUser,
+          );
+        }());
       }
+
+      final resultados = await Future.wait(futures);
+      final items = resultados.whereType<_ConvItem>().toList();
 
       if (!mounted) return;
       setState(() {

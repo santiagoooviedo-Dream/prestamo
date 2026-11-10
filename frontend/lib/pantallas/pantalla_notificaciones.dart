@@ -37,7 +37,18 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
     });
     try {
       final items = await _modelo.obtenerTodas();
-      if (mounted) setState(() => _items = items);
+      // Al abrir, marcar no leídas en el servidor
+      for (final item in items) {
+        if (!item.leida && item.id.isNotEmpty) {
+          try {
+            await _modelo.marcarLeida(item.id);
+          } catch (_) {}
+        }
+      }
+      final actualizadas = items
+          .map((item) => item.leida ? item : item.marcarComoLeida())
+          .toList();
+      if (mounted) setState(() => _items = actualizadas);
     } on ApiException catch (error) {
       if (mounted) setState(() => _error = error.mensaje);
     } finally {

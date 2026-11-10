@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../nucleo/api_service.dart';
 import '../../pantallas/pantalla_inicio.dart';
 import '../../pantallas/pantalla_mis_prestamos.dart';
 import '../../pantallas/pantalla_asistente_virtual.dart';
@@ -7,14 +8,39 @@ import '../../pantallas/pantalla_perfil.dart';
 
 enum DestinoNav { inicio, prestamos, soporte, perfil }
 
-class BarraNavegacion extends StatelessWidget {
+class BarraNavegacion extends StatefulWidget {
   final DestinoNav actual;
 
   const BarraNavegacion({super.key, required this.actual});
 
+  @override
+  State<BarraNavegacion> createState() => _BarraNavegacionState();
+}
+
+class _BarraNavegacionState extends State<BarraNavegacion> {
+  bool _notifPendientes = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarNotif();
+  }
+
+  Future<void> _cargarNotif() async {
+    try {
+      final lista = await ApiService.obtenerNotificaciones();
+      final hay = lista.any((n) {
+        final leida = n['leida'];
+        return leida != true && leida != 'true' && leida != 1;
+      });
+      if (mounted) setState(() => _notifPendientes = hay);
+    } catch (_) {
+      // Silencioso: si falla no mostramos punto
+    }
+  }
+
   void _ir(BuildContext context, DestinoNav destino, Widget pantalla) {
-    if (destino == actual) return;
-    // Reemplaza toda la pila para que el botón atrás no deje pantalla en blanco
+    if (destino == widget.actual) return;
     Navigator.pushAndRemoveUntil(
       context,
       PageRouteBuilder(
@@ -47,14 +73,14 @@ class BarraNavegacion extends StatelessWidget {
           _Item(
             icono: Icons.home_rounded,
             etiqueta: 'Inicio',
-            activo: actual == DestinoNav.inicio,
+            activo: widget.actual == DestinoNav.inicio,
             onTap: () =>
                 _ir(context, DestinoNav.inicio, const PantallaInicio()),
           ),
           _Item(
             icono: Icons.account_balance_wallet_outlined,
             etiqueta: 'Préstamos',
-            activo: actual == DestinoNav.prestamos,
+            activo: widget.actual == DestinoNav.prestamos,
             onTap: () => _ir(
               context,
               DestinoNav.prestamos,
@@ -64,7 +90,7 @@ class BarraNavegacion extends StatelessWidget {
           _Item(
             icono: Icons.chat_bubble_outline_rounded,
             etiqueta: 'Soporte',
-            activo: actual == DestinoNav.soporte,
+            activo: widget.actual == DestinoNav.soporte,
             onTap: () => _ir(
               context,
               DestinoNav.soporte,
@@ -74,7 +100,8 @@ class BarraNavegacion extends StatelessWidget {
           _Item(
             icono: Icons.person_outline_rounded,
             etiqueta: 'Perfil',
-            activo: actual == DestinoNav.perfil,
+            activo: widget.actual == DestinoNav.perfil,
+            mostrarPunto: _notifPendientes,
             onTap: () =>
                 _ir(context, DestinoNav.perfil, const PantallaPerfil()),
           ),
@@ -88,6 +115,7 @@ class _Item extends StatelessWidget {
   final IconData icono;
   final String etiqueta;
   final bool activo;
+  final bool mostrarPunto;
   final VoidCallback onTap;
 
   const _Item({
@@ -95,6 +123,7 @@ class _Item extends StatelessWidget {
     required this.etiqueta,
     required this.activo,
     required this.onTap,
+    this.mostrarPunto = false,
   });
 
   @override
@@ -118,17 +147,42 @@ class _Item extends StatelessWidget {
                     : null,
                 borderRadius: BorderRadius.circular(14),
                 border: activo
-                    ? Border.all(color: const Color(0xFFCFDEFA))
+                    ? Border.all(color: const Color(0xFFC5D8FF))
                     : null,
               ),
-              child: Icon(icono, size: 20, color: color),
+              child: Center(
+                child: SizedBox(
+                  width: 28,
+                  height: 28,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    alignment: Alignment.center,
+                    children: [
+                      Icon(icono, size: 22, color: color),
+                      if (mostrarPunto)
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Container(
+                            width: 8,
+                            height: 8,
+                            decoration: const BoxDecoration(
+                              color: Color(0xFFE53935),
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
             ),
             const SizedBox(height: 4),
             Text(
               etiqueta,
               style: TextStyle(
-                fontSize: 10,
-                fontWeight: activo ? FontWeight.w600 : FontWeight.w400,
+                fontSize: 11,
+                fontWeight: activo ? FontWeight.w600 : FontWeight.w500,
                 color: color,
               ),
             ),

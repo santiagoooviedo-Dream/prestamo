@@ -5,6 +5,7 @@ class TarjetaConversacionAdmin extends StatelessWidget {
   final String preview;
   final bool esPagoPersonal;
   final bool yaValidado;
+  final bool sinRevisar;
   final VoidCallback onTap;
 
   const TarjetaConversacionAdmin({
@@ -13,6 +14,7 @@ class TarjetaConversacionAdmin extends StatelessWidget {
     required this.preview,
     required this.esPagoPersonal,
     this.yaValidado = false,
+    this.sinRevisar = false,
     required this.onTap,
   });
 
@@ -38,21 +40,44 @@ class TarjetaConversacionAdmin extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
+            SizedBox(
               width: 44,
               height: 44,
-              decoration: BoxDecoration(
-                color: iconoFondo,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                yaValidado
-                    ? Icons.check_circle_outline_rounded
-                    : (esPagoPersonal
-                        ? Icons.payments_outlined
-                        : Icons.chat_bubble_outline_rounded),
-                color: iconoColor,
-                size: 22,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 44,
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: iconoFondo,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      yaValidado
+                          ? Icons.check_circle_outline_rounded
+                          : (esPagoPersonal
+                              ? Icons.payments_outlined
+                              : Icons.chat_bubble_outline_rounded),
+                      color: iconoColor,
+                      size: 22,
+                    ),
+                  ),
+                  if (sinRevisar && !yaValidado)
+                    Positioned(
+                      top: -2,
+                      left: -2,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE53935),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             const SizedBox(width: 12),

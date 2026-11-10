@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+
+import '../widgets/comunes/punto_rojo.dart';
 import '../nucleo/api_service.dart';
+import '../nucleo/indicadores_admin.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_admin_perfil.dart';
@@ -12,6 +15,8 @@ class PantallaAdminUsuarios extends StatefulWidget {
 }
 
 class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
+  final Set<int> _idsConPunto = {};
+
   final _busqueda = TextEditingController();
   bool _cargando = true;
   String? _error;
@@ -42,9 +47,14 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
         final rol = u['rol']?.toString().toLowerCase();
         return rol == null || rol == 'usuario';
       }).toList();
+      final ind = await IndicadoresAdmin.cargar();
+
       if (mounted) {
         setState(() {
           _usuarios = filtrados;
+          _idsConPunto
+            ..clear()
+            ..addAll(ind.usuariosConPunto);
           _cargando = false;
         });
       }
@@ -227,19 +237,62 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                                       ),
                                       child: Row(
                                         children: [
-                                          CircleAvatar(
-                                            radius: 24,
-                                            backgroundColor:
-                                                const Color(0xFFE8F0FE),
-                                            child: Text(
-                                              iniciales.isEmpty
-                                                  ? '?'
-                                                  : iniciales,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.w700,
-                                                color: Color(0xFF285FE8),
-                                              ),
-                                            ),
+                                          Builder(
+                                            builder: (context) {
+                                              final uid = int.tryParse(
+                                                u['id_usuario']?.toString() ??
+                                                    '',
+                                              );
+                                              final conPunto = uid != null &&
+                                                  false;
+                                              return SizedBox(
+                                                width: 48,
+                                                height: 48,
+                                                child: Stack(
+                                                  clipBehavior: Clip.none,
+                                                  children: [
+                                                    CircleAvatar(
+                                                      radius: 24,
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xFFE8F0FE),
+                                                      child: Text(
+                                                        iniciales.isEmpty
+                                                            ? '?'
+                                                            : iniciales,
+                                                        style: const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          color: Color(
+                                                              0xFF285FE8),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    if (conPunto)
+                                                      Positioned(
+                                                        top: 2,
+                                                        left: 2,
+                                                        child: Container(
+                                                          width: 10,
+                                                          height: 10,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color: const Color(
+                                                                0xFFE53935),
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            border: Border.all(
+                                                              color:
+                                                                  Colors.white,
+                                                              width: 1.5,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
                                           ),
                                           const SizedBox(width: 12),
                                           Expanded(

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 
+import '../comunes/punto_rojo.dart';
+
 class AccionRapidaAdmin extends StatelessWidget {
   final IconData icono;
   final String titulo;
   final VoidCallback onTap;
+  final bool mostrarPunto;
 
   const AccionRapidaAdmin({
     super.key,
     required this.icono,
     required this.titulo,
     required this.onTap,
+    this.mostrarPunto = false,
   });
 
   @override
@@ -27,14 +31,38 @@ class AccionRapidaAdmin extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Container(
+              SizedBox(
                 width: 40,
                 height: 40,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFE8F0FE),
-                  borderRadius: BorderRadius.circular(12),
+                child: Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE8F0FE),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child:
+                          Icon(icono, color: const Color(0xFF285FE8), size: 22),
+                    ),
+                    if (mostrarPunto)
+                      Positioned(
+                        top: 2,
+                        left: 2,
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE53935),
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 1.5),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                child: Icon(icono, color: const Color(0xFF285FE8), size: 22),
               ),
               const SizedBox(width: 12),
               Expanded(

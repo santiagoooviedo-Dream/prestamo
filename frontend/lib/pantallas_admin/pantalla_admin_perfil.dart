@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../nucleo/api_service.dart';
+import '../nucleo/indicadores_admin.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/admin/accion_rapida_admin.dart';
 import '../widgets/admin/cabecera_perfil_usuario.dart';
@@ -38,6 +39,9 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
   bool _cargando = true;
   int _prestamosActivos = 0;
   int _solicitudes = 0;
+  bool _puntoSolicitudes = false;
+  bool _puntoSoporte = false;
+  bool _puntoHistorial = false;
 
   @override
   void initState() {
@@ -53,18 +57,24 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
     }
     try {
       final raw = await ApiService.obtenerSolicitudesAdmin();
-      final delUsuario = raw
-          .where((j) =>
-              int.tryParse(j['id_usuario']?.toString() ?? '') == id)
-          .toList();
+      final delUsuario = raw.where((j) {
+        return IndicadoresAdmin.idUsuarioDe(j) == id;
+      }).toList();
+
       final activos = delUsuario.where((j) {
         final e = (j['estado'] ?? '').toString().toLowerCase();
         return e == 'aceptada' || e == 'activo' || e == 'aprobada';
       }).length;
+
+      final ind = await IndicadoresAdmin.cargarDeUsuario(id);
+
       if (!mounted) return;
       setState(() {
         _solicitudes = delUsuario.length;
         _prestamosActivos = activos;
+        _puntoHistorial = ind.historial;
+        _puntoSolicitudes = ind.solicitudes;
+        _puntoSoporte = ind.soporte;
         _cargando = false;
       });
     } catch (_) {
@@ -138,6 +148,7 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                     AccionRapidaAdmin(
                       icono: Icons.bar_chart_rounded,
                       titulo: 'Historial de préstamos',
+                      mostrarPunto: false,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -148,12 +159,15 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                               apellidos: widget.apellidos,
                             ),
                           ),
-                        );
+                        ).then((_) {
+                          if (mounted) _cargarContadores();
+                        });
                       },
                     ),
                     AccionRapidaAdmin(
                       icono: Icons.mail_outline_rounded,
                       titulo: 'Solicitudes de préstamo',
+                      mostrarPunto: false,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -163,12 +177,15 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                               nombreUsuario: completo,
                             ),
                           ),
-                        );
+                        ).then((_) {
+                          if (mounted) _cargarContadores();
+                        });
                       },
                     ),
                     AccionRapidaAdmin(
                       icono: Icons.notifications_none_rounded,
                       titulo: 'Soporte',
+                      mostrarPunto: false,
                       onTap: () {
                         final nombreCompleto =
                             '${widget.nombre} ${widget.apellidos}'.trim();
@@ -182,7 +199,9 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                                   : nombreCompleto,
                             ),
                           ),
-                        );
+                        ).then((_) {
+                          if (mounted) _cargarContadores();
+                        });
                       },
                     ),
                   ],

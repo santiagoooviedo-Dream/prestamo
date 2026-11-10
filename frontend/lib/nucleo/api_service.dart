@@ -552,6 +552,32 @@ class ApiService {
     }
   }
 
+  
+  /// IDs de conversaciones que el admin ya abrió (punto rojo).
+  static const _kConvRevisadas = 'admin_conv_revisadas';
+
+  static Future<Set<String>> obtenerConversacionesRevisadas() async {
+    try {
+      final raw = await _leerDatoSeguro(_kConvRevisadas);
+      if (raw == null || raw.isEmpty) return <String>{};
+      final lista = jsonDecode(raw);
+      if (lista is List) {
+        return lista.map((e) => e.toString()).toSet();
+      }
+    } catch (_) {}
+    return <String>{};
+  }
+
+  static Future<void> marcarConversacionRevisada(String id) async {
+    if (id.isEmpty) return;
+    final actual = await obtenerConversacionesRevisadas();
+    if (actual.contains(id)) return;
+    actual.add(id);
+    try {
+      await _guardarDatoSeguro(_kConvRevisadas, jsonEncode(actual.toList()));
+    } catch (_) {}
+  }
+
   static Future<void> cerrarSesion() async {
     await _borrarDatoSeguro('token');
   }

@@ -234,6 +234,12 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
       );
       if (!mounted) return;
       setState(() => _pagoValidado = true);
+      final idConv = widget.idConversacion;
+      if (idConv != null && idConv.isNotEmpty) {
+        try {
+          await ApiService.marcarConversacionRevisada(idConv);
+        } catch (_) {}
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Pago personal validado correctamente.')),
       );

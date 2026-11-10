@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../nucleo/api_service.dart';
+
 import '../../nucleo/colores_app.dart';
 import '../../widgets/comunes/barra_navegacion.dart';
 import '../../widgets/comunes/boton_volver.dart';
@@ -138,11 +140,29 @@ class ContenidoPerfil extends StatelessWidget {
                         _abrir(context, const PantallaEstadoCuenta()),
                   ),
                   const SizedBox(height: 10),
-                  _OpcionPerfil(
-                    icono: Icons.notifications_none_rounded,
-                    titulo: 'Notificaciones',
-                    alPresionar: () =>
-                        _abrir(context, const PantallaNotificaciones()),
+                  FutureBuilder<bool>(
+                    future: () async {
+                      try {
+                        final lista = await ApiService.obtenerNotificaciones();
+                        return lista.any((n) {
+                          final leida = n['leida'];
+                          return leida != true &&
+                              leida != 'true' &&
+                              leida != 1;
+                        });
+                      } catch (_) {
+                        return false;
+                      }
+                    }(),
+                    builder: (context, snap) {
+                      return _OpcionPerfil(
+                        icono: Icons.notifications_none_rounded,
+                        titulo: 'Notificaciones',
+                        mostrarPunto: snap.data == true,
+                        alPresionar: () =>
+                            _abrir(context, const PantallaNotificaciones()),
+                      );
+                    },
                   ),
                   const SizedBox(height: 10),
                   _OpcionPerfil(
@@ -182,6 +202,7 @@ class _OpcionPerfil extends StatelessWidget {
   final IconData icono;
   final String titulo;
   final bool peligro;
+  final bool mostrarPunto;
   final VoidCallback alPresionar;
 
   const _OpcionPerfil({
@@ -189,6 +210,7 @@ class _OpcionPerfil extends StatelessWidget {
     required this.titulo,
     required this.alPresionar,
     this.peligro = false,
+    this.mostrarPunto = false,
   });
 
   @override
@@ -207,14 +229,37 @@ class _OpcionPerfil extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
+            SizedBox(
               width: 38,
               height: 38,
-              decoration: BoxDecoration(
-                color: fondo,
-                borderRadius: BorderRadius.circular(11),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 38,
+                    height: 38,
+                    decoration: BoxDecoration(
+                      color: fondo,
+                      borderRadius: BorderRadius.circular(11),
+                    ),
+                    child: Icon(icono, size: 20, color: acento),
+                  ),
+                  if (mostrarPunto)
+                    Positioned(
+                      top: -2,
+                      right: -2,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE53935),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                      ),
+                    ),
+                ],
               ),
-              child: Icon(icono, size: 20, color: acento),
             ),
             const SizedBox(width: 14),
             Expanded(

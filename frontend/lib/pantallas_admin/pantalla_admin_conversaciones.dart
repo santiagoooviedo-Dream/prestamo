@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../nucleo/api_service.dart';
+import '../nucleo/indicadores_admin.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/admin/tarjeta_conversacion_admin.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -27,6 +28,7 @@ class _PantallaAdminConversacionesState
   bool _cargando = true;
   String? _error;
   List<_ConvItem> _items = [];
+  bool _marcandoTodo = false;
 
   @override
   void initState() {
@@ -59,7 +61,8 @@ class _PantallaAdminConversacionesState
             .trim();
         final esAdmin = modo == 'admin' ||
             modo == 'administrador' ||
-            modo == 'soporte';
+            modo == 'soporte' ||
+            modo.contains('admin');
 
         final idUser = int.tryParse(
           c['id_usuario']?.toString() ??
@@ -72,13 +75,15 @@ class _PantallaAdminConversacionesState
 
         final filtroId = widget.idUsuarioFiltro;
         if (filtroId != null) {
-          // Desde el perfil: solo ese usuario (admin o pago personal)
-          return idUser == filtroId;
+          // Desde el perfil: solo chats de ese usuario transferidos al admin
+          return idUser == filtroId && esAdmin;
         }
 
         // Vista general: solo transferidas a admin
         return esAdmin;
       }).toList();
+
+      final revisadas = await ApiService.obtenerConversacionesRevisadas();
 
       // Cargar mensajes en paralelo (antes era 1 request por chat en serie)
       final futures = <Future<_ConvItem?>>[];
@@ -140,19 +145,36 @@ class _PantallaAdminConversacionesState
                   lowerAll.contains('queda registrada como pagada') ||
                   lowerAll.contains('cuota ya quedó registrada');
 
+          final previewLimpio = preview.trim();
+          final vacio = previewLimpio.isEmpty ||
+              previewLimpio.toLowerCase() == 'sin mensajes';
+          // Pendiente solo si no se ha abierto (al abrir → leído)
+          final sinRevisar =
+              !yaValidado && !vacio && !revisadas.contains(idConv);
+
           return _ConvItem(
             id: idConv,
             nombre: nombre,
             preview: preview,
             esPago: pago,
             yaValidado: yaValidado,
+            sinRevisar: sinRevisar,
             idUsuario: idUser,
           );
         }());
       }
 
       final resultados = await Future.wait(futures);
-      final items = resultados.whereType<_ConvItem>().toList();
+      var items = resultados.whereType<_ConvItem>().toList();
+      // Ocultar chats vacíos ("Sin mensajes") para no llenar la lista
+      final conContenido = items
+          .where((it) =>
+              it.preview.trim().isNotEmpty &&
+              it.preview.trim().toLowerCase() != 'sin mensajes')
+          .toList();
+      if (conContenido.isNotEmpty) {
+        items = conContenido;
+      }
 
       if (!mounted) return;
       setState(() {
@@ -233,6 +255,63 @@ class _PantallaAdminConversacionesState
     }
 
     return false;
+  }
+
+
+  Future<void> _marcarTodoLeido() async {
+    if (_marcandoTodo) return;
+    setState(() => _marcandoTodo = true);
+    try {
+      // Marcar todas las conversaciones admin visibles (y las del filtro)
+      final raw = await ApiService.obtenerConversacionesAdmin();
+      for (final c in raw) {
+        final modo = (c['modo'] ?? '').toString().toLowerCase();
+        final esAdmin = modo.contains('admin') || modo.contains('soporte');
+        if (!esAdmin) continue;
+
+        final idUser = int.tryParse(
+          c['id_usuario']?.toString() ??
+              c['usuario_id']?.toString() ??
+              '',
+        );
+        if (widget.idUsuarioFiltro != null &&
+            idUser != widget.idUsuarioFiltro) {
+          continue;
+        }
+
+        final idConv =
+            c['id_conversacion']?.toString() ?? c['id']?.toString() ?? '';
+        if (idConv.isEmpty) continue;
+        try {
+          await ApiService.marcarConversacionRevisada(idConv);
+        } catch (_) {}
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _items = _items
+            .map(
+              (it) => _ConvItem(
+                id: it.id,
+                nombre: it.nombre,
+                preview: it.preview,
+                esPago: it.esPago,
+                yaValidado: it.yaValidado,
+                sinRevisar: false,
+                idUsuario: it.idUsuario,
+              ),
+            )
+            .toList();
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Todo marcado como leído')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _marcandoTodo = false);
+    }
   }
 
   @override
@@ -326,8 +405,8 @@ class _PantallaAdminConversacionesState
             preview: it.preview,
             esPagoPersonal: it.esPago,
             yaValidado: it.yaValidado,
-            onTap: () {
-              // Extraer datos de REF_PAGO del preview si existen
+            sinRevisar: false,
+            onTap: () async {
               int? idPrestamo;
               int? idCuota;
               num? monto;
@@ -338,7 +417,26 @@ class _PantallaAdminConversacionesState
               if (c != null) idCuota = int.tryParse(c.group(1)!);
               if (m != null) monto = num.tryParse(m.group(1)!);
 
-              Navigator.push(
+              // Marcar como leída al abrir → quita el punto rojo
+              await ApiService.marcarConversacionRevisada(it.id);
+              setState(() {
+                final idx = _items.indexWhere((e) => e.id == it.id);
+                if (idx >= 0) {
+                  final oldItem = _items[idx];
+                  _items[idx] = _ConvItem(
+                    id: oldItem.id,
+                    nombre: oldItem.nombre,
+                    preview: oldItem.preview,
+                    esPago: oldItem.esPago,
+                    yaValidado: oldItem.yaValidado,
+                    sinRevisar: false,
+                    idUsuario: oldItem.idUsuario,
+                  );
+                }
+              });
+
+              if (!mounted) return;
+              await Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => PantallaAdminChat(
@@ -358,7 +456,8 @@ class _PantallaAdminConversacionesState
                     idUsuario: it.idUsuario,
                   ),
                 ),
-              ).then((_) => _cargar());
+              );
+              if (mounted) await _cargar();
             },
           );
         },
@@ -373,6 +472,7 @@ class _ConvItem {
   final String preview;
   final bool esPago;
   final bool yaValidado;
+  final bool sinRevisar;
   final int? idUsuario;
 
   _ConvItem({
@@ -381,6 +481,7 @@ class _ConvItem {
     required this.preview,
     required this.esPago,
     this.yaValidado = false,
+    this.sinRevisar = false,
     this.idUsuario,
   });
 }

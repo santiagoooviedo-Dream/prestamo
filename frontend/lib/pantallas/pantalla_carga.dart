@@ -62,10 +62,46 @@ class _PantallaCargaState extends State<PantallaCarga> {
             child: Column(
               children: [
                 const Spacer(flex: 2),
-                SizedBox(
-                  width: 140,
-                  height: 140,
-                  child: Image(image: _logo, fit: BoxFit.contain),
+                // Contenedor decorado: oculta el cuadro blanco del logo
+                Container(
+                  width: 148,
+                  height: 148,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFFFFFFF),
+                        Color(0xFFE8F0FE),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF285FE8).withOpacity(0.22),
+                        blurRadius: 28,
+                        offset: const Offset(0, 10),
+                      ),
+                      BoxShadow(
+                        color: Colors.white.withOpacity(0.8),
+                        blurRadius: 12,
+                        offset: const Offset(0, -2),
+                      ),
+                    ],
+                    border: Border.all(
+                      color: Colors.white.withOpacity(0.95),
+                      width: 4,
+                    ),
+                  ),
+                  child: ClipOval(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18),
+                      child: Image(
+                        image: _logo,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 24),
                 const Text(

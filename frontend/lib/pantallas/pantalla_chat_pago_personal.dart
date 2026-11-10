@@ -72,11 +72,15 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
         throw const ApiException('No se pudo abrir el chat con soporte.');
       }
 
-      // Pasar a administrador
+      // Pasar a administrador (importante para que aparezca en el panel admin)
       try {
         await ApiService.transferirConversacionAAdmin(id);
       } catch (_) {
-        // Si falla la transferencia, igual dejamos el chat abierto
+        // Reintento único si la primera falla
+        try {
+          await Future.delayed(const Duration(milliseconds: 400));
+          await ApiService.transferirConversacionAAdmin(id);
+        } catch (_) {}
       }
 
       final ref =

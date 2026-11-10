@@ -51,49 +51,101 @@ class _PantallaAdminNotificacionesState
     }).toList();
   }
 
+  int? _idDeUsuario(Map<String, dynamic> u) {
+    return int.tryParse(
+      u['id_usuario']?.toString() ??
+          u['id']?.toString() ??
+          u['usuario_id']?.toString() ??
+          '',
+    );
+  }
+
   Future<void> _cargarDestinatarios() async {
     setState(() {
       _cargando = true;
       _error = null;
     });
     try {
-      final raw = await ApiService.obtenerSolicitudesAdmin();
+      // 1) Cargar TODOS los usuarios (fuente principal)
       final usuarios = <int, Map<String, dynamic>>{};
       try {
         for (final u in await ApiService.obtenerUsuarios()) {
-          final id = int.tryParse(u['id_usuario']?.toString() ?? '');
-          if (id != null) usuarios[id] = u;
+          final id = _idDeUsuario(u);
+          if (id == null) continue;
+          // No listar administradores como destinatarios
+          final rol = (u['rol'] ?? '').toString().toLowerCase();
+          if (rol == 'admin' || rol == 'administrador') continue;
+          usuarios[id] = u;
+        }
+      } catch (_) {}
+
+      // 2) Enriquecer con estado de solicitudes
+      final detallePorUsuario = <int, String>{};
+      try {
+        final raw = await ApiService.obtenerSolicitudesAdmin();
+        for (final j in raw) {
+          final idU = int.tryParse(j['id_usuario']?.toString() ?? '') ?? 0;
+          if (idU == 0) continue;
+          final estado = (j['estado'] ?? '').toString().toLowerCase();
+          String detalle = 'Usuario registrado';
+          if (estado == 'pendiente') {
+            detalle = 'Solicitud pendiente';
+          } else if (estado == 'aceptada' || estado == 'aprobada') {
+            detalle = 'Solicitud aceptada';
+          } else if (estado == 'rechazada') {
+            detalle = 'Solicitud rechazada';
+          } else if (estado.isNotEmpty) {
+            detalle = 'Actividad: $estado';
+          }
+          final prev = detallePorUsuario[idU];
+          if (prev == null ||
+              (detalle == 'Solicitud pendiente' &&
+                  prev != 'Solicitud pendiente')) {
+            detallePorUsuario[idU] = detalle;
+          }
+        }
+      } catch (_) {}
+
+      // 3) Enriquecer con préstamos (si el endpoint lo permite)
+      try {
+        final prestamos = await ApiService.obtenerPrestamos();
+        for (final p in prestamos) {
+          final idU = int.tryParse(p['id_usuario']?.toString() ?? '') ?? 0;
+          if (idU == 0 || detallePorUsuario.containsKey(idU)) continue;
+          final estado = (p['estado'] ?? '').toString().toLowerCase();
+          if (estado.contains('complet')) {
+            detallePorUsuario[idU] = 'Préstamo completado';
+          } else if (estado.contains('activ')) {
+            detallePorUsuario[idU] = 'Préstamo activo';
+          } else {
+            detallePorUsuario[idU] = 'Con préstamo';
+          }
         }
       } catch (_) {}
 
       final porUsuario = <int, _Dest>{};
-      for (final j in raw) {
-        final idU = int.tryParse(j['id_usuario']?.toString() ?? '') ?? 0;
-        if (idU == 0) continue;
-        final u = usuarios[idU];
-        final nombreRaw = u != null
-            ? '${u['nombre'] ?? ''} ${u['apellido'] ?? ''}'.trim()
-            : (j['nombre']?.toString() ?? '');
-        final nombre = nombreRaw.isEmpty ? 'Usuario #$idU' : nombreRaw;
-        final correo = u?['correo']?.toString() ?? '';
-        final cedula = u?['cedula']?.toString() ?? '';
-        final estado = (j['estado'] ?? 'pendiente').toString().toLowerCase();
-        final detalle = estado == 'pendiente'
-            ? 'Solicitud pendiente'
-            : estado == 'aceptada' || estado == 'aprobada'
-                ? 'Solicitud aceptada'
-                : estado == 'rechazada'
-                    ? 'Solicitud rechazada'
-                    : 'Actividad: $estado';
-        final prev = porUsuario[idU];
-        if (prev == null ||
-            (estado == 'pendiente' && prev.detalle != 'Solicitud pendiente')) {
-          porUsuario[idU] = _Dest(
-            id: idU,
-            nombre: nombre,
-            detalle: detalle,
-            correo: correo,
-            cedula: cedula,
+      for (final entry in usuarios.entries) {
+        final id = entry.key;
+        final u = entry.value;
+        final nombreRaw =
+            '${u['nombre'] ?? ''} ${u['apellido'] ?? u['apellidos'] ?? ''}'
+                .trim();
+        porUsuario[id] = _Dest(
+          id: id,
+          nombre: nombreRaw.isEmpty ? 'Usuario #$id' : nombreRaw,
+          detalle: detallePorUsuario[id] ?? 'Usuario registrado',
+          correo: u['correo']?.toString() ?? '',
+          cedula: u['cedula']?.toString() ?? '',
+        );
+      }
+
+      // Si no hubo listado de usuarios, al menos usar los de solicitudes
+      if (porUsuario.isEmpty) {
+        for (final e in detallePorUsuario.entries) {
+          porUsuario[e.key] = _Dest(
+            id: e.key,
+            nombre: 'Usuario #${e.key}',
+            detalle: e.value,
           );
         }
       }
@@ -105,6 +157,9 @@ class _PantallaAdminNotificacionesState
       setState(() {
         _destinatarios = lista;
         _cargando = false;
+        if (lista.isEmpty) {
+          _error = 'No se encontraron usuarios para notificar.';
+        }
       });
     } on ApiException catch (e) {
       if (mounted) {
@@ -147,6 +202,12 @@ class _PantallaAdminNotificacionesState
     }
     // Título y cuerpo separados para que el usuario vea el título elegido
     final texto = '$titulo\n\n$cuerpo';
+    final nombreDest = _destinatarios
+        .where((d) => d.id == id)
+        .map((d) => d.nombre)
+        .cast<String?>()
+        .firstWhere((_) => true, orElse: () => null);
+
     setState(() => _enviando = true);
     try {
       await ApiService.crearNotificacion(
@@ -156,19 +217,28 @@ class _PantallaAdminNotificacionesState
       );
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Notificación enviada.')),
+        SnackBar(
+          content: Text(
+            nombreDest == null
+                ? 'Notificación enviada.'
+                : 'Notificación enviada a $nombreDest.',
+          ),
+        ),
       );
       _titulo.clear();
       _mensaje.clear();
       setState(() => _usuarioSel = null);
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.mensaje)));
-    } catch (_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.mensaje}')),
+      );
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo enviar la notificación.')),
+        SnackBar(
+          content: Text('No se pudo enviar la notificación. $e'),
+        ),
       );
     } finally {
       if (mounted) setState(() => _enviando = false);

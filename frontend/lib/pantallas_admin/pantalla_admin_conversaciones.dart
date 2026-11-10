@@ -49,26 +49,35 @@ class _PantallaAdminConversacionesState
         }
       } catch (_) {}
 
-      // 1. Solo conversaciones transferidas al admin (modo == 'admin')
-      // 2. Si venimos del perfil de un usuario, filtrar solo las de ese usuario
+      // Conversaciones del admin:
+      // - modo / modo_atencion == admin
+      // - o bien (si hay filtro de usuario) todas las de ese usuario
       final conAdmin = raw.where((c) {
-        final modo = (c['modo'] ?? '').toString().toLowerCase().trim();
-        if (modo != 'admin') return false;
+        final modo = (c['modo'] ?? c['modo_atencion'] ?? '')
+            .toString()
+            .toLowerCase()
+            .trim();
+        final esAdmin = modo == 'admin' ||
+            modo == 'administrador' ||
+            modo == 'soporte';
 
-        // Filtro por usuario (cuando se abre desde el perfil)
+        final idUser = int.tryParse(
+          c['id_usuario']?.toString() ??
+              c['usuario_id']?.toString() ??
+              (c['usuario'] is Map
+                  ? c['usuario']['id_usuario']?.toString() ?? ''
+                  : '') ??
+              '',
+        );
+
         final filtroId = widget.idUsuarioFiltro;
         if (filtroId != null) {
-          final idUser = int.tryParse(
-            c['id_usuario']?.toString() ??
-                c['usuario_id']?.toString() ??
-                (c['usuario'] is Map
-                    ? c['usuario']['id_usuario']?.toString() ?? ''
-                    : '') ??
-                '',
-          );
-          if (idUser != filtroId) return false;
+          // Desde el perfil: solo ese usuario (admin o pago personal)
+          return idUser == filtroId;
         }
-        return true;
+
+        // Vista general: solo transferidas a admin
+        return esAdmin;
       }).toList();
 
       final items = <_ConvItem>[];

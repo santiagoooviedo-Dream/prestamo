@@ -168,11 +168,18 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
   }
 
   Future<void> _validarPago() async {
+    // Re-escanear mensajes por si no se cargaron los ids al abrir
+    for (final m in _msgs) {
+      _extraerRef(m.texto);
+    }
+
     if (_idPrestamo == null || _idCuota == null || _monto == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'No se encontraron los datos del préstamo en el chat. Verifica el mensaje de referencia.',
+            'Faltan datos del pago en el chat '
+            '(préstamo: $_idPrestamo, cuota: $_idCuota, monto: $_monto). '
+            'Debe existir un mensaje con REF_PAGO.',
           ),
         ),
       );

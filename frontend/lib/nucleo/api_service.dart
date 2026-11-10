@@ -392,13 +392,19 @@ class ApiService {
     required int idUsuario,
     required String mensaje,
     String tipo = 'info',
-  }) {
+  }) async {
+    if (idUsuario <= 0) {
+      throw const ApiException('Destinatario inválido.');
+    }
+    if (mensaje.trim().isEmpty) {
+      throw const ApiException('El mensaje no puede estar vacío.');
+    }
     return _solicitar(
       'POST',
       '/notificaciones',
       datos: {
         'id_usuario': idUsuario,
-        'mensaje': mensaje,
+        'mensaje': mensaje.trim(),
         'tipo': tipo,
       },
     );

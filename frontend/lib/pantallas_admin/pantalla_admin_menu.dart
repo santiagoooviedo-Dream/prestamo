@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../nucleo/indicadores_admin.dart';
 import 'pantalla_admin_usuarios.dart';
 import 'pantalla_admin_solicitudes.dart';
 import 'pantalla_admin_notificaciones.dart';
@@ -16,6 +16,7 @@ class PantallaAdminMenu extends StatefulWidget {
 
 class _PantallaAdminMenuState extends State<PantallaAdminMenu>
     with WidgetsBindingObserver {
+  IndicadoresAdminResult? _indicadores;
 
   @override
   void initState() {
@@ -37,13 +38,19 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
     }
   }
 
-  Future<void> _cargarIndicadores() async {}
+  Future<void> _cargarIndicadores() async {
+    try {
+      final indicadores = await IndicadoresAdmin.cargar();
+      if (mounted) setState(() => _indicadores = indicadores);
+    } catch (error) {
+      debugPrint(
+        'No se pudieron cargar los pendientes del administrador: $error',
+      );
+    }
+  }
 
   Future<void> _abrir(Widget destino) async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => destino),
-    );
+    await Navigator.push(context, MaterialPageRoute(builder: (_) => destino));
     if (mounted) await _cargarIndicadores();
   }
 
@@ -99,7 +106,7 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                             fondoIcono: const Color(0xFFE8F0FE),
                             titulo: 'Usuarios',
                             sub: 'Ver y gestionar usuarios',
-                            mostrarPunto: false,
+                            mostrarPunto: _indicadores?.usuarios == true,
                             onTap: () => _abrir(const PantallaAdminUsuarios()),
                           ),
                         ),
@@ -111,7 +118,7 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                             fondoIcono: const Color(0xFFE8F8EF),
                             titulo: 'Préstamos',
                             sub: 'Aprobar o revisar solicitudes',
-                            mostrarPunto: false,
+                            mostrarPunto: _indicadores?.prestamos == true,
                             onTap: () =>
                                 _abrir(const PantallaAdminSolicitudes()),
                           ),
@@ -126,8 +133,7 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                       titulo: 'Notificaciones',
                       sub: 'Enviar mensajes a usuarios',
                       anchoCompleto: true,
-                      onTap: () =>
-                          _abrir(const PantallaAdminNotificaciones()),
+                      onTap: () => _abrir(const PantallaAdminNotificaciones()),
                     ),
                   ],
                 ),
@@ -155,10 +161,7 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                 ),
                 child: const Text(
                   'Cerrar sesión',
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                 ),
               ),
             ),
@@ -259,10 +262,7 @@ class _TarjetaMenu extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.white, width: 2),
                     boxShadow: const [
-                      BoxShadow(
-                        color: Color(0x55E53935),
-                        blurRadius: 6,
-                      ),
+                      BoxShadow(color: Color(0x55E53935), blurRadius: 6),
                     ],
                   ),
                 ),

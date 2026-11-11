@@ -34,7 +34,8 @@ class IndicadoresAdmin {
   }
 
   static int? idUsuarioDe(Map<String, dynamic> m) {
-    final raw = m['id_usuario'] ??
+    final raw =
+        m['id_usuario'] ??
         m['usuario_id'] ??
         (m['usuario'] is Map ? m['usuario']['id_usuario'] : null);
     if (raw == null) return null;
@@ -55,53 +56,182 @@ class IndicadoresAdmin {
         modo.contains('admin');
   }
 
-  static bool _textoYaValidado(String texto) {
-    final t = texto.toLowerCase();
-    return t.contains('pago verificado') ||
-        t.contains('pago nequi verificado') ||
-        t.contains('fue validado') ||
-        t.contains('nequi verificado') ||
-        t.contains('queda registrada como pagada') ||
-        t.contains('cuota ya quedó registrada') ||
-        t.contains('validado correctamente');
-  }
-
-  static Future<String> _textosConv(String idConv) async {
+  static Future<List<Map<String, dynamic>>> _mensajesConv(String idConv) async {
     try {
-      final msgs = await ApiService.obtenerMensajesConversacion(idConv);
-      if (msgs.isEmpty) return '';
-      final b = StringBuffer();
-      for (final m in msgs) {
-        b.write(' ${m['mensaje'] ?? ''}');
-        b.write(' ${m['respuesta'] ?? ''}');
-        b.write(' ${m['contenido'] ?? ''}');
-      }
-      return b.toString().trim();
+      return await ApiService.obtenerMensajesConversacion(idConv);
     } catch (_) {
-      return '';
+      return [];
     }
   }
 
-  /// true solo si hay algo real por atender (no vacío, no verificado, no leído).
-  static Future<bool> _convPendienteReal(
+  static String? firmaUltimoMensajeUsuario(
+    List<Map<String, dynamic>> mensajes,
+  ) {
+    for (final mensaje in mensajes.reversed) {
+      if (!esMensajeUsuario(mensaje)) continue;
+      final id = mensaje['id_mensaje'] ?? mensaje['id'];
+      if (id != null) return id.toString();
+      final fecha = mensaje['fecha']?.toString() ?? '';
+      final texto =
+          mensaje['respuesta'] ??
+          mensaje['mensaje'] ??
+          mensaje['contenido'] ??
+          '';
+      return '$fecha|$texto';
+    }
+    return null;
+  }
+
+  static bool esMensajeUsuario(Map<String, dynamic> mensaje) {
+    final remitente =
+        (mensaje['remitente'] ?? mensaje['rol'] ?? mensaje['tipo'] ?? '')
+            .toString()
+            .toLowerCase()
+            .trim();
+    return remitente.isEmpty ||
+        (remitente != 'admin' &&
+            remitente != 'administrador' &&
+            remitente != 'agente' &&
+            remitente != 'bot');
+  }
+
+  static bool ultimoMensajeEsUsuario(List<Map<String, dynamic>> mensajes) {
+    for (final mensaje in mensajes.reversed) {
+      final remitente =
+          (mensaje['remitente'] ?? mensaje['rol'] ?? mensaje['tipo'] ?? '')
+              .toString()
+              .toLowerCase()
+              .trim();
+      if (remitente == 'bot') continue;
+      return esMensajeUsuario(mensaje);
+    }
+    return false;
+  }
+
+  static bool esPagoPersonal(Map<String, dynamic> conversacion, String textos) {
+    final texto =
+        [
+              textos,
+              conversacion['asunto'],
+              conversacion['descripcion'],
+              conversacion['tipo'],
+              conversacion['modo'],
+              conversacion['categoria'],
+              conversacion['origen'],
+            ]
+            .whereType<Object>()
+            .map((valor) => valor.toString().toLowerCase())
+            .join(' ');
+    final tipo = (conversacion['tipo'] ?? conversacion['categoria'] ?? '')
+        .toString()
+        .toLowerCase();
+    return texto.contains('pago personal') ||
+        texto.contains('pago presencial') ||
+        texto.contains('pagar en persona') ||
+        texto.contains('pagar mi cuota') ||
+        texto.contains('quiero pagar') ||
+        texto.contains('ref_pago') ||
+        texto.contains('ref_nequi') ||
+        texto.contains('pago por nequi') ||
+        texto.contains('comprobante') ||
+        texto.contains('id_prestamo') ||
+        texto.contains('id_cuota') ||
+        tipo.contains('pago') ||
+        tipo == 'personal' ||
+        tipo == 'presencial' ||
+        conversacion['id_prestamo'] != null ||
+        conversacion['id_cuota'] != null;
+  }
+
+  static bool pagoValidado(String textos) {
+    final lower = textos.toLowerCase();
+    return lower.contains('pago personal fue validado') ||
+        lower.contains('pago nequi verificado') ||
+        lower.contains('pago verificado') ||
+        lower.contains('queda registrada como pagada') ||
+        lower.contains('cuota ya quedó registrada');
+  }
+
+  static bool _pagoPendiente(
+    Map<String, dynamic> conversacion,
+    List<Map<String, dynamic>> mensajes,
+    String textos,
+  ) {
+    if (!esPagoPersonal(conversacion, textos)) return false;
+    var solicitudPago = -1;
+    var ultimoUsuario = -1;
+    var validacion = -1;
+    for (var i = 0; i < mensajes.length; i++) {
+      final mensaje = mensajes[i];
+      final texto =
+          (mensaje['respuesta'] ??
+                  mensaje['mensaje'] ??
+                  mensaje['contenido'] ??
+                  '')
+              .toString()
+              .toLowerCase();
+      if (esMensajeUsuario(mensaje)) {
+        ultimoUsuario = i;
+        if (texto.contains('pago') ||
+            texto.contains('cuota') ||
+            texto.contains('comprobante') ||
+            texto.contains('ref_')) {
+          solicitudPago = i;
+        }
+      } else if (pagoValidado(texto)) {
+        validacion = i;
+      }
+    }
+
+    final tipo = (conversacion['tipo'] ?? conversacion['categoria'] ?? '')
+        .toString()
+        .toLowerCase();
+    if (solicitudPago >= 0) return solicitudPago > validacion;
+    if (tipo.contains('pago') || tipo == 'personal' || tipo == 'presencial') {
+      return ultimoUsuario > validacion;
+    }
+    return validacion < 0 && !pagoValidado(textos);
+  }
+
+  /// Hay algo pendiente si el último mensaje lo envió el usuario y el admin
+  /// todavía no abrió esa actualización.
+  static Future<({bool pendiente, bool pago})> _estadoConversacion(
     Map<String, dynamic> c,
-    Set<String> revisadas,
+    Map<String, String> revisadas,
   ) async {
     final idConv = idConvDe(c);
-    if (idConv.isEmpty) return false;
-    if (revisadas.contains(idConv)) return false;
-    if (!esChatAdmin(c)) return false;
-
-    final textos = await _textosConv(idConv);
-    if (textos.isEmpty) return false;
-    if (_textoYaValidado(textos)) {
-      // Ya está verificado: marcarlo leído para no volver a marcar punto
-      try {
-        await ApiService.marcarConversacionRevisada(idConv);
-      } catch (_) {}
-      return false;
+    if (idConv.isEmpty || !esChatAdmin(c)) {
+      return (pendiente: false, pago: false);
     }
-    return true;
+
+    final mensajes = await _mensajesConv(idConv);
+    final firma = firmaUltimoMensajeUsuario(mensajes);
+    final revisada = revisadas[idConv];
+    if (firma != null && revisada == '*') {
+      await ApiService.marcarConversacionRevisada(
+        idConv,
+        ultimoMensajeUsuario: firma,
+      );
+    }
+    final textos = mensajes
+        .map(
+          (mensaje) =>
+              (mensaje['respuesta'] ??
+                      mensaje['mensaje'] ??
+                      mensaje['contenido'] ??
+                      '')
+                  .toString(),
+        )
+        .join(' ');
+    final ultimoEsUsuario = ultimoMensajeEsUsuario(mensajes);
+    return (
+      pendiente:
+          firma != null &&
+          ultimoEsUsuario &&
+          revisada != '*' &&
+          revisada != firma,
+      pago: _pagoPendiente(c, mensajes, textos),
+    );
   }
 
   static Future<IndicadoresAdminResult> cargar() async {
@@ -124,13 +254,21 @@ class IndicadoresAdmin {
       final adminConvs = convs.where(esChatAdmin).toList();
       final flags = await Future.wait(
         adminConvs.map((c) async {
-          final pend = await _convPendienteReal(c, revisadas);
-          if (!pend) return null;
-          return idUsuarioDe(c);
+          final estado = await _estadoConversacion(c, revisadas);
+          if (!estado.pendiente && !estado.pago) return null;
+          return (
+            id: idUsuarioDe(c),
+            soporte: estado.pendiente,
+            pago: estado.pago,
+          );
         }),
       );
-      for (final id in flags) {
-        if (id != null) usuariosConPunto.add(id);
+      for (final flag in flags) {
+        if (flag == null) continue;
+        if (flag.id != null && (flag.soporte || flag.pago)) {
+          usuariosConPunto.add(flag.id!);
+        }
+        if (flag.pago) prestamos = true;
       }
     } catch (_) {}
 
@@ -144,6 +282,7 @@ class IndicadoresAdmin {
   static Future<IndicadoresUsuarioResult> cargarDeUsuario(int idUsuario) async {
     var solicitudes = false;
     var soporte = false;
+    var historial = false;
 
     try {
       final sols = await ApiService.obtenerSolicitudesAdmin();
@@ -158,20 +297,20 @@ class IndicadoresAdmin {
     try {
       final revisadas = await ApiService.obtenerConversacionesRevisadas();
       final convs = await ApiService.obtenerConversacionesAdmin();
-      final delUser =
-          convs.where((c) => idUsuarioDe(c) == idUsuario && esChatAdmin(c));
+      final delUser = convs.where(
+        (c) => idUsuarioDe(c) == idUsuario && esChatAdmin(c),
+      );
       for (final c in delUser) {
-        if (await _convPendienteReal(c, revisadas)) {
-          soporte = true;
-          break;
-        }
+        final estado = await _estadoConversacion(c, revisadas);
+        if (estado.pendiente) soporte = true;
+        if (estado.pago) historial = true;
       }
     } catch (_) {}
 
     return IndicadoresUsuarioResult(
       solicitudes: solicitudes,
       soporte: soporte,
-      historial: false,
+      historial: historial,
     );
   }
 }

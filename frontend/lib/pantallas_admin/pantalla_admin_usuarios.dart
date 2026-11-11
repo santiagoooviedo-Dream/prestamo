@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/comunes/punto_rojo.dart';
 import '../nucleo/api_service.dart';
 import '../nucleo/indicadores_admin.dart';
 import '../nucleo/colores_app.dart';
@@ -79,7 +78,8 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
     final q = _busqueda.text.trim().toLowerCase();
     if (q.isEmpty) return _usuarios;
     return _usuarios.where((u) {
-      final nombre = '${u['nombre'] ?? ''} ${u['apellido'] ?? ''}'.toLowerCase();
+      final nombre = '${u['nombre'] ?? ''} ${u['apellido'] ?? ''}'
+          .toLowerCase();
       final correo = (u['correo'] ?? '').toString().toLowerCase();
       final cedula = (u['cedula'] ?? '').toString().toLowerCase();
       return nombre.contains(q) || correo.contains(q) || cedula.contains(q);
@@ -154,182 +154,177 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
               child: _cargando
                   ? const Center(child: CircularProgressIndicator())
                   : _error != null
-                      ? Center(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(_error!,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      color: Color(0xFFDC2626))),
-                              TextButton(
-                                  onPressed: _cargar,
-                                  child: const Text('Reintentar')),
-                            ],
+                  ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            _error!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Color(0xFFDC2626)),
                           ),
-                        )
-                      : lista.isEmpty
-                          ? const Center(
-                              child: Text('No hay usuarios.',
-                                  style: TextStyle(color: Color(0xFF66758D))))
-                          : RefreshIndicator(
-                              onRefresh: _cargar,
-                              child: ListView.separated(
-                                itemCount: lista.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: 10),
-                                itemBuilder: (_, i) {
-                                  final u = lista[i];
-                                  final nombre =
-                                      '${u['nombre'] ?? ''} ${u['apellido'] ?? ''}'
-                                          .trim();
-                                  final correo =
-                                      u['correo']?.toString() ?? '';
-                                  final iniciales = () {
-                                    final n = (u['nombre'] ?? '').toString();
-                                    final a = (u['apellido'] ?? '').toString();
-                                    return '${n.isNotEmpty ? n[0] : ''}${a.isNotEmpty ? a[0] : ''}'
-                                        .toUpperCase();
-                                  }();
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) {
-                                            final partes =
-                                                nombre.split(' ');
-                                            final nom = partes.isNotEmpty
-                                                ? partes.first
-                                                : nombre;
-                                            final ape = partes.length > 1
-                                                ? partes.sublist(1).join(' ')
-                                                : '';
-                                            return PantallaAdminPerfil(
-                                              idUsuario: int.tryParse(
-                                                    u['id_usuario']?.toString() ?? ''),
-                                              nombre: nom,
-                                              apellidos: ape,
-                                              correo: correo,
-                                              telefono:
-                                                  u['telefono']?.toString() ??
-                                                      '',
-                                              cedula:
-                                                  u['cedula']?.toString() ??
-                                                      '',
-                                              fechaRegistro: _fmtFecha(
-                                                u['created_at'] ??
-                                                    u['fecha_registro'],
+                          TextButton(
+                            onPressed: _cargar,
+                            child: const Text('Reintentar'),
+                          ),
+                        ],
+                      ),
+                    )
+                  : lista.isEmpty
+                  ? const Center(
+                      child: Text(
+                        'No hay usuarios.',
+                        style: TextStyle(color: Color(0xFF66758D)),
+                      ),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: _cargar,
+                      child: ListView.separated(
+                        itemCount: lista.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 10),
+                        itemBuilder: (_, i) {
+                          final u = lista[i];
+                          final nombre =
+                              '${u['nombre'] ?? ''} ${u['apellido'] ?? ''}'
+                                  .trim();
+                          final correo = u['correo']?.toString() ?? '';
+                          final iniciales = () {
+                            final n = (u['nombre'] ?? '').toString();
+                            final a = (u['apellido'] ?? '').toString();
+                            return '${n.isNotEmpty ? n[0] : ''}${a.isNotEmpty ? a[0] : ''}'
+                                .toUpperCase();
+                          }();
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) {
+                                    final partes = nombre.split(' ');
+                                    final nom = partes.isNotEmpty
+                                        ? partes.first
+                                        : nombre;
+                                    final ape = partes.length > 1
+                                        ? partes.sublist(1).join(' ')
+                                        : '';
+                                    return PantallaAdminPerfil(
+                                      idUsuario: int.tryParse(
+                                        u['id_usuario']?.toString() ?? '',
+                                      ),
+                                      nombre: nom,
+                                      apellidos: ape,
+                                      correo: correo,
+                                      telefono: u['telefono']?.toString() ?? '',
+                                      cedula: u['cedula']?.toString() ?? '',
+                                      fechaRegistro: _fmtFecha(
+                                        u['created_at'] ?? u['fecha_registro'],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ).then((_) {
+                                if (mounted) _cargar();
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: const Color(0xFFE1E8F3),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Builder(
+                                    builder: (context) {
+                                      final uid = int.tryParse(
+                                        u['id_usuario']?.toString() ?? '',
+                                      );
+                                      final conPunto =
+                                          uid != null &&
+                                          _idsConPunto.contains(uid);
+                                      return SizedBox(
+                                        width: 48,
+                                        height: 48,
+                                        child: Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            CircleAvatar(
+                                              radius: 24,
+                                              backgroundColor: const Color(
+                                                0xFFE8F0FE,
                                               ),
-                                            );
-                                          },
+                                              child: Text(
+                                                iniciales.isEmpty
+                                                    ? '?'
+                                                    : iniciales,
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Color(0xFF285FE8),
+                                                ),
+                                              ),
+                                            ),
+                                            if (conPunto)
+                                              Positioned(
+                                                top: 2,
+                                                left: 2,
+                                                child: Container(
+                                                  width: 10,
+                                                  height: 10,
+                                                  decoration: BoxDecoration(
+                                                    color: const Color(
+                                                      0xFFE53935,
+                                                    ),
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                      color: Colors.white,
+                                                      width: 1.5,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
                                         ),
                                       );
                                     },
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(16),
-                                        border: Border.all(
-                                            color: const Color(0xFFE1E8F3)),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Builder(
-                                            builder: (context) {
-                                              final uid = int.tryParse(
-                                                u['id_usuario']?.toString() ??
-                                                    '',
-                                              );
-                                              final conPunto = uid != null &&
-                                                  false;
-                                              return SizedBox(
-                                                width: 48,
-                                                height: 48,
-                                                child: Stack(
-                                                  clipBehavior: Clip.none,
-                                                  children: [
-                                                    CircleAvatar(
-                                                      radius: 24,
-                                                      backgroundColor:
-                                                          const Color(
-                                                              0xFFE8F0FE),
-                                                      child: Text(
-                                                        iniciales.isEmpty
-                                                            ? '?'
-                                                            : iniciales,
-                                                        style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.w700,
-                                                          color: Color(
-                                                              0xFF285FE8),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    if (conPunto)
-                                                      Positioned(
-                                                        top: 2,
-                                                        left: 2,
-                                                        child: Container(
-                                                          width: 10,
-                                                          height: 10,
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color: const Color(
-                                                                0xFFE53935),
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            border: Border.all(
-                                                              color:
-                                                                  Colors.white,
-                                                              width: 1.5,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          nombre.isEmpty ? 'Usuario' : nombre,
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF17243C),
                                           ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  nombre.isEmpty
-                                                      ? 'Usuario'
-                                                      : nombre,
-                                                  style: const TextStyle(
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w600,
-                                                    color: Color(0xFF17243C),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  correo,
-                                                  style: const TextStyle(
-                                                    fontSize: 13,
-                                                    color: Color(0xFF66758D)
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                        ),
+                                        Text(
+                                          correo,
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            color: Color(0xFF66758D),
                                           ),
-                                          const Icon(Icons.chevron_right,
-                                              color: Color(0xFF94A0B3)),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  );
-                                },
+                                  ),
+                                  const Icon(
+                                    Icons.chevron_right,
+                                    color: Color(0xFF94A0B3),
+                                  ),
+                                ],
                               ),
                             ),
+                          );
+                        },
+                      ),
+                    ),
             ),
           ],
         ),

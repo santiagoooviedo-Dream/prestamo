@@ -59,7 +59,8 @@ class _PantallaAdminConversacionesState
             .toString()
             .toLowerCase()
             .trim();
-        final esAdmin = modo == 'admin' ||
+        final esAdmin =
+            modo == 'admin' ||
             modo == 'administrador' ||
             modo == 'soporte' ||
             modo.contains('admin');
@@ -88,9 +89,8 @@ class _PantallaAdminConversacionesState
       // Cargar mensajes en paralelo (antes era 1 request por chat en serie)
       final futures = <Future<_ConvItem?>>[];
       for (final c in conAdmin) {
-        final idConv = c['id_conversacion']?.toString() ??
-            c['id']?.toString() ??
-            '';
+        final idConv =
+            c['id_conversacion']?.toString() ?? c['id']?.toString() ?? '';
         if (idConv.isEmpty) continue;
 
         final idUser = int.tryParse(
@@ -105,25 +105,27 @@ class _PantallaAdminConversacionesState
         final nombre = _nombreDe(c, u);
 
         futures.add(() async {
-          var preview = c['ultimo_mensaje']?.toString() ??
+          var preview =
+              c['ultimo_mensaje']?.toString() ??
               c['mensaje']?.toString() ??
               c['preview']?.toString() ??
               c['asunto']?.toString() ??
               '';
           var todosLosTextos = preview;
+          var mensajes = <Map<String, dynamic>>[];
           try {
-            final msgs =
-                await ApiService.obtenerMensajesConversacion(idConv);
-            if (msgs.isNotEmpty) {
+            mensajes = await ApiService.obtenerMensajesConversacion(idConv);
+            if (mensajes.isNotEmpty) {
               if (preview.isEmpty) {
-                final last = msgs.last;
-                preview = last['mensaje']?.toString() ??
+                final last = mensajes.last;
+                preview =
+                    last['mensaje']?.toString() ??
                     last['respuesta']?.toString() ??
                     last['contenido']?.toString() ??
                     '';
               }
               final buffer = StringBuffer(preview);
-              for (final msg in msgs) {
+              for (final msg in mensajes) {
                 buffer.write(' ');
                 buffer.write(msg['mensaje'] ?? '');
                 buffer.write(' ');
@@ -137,20 +139,32 @@ class _PantallaAdminConversacionesState
           if (preview.isEmpty) preview = 'Sin mensajes';
 
           final pago = _esPagoPersonal(c, todosLosTextos);
-          final lowerAll = todosLosTextos.toLowerCase();
           final yaValidado =
-              lowerAll.contains('pago personal fue validado') ||
-                  lowerAll.contains('pago nequi verificado') ||
-                  lowerAll.contains('pago verificado') ||
-                  lowerAll.contains('queda registrada como pagada') ||
-                  lowerAll.contains('cuota ya quedó registrada');
+              !IndicadoresAdmin.ultimoMensajeEsUsuario(mensajes) &&
+              IndicadoresAdmin.pagoValidado(todosLosTextos);
 
           final previewLimpio = preview.trim();
-          final vacio = previewLimpio.isEmpty ||
+          final vacio =
+              previewLimpio.isEmpty ||
               previewLimpio.toLowerCase() == 'sin mensajes';
-          // Pendiente solo si no se ha abierto (al abrir → leído)
+          final firmaUltimoUsuario = IndicadoresAdmin.firmaUltimoMensajeUsuario(
+            mensajes,
+          );
+          final ultimoMensajeEsUsuario =
+              IndicadoresAdmin.ultimoMensajeEsUsuario(mensajes);
+          final marca = revisadas[idConv];
+          if (marca == '*' && firmaUltimoUsuario != null) {
+            await ApiService.marcarConversacionRevisada(
+              idConv,
+              ultimoMensajeUsuario: firmaUltimoUsuario,
+            );
+          }
           final sinRevisar =
-              !yaValidado && !vacio && !revisadas.contains(idConv);
+              !vacio &&
+              ultimoMensajeEsUsuario &&
+              firmaUltimoUsuario != null &&
+              marca != '*' &&
+              marca != firmaUltimoUsuario;
 
           return _ConvItem(
             id: idConv,
@@ -160,6 +174,7 @@ class _PantallaAdminConversacionesState
             yaValidado: yaValidado,
             sinRevisar: sinRevisar,
             idUsuario: idUser,
+            firmaUltimoMensajeUsuario: firmaUltimoUsuario,
           );
         }());
       }
@@ -168,9 +183,11 @@ class _PantallaAdminConversacionesState
       var items = resultados.whereType<_ConvItem>().toList();
       // Ocultar chats vacíos ("Sin mensajes") para no llenar la lista
       final conContenido = items
-          .where((it) =>
-              it.preview.trim().isNotEmpty &&
-              it.preview.trim().toLowerCase() != 'sin mensajes')
+          .where(
+            (it) =>
+                it.preview.trim().isNotEmpty &&
+                it.preview.trim().toLowerCase() != 'sin mensajes',
+          )
           .toList();
       if (conContenido.isNotEmpty) {
         items = conContenido;
@@ -257,7 +274,6 @@ class _PantallaAdminConversacionesState
     return false;
   }
 
-
   Future<void> _marcarTodoLeido() async {
     if (_marcandoTodo) return;
     setState(() => _marcandoTodo = true);
@@ -270,9 +286,7 @@ class _PantallaAdminConversacionesState
         if (!esAdmin) continue;
 
         final idUser = int.tryParse(
-          c['id_usuario']?.toString() ??
-              c['usuario_id']?.toString() ??
-              '',
+          c['id_usuario']?.toString() ?? c['usuario_id']?.toString() ?? '',
         );
         if (widget.idUsuarioFiltro != null &&
             idUser != widget.idUsuarioFiltro) {
@@ -283,7 +297,14 @@ class _PantallaAdminConversacionesState
             c['id_conversacion']?.toString() ?? c['id']?.toString() ?? '';
         if (idConv.isEmpty) continue;
         try {
-          await ApiService.marcarConversacionRevisada(idConv);
+          final mensajes = await ApiService.obtenerMensajesConversacion(idConv);
+          final firma = IndicadoresAdmin.firmaUltimoMensajeUsuario(mensajes);
+          if (firma != null) {
+            await ApiService.marcarConversacionRevisada(
+              idConv,
+              ultimoMensajeUsuario: firma,
+            );
+          }
         } catch (_) {}
       }
 
@@ -299,6 +320,7 @@ class _PantallaAdminConversacionesState
                 yaValidado: it.yaValidado,
                 sinRevisar: false,
                 idUsuario: it.idUsuario,
+                firmaUltimoMensajeUsuario: it.firmaUltimoMensajeUsuario,
               ),
             )
             .toList();
@@ -405,7 +427,7 @@ class _PantallaAdminConversacionesState
             preview: it.preview,
             esPagoPersonal: it.esPago,
             yaValidado: it.yaValidado,
-            sinRevisar: false,
+            sinRevisar: it.sinRevisar,
             onTap: () async {
               int? idPrestamo;
               int? idCuota;
@@ -417,24 +439,6 @@ class _PantallaAdminConversacionesState
               if (c != null) idCuota = int.tryParse(c.group(1)!);
               if (m != null) monto = num.tryParse(m.group(1)!);
 
-              // Marcar como leída al abrir → quita el punto rojo
-              await ApiService.marcarConversacionRevisada(it.id);
-              setState(() {
-                final idx = _items.indexWhere((e) => e.id == it.id);
-                if (idx >= 0) {
-                  final oldItem = _items[idx];
-                  _items[idx] = _ConvItem(
-                    id: oldItem.id,
-                    nombre: oldItem.nombre,
-                    preview: oldItem.preview,
-                    esPago: oldItem.esPago,
-                    yaValidado: oldItem.yaValidado,
-                    sinRevisar: false,
-                    idUsuario: oldItem.idUsuario,
-                  );
-                }
-              });
-
               if (!mounted) return;
               await Navigator.push(
                 context,
@@ -442,9 +446,11 @@ class _PantallaAdminConversacionesState
                   builder: (_) => PantallaAdminChat(
                     idConversacion: it.id,
                     nombreUsuario: it.nombre,
-                    mensajeInicialUsuario:
-                        it.preview == 'Sin mensajes' ? null : it.preview,
-                    esPagoPersonal: it.esPago ||
+                    mensajeInicialUsuario: it.preview == 'Sin mensajes'
+                        ? null
+                        : it.preview,
+                    esPagoPersonal:
+                        it.esPago ||
                         idPrestamo != null ||
                         it.preview.toLowerCase().contains('ref_pago') ||
                         it.preview.toLowerCase().contains('ref_nequi') ||
@@ -474,6 +480,7 @@ class _ConvItem {
   final bool yaValidado;
   final bool sinRevisar;
   final int? idUsuario;
+  final String? firmaUltimoMensajeUsuario;
 
   _ConvItem({
     required this.id,
@@ -483,5 +490,6 @@ class _ConvItem {
     this.yaValidado = false,
     this.sinRevisar = false,
     this.idUsuario,
+    this.firmaUltimoMensajeUsuario,
   });
 }

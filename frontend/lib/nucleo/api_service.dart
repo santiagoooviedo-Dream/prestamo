@@ -17,7 +17,6 @@ class ApiException implements Exception {
 }
 
 class ApiService {
-
   static const bool useRemote = true;
 
   static const String _remoteUrl = 'https://prestamo-amigo.onrender.com';
@@ -294,7 +293,6 @@ class ApiService {
     );
   }
 
-
   /// Registrar pago de una cuota
   static Future<Map<String, dynamic>> registrarPago({
     required int idPrestamo,
@@ -334,14 +332,17 @@ class ApiService {
         ),
       );
     try {
-      final streamed =
-          await request.send().timeout(const Duration(seconds: 30));
+      final streamed = await request.send().timeout(
+        const Duration(seconds: 30),
+      );
       final respuesta = await http.Response.fromStream(streamed);
       final cuerpo = respuesta.body.isEmpty
           ? <String, dynamic>{}
           : jsonDecode(respuesta.body);
       if (cuerpo is! Map<String, dynamic>) {
-        throw const ApiException('El servidor devolvió una respuesta inválida.');
+        throw const ApiException(
+          'El servidor devolvió una respuesta inválida.',
+        );
       }
       if (respuesta.statusCode < 200 || respuesta.statusCode >= 300) {
         final mensaje = cuerpo['mensaje'] ?? cuerpo['error'];
@@ -378,13 +379,17 @@ class ApiService {
         ),
       );
     try {
-      final streamed = await request.send().timeout(const Duration(seconds: 30));
+      final streamed = await request.send().timeout(
+        const Duration(seconds: 30),
+      );
       final respuesta = await http.Response.fromStream(streamed);
       final cuerpo = respuesta.body.isEmpty
           ? <String, dynamic>{}
           : jsonDecode(respuesta.body);
       if (cuerpo is! Map<String, dynamic>) {
-        throw const ApiException('El servidor devolvió una respuesta inválida.');
+        throw const ApiException(
+          'El servidor devolvió una respuesta inválida.',
+        );
       }
       if (respuesta.statusCode < 200 || respuesta.statusCode >= 300) {
         final mensaje = cuerpo['mensaje'] ?? cuerpo['error'];
@@ -410,7 +415,9 @@ class ApiService {
     final respuesta = await _solicitar('GET', '/solicitudes/admin');
     final items = respuesta['solicitud'] ?? respuesta['solicitudes'];
     if (items is! List) {
-      throw const ApiException('La respuesta de solicitudes admin no es válida.');
+      throw const ApiException(
+        'La respuesta de solicitudes admin no es válida.',
+      );
     }
     return items.whereType<Map<String, dynamic>>().toList();
   }
@@ -427,7 +434,9 @@ class ApiService {
     return _solicitar('PATCH', '/solicitudes/$idSolicitud', datos: datos);
   }
 
-  static Future<Map<String, dynamic>> crearPrestamoDesdeSolicitud(int idSolicitud) {
+  static Future<Map<String, dynamic>> crearPrestamoDesdeSolicitud(
+    int idSolicitud,
+  ) {
     return _solicitar('POST', '/prestamos/$idSolicitud');
   }
 
@@ -449,17 +458,14 @@ class ApiService {
     return _solicitar(
       'POST',
       '/notificaciones',
-      datos: {
-        'id_usuario': idUsuario,
-        'mensaje': mensaje.trim(),
-        'tipo': tipo,
-      },
+      datos: {'id_usuario': idUsuario, 'mensaje': mensaje.trim(), 'tipo': tipo},
     );
   }
 
   static Future<List<Map<String, dynamic>>> obtenerConversacionesAdmin() async {
     final respuesta = await _solicitar('GET', '/conversaciones/admin');
-    final items = respuesta['conversaciones'] ??
+    final items =
+        respuesta['conversaciones'] ??
         respuesta['data'] ??
         (respuesta is List ? respuesta : null);
     if (items is List) {
@@ -488,8 +494,10 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> obtenerMensajesConversacion(
     String idConversacion,
   ) async {
-    final respuesta =
-        await _solicitar('GET', '/conversaciones/$idConversacion/mensajes');
+    final respuesta = await _solicitar(
+      'GET',
+      '/conversaciones/$idConversacion/mensajes',
+    );
     for (final key in ['mensajes', 'data']) {
       final v = respuesta[key];
       if (v is List) return v.whereType<Map<String, dynamic>>().toList();
@@ -515,7 +523,9 @@ class ApiService {
     await _solicitar('PUT', '/conversaciones/$idConversacion/cerrar');
   }
 
-  static Future<void> transferirConversacionAAdmin(String idConversacion) async {
+  static Future<void> transferirConversacionAAdmin(
+    String idConversacion,
+  ) async {
     await _solicitar('PUT', '/conversaciones/$idConversacion/transferir');
   }
 
@@ -552,29 +562,38 @@ class ApiService {
     }
   }
 
-  
-  /// IDs de conversaciones que el admin ya abrió (punto rojo).
+  /// Último mensaje del usuario revisado por el admin en cada conversación.
   static const _kConvRevisadas = 'admin_conv_revisadas';
 
-  static Future<Set<String>> obtenerConversacionesRevisadas() async {
+  static Future<Map<String, String>> obtenerConversacionesRevisadas() async {
     try {
       final raw = await _leerDatoSeguro(_kConvRevisadas);
-      if (raw == null || raw.isEmpty) return <String>{};
+      if (raw == null || raw.isEmpty) return <String, String>{};
       final lista = jsonDecode(raw);
       if (lista is List) {
-        return lista.map((e) => e.toString()).toSet();
+        return {for (final id in lista) id.toString(): '*'};
+      }
+      if (lista is Map) {
+        return {
+          for (final entry in lista.entries)
+            entry.key.toString(): entry.value.toString(),
+        };
       }
     } catch (_) {}
-    return <String>{};
+    return <String, String>{};
   }
 
-  static Future<void> marcarConversacionRevisada(String id) async {
+  static Future<void> marcarConversacionRevisada(
+    String id, {
+    String? ultimoMensajeUsuario,
+  }) async {
     if (id.isEmpty) return;
     final actual = await obtenerConversacionesRevisadas();
-    if (actual.contains(id)) return;
-    actual.add(id);
+    final firma = ultimoMensajeUsuario ?? '*';
+    if (actual[id] == firma) return;
+    actual[id] = firma;
     try {
-      await _guardarDatoSeguro(_kConvRevisadas, jsonEncode(actual.toList()));
+      await _guardarDatoSeguro(_kConvRevisadas, jsonEncode(actual));
     } catch (_) {}
   }
 

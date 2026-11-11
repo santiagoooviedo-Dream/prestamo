@@ -4,6 +4,7 @@ class TarjetaDestinatario extends StatelessWidget {
   final String nombre;
   final String detalle;
   final bool seleccionado;
+  final bool mostrarPunto;
   final VoidCallback onTap;
 
   const TarjetaDestinatario({
@@ -12,6 +13,7 @@ class TarjetaDestinatario extends StatelessWidget {
     required this.detalle,
     required this.seleccionado,
     required this.onTap,
+    this.mostrarPunto = false,
   });
 
   @override
@@ -34,22 +36,47 @@ class TarjetaDestinatario extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
+            SizedBox(
               width: 40,
               height: 40,
-              decoration: BoxDecoration(
-                color: seleccionado
-                    ? const Color(0xFF285FE8)
-                    : const Color(0xFFE8F0FE),
-                shape: BoxShape.circle,
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                inicial,
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: seleccionado ? Colors.white : const Color(0xFF285FE8),
-                ),
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: seleccionado
+                          ? const Color(0xFF285FE8)
+                          : const Color(0xFFE8F0FE),
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: Text(
+                      inicial,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: seleccionado
+                            ? Colors.white
+                            : const Color(0xFF285FE8),
+                      ),
+                    ),
+                  ),
+                  if (mostrarPunto)
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE53935),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             const SizedBox(width: 12),
@@ -76,7 +103,11 @@ class TarjetaDestinatario extends StatelessWidget {
               ),
             ),
             if (seleccionado)
-              const Icon(Icons.check_circle, color: Color(0xFF285FE8), size: 22),
+              const Icon(
+                Icons.check_circle,
+                color: Color(0xFF285FE8),
+                size: 22,
+              ),
           ],
         ),
       ),

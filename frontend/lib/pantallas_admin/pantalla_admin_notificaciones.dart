@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../nucleo/api_service.dart';
+import '../nucleo/indicadores_admin.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/admin/tarjeta_destinatario.dart';
 import '../widgets/comunes/boton_primario.dart';
@@ -122,6 +123,8 @@ class _PantallaAdminNotificacionesState
           }
         }
       } catch (_) {}
+      final usuariosConPendientes =
+          (await IndicadoresAdmin.cargar()).usuariosConPunto;
 
       final porUsuario = <int, _Dest>{};
       for (final entry in usuarios.entries) {
@@ -136,6 +139,7 @@ class _PantallaAdminNotificacionesState
           detalle: detallePorUsuario[id] ?? 'Usuario registrado',
           correo: u['correo']?.toString() ?? '',
           cedula: u['cedula']?.toString() ?? '',
+          mostrarPunto: usuariosConPendientes.contains(id),
         );
       }
 
@@ -146,6 +150,7 @@ class _PantallaAdminNotificacionesState
             id: e.key,
             nombre: 'Usuario #${e.key}',
             detalle: e.value,
+            mostrarPunto: usuariosConPendientes.contains(e.key),
           );
         }
       }
@@ -183,21 +188,22 @@ class _PantallaAdminNotificacionesState
     final titulo = _titulo.text.trim();
     final cuerpo = _mensaje.text.trim();
     if (id == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Elige un destinatario.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Elige un destinatario.')));
       return;
     }
     if (titulo.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Escribe un título para la notificación.')),
+        const SnackBar(
+          content: Text('Escribe un título para la notificación.'),
+        ),
       );
       return;
     }
     if (cuerpo.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Escribe el mensaje.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Escribe el mensaje.')));
       return;
     }
     // Título y cuerpo separados para que el usuario vea el título elegido
@@ -230,15 +236,12 @@ class _PantallaAdminNotificacionesState
       setState(() => _usuarioSel = null);
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.mensaje}')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error: ${e.mensaje}')));
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('No se pudo enviar la notificación. $e'),
-        ),
+        SnackBar(content: Text('No se pudo enviar la notificación. $e')),
       );
     } finally {
       if (mounted) setState(() => _enviando = false);
@@ -327,8 +330,10 @@ class _PantallaAdminNotificacionesState
                     if (_cargando)
                       const Center(child: CircularProgressIndicator())
                     else if (_error != null)
-                      Text(_error!,
-                          style: const TextStyle(color: Color(0xFFDC2626)))
+                      Text(
+                        _error!,
+                        style: const TextStyle(color: Color(0xFFDC2626)),
+                      )
                     else if (lista.isEmpty)
                       const Text(
                         'No hay destinatarios con ese filtro.',
@@ -340,6 +345,7 @@ class _PantallaAdminNotificacionesState
                           nombre: d.nombre,
                           detalle: d.detalle,
                           seleccionado: _usuarioSel == d.id,
+                          mostrarPunto: d.mostrarPunto,
                           onTap: () => setState(() => _usuarioSel = d.id),
                         ),
                       ),
@@ -378,6 +384,7 @@ class _Dest {
   final String detalle;
   final String correo;
   final String cedula;
+  final bool mostrarPunto;
 
   _Dest({
     required this.id,
@@ -385,5 +392,6 @@ class _Dest {
     required this.detalle,
     this.correo = '',
     this.cedula = '',
+    this.mostrarPunto = false,
   });
 }

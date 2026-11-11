@@ -148,7 +148,7 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                     AccionRapidaAdmin(
                       icono: Icons.bar_chart_rounded,
                       titulo: 'Historial de préstamos',
-                      mostrarPunto: false,
+                      mostrarPunto: _puntoHistorial,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -167,7 +167,7 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                     AccionRapidaAdmin(
                       icono: Icons.mail_outline_rounded,
                       titulo: 'Solicitudes de préstamo',
-                      mostrarPunto: false,
+                      mostrarPunto: _puntoSolicitudes,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -185,7 +185,7 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                     AccionRapidaAdmin(
                       icono: Icons.notifications_none_rounded,
                       titulo: 'Soporte',
-                      mostrarPunto: false,
+                      mostrarPunto: _puntoSoporte,
                       onTap: () {
                         final nombreCompleto =
                             '${widget.nombre} ${widget.apellidos}'.trim();

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../nucleo/indicadores_admin.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
 
@@ -38,6 +39,7 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
   bool _cargando = false;
   bool _validando = false;
   bool _pagoValidado = false;
+
   /// Se activa si en cualquier mensaje del chat se detecta REF_PAGO / datos de cuota
   bool _esPagoPersonalDetectado = false;
 
@@ -83,31 +85,27 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
     });
   }
 
-  static final _urlRe = RegExp(
-    r'https?://[^\s)]+',
-    caseSensitive: false,
-  );
+  static final _urlRe = RegExp(r'https?://[^\s)]+', caseSensitive: false);
 
   List<String> _extraerUrls(String texto) {
-    return _urlRe
-        .allMatches(texto)
-        .map((m) => m.group(0)!)
-        .where((u) {
-          final l = u.toLowerCase();
-          return l.contains('cloudinary') ||
-              l.endsWith('.jpg') ||
-              l.endsWith('.jpeg') ||
-              l.endsWith('.png') ||
-              l.endsWith('.webp') ||
-              l.contains('/image/');
-        })
-        .toList();
+    return _urlRe.allMatches(texto).map((m) => m.group(0)!).where((u) {
+      final l = u.toLowerCase();
+      return l.contains('cloudinary') ||
+          l.endsWith('.jpg') ||
+          l.endsWith('.jpeg') ||
+          l.endsWith('.png') ||
+          l.endsWith('.webp') ||
+          l.contains('/image/');
+    }).toList();
   }
 
   String _textoSinUrls(String texto) {
     var t = texto;
     for (final u in _extraerUrls(texto)) {
-      t = t.replaceAll(u, '').replaceAll('Comprobante:', '').replaceAll('Comprobante :', '');
+      t = t
+          .replaceAll(u, '')
+          .replaceAll('Comprobante:', '')
+          .replaceAll('Comprobante :', '');
     }
     return t.replaceAll(RegExp(r'\n{3,}'), '\n\n').trim();
   }
@@ -121,19 +119,20 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
       if (!mounted) return;
       final nuevos = <_Msg>[];
       for (final raw in lista) {
-        final texto = raw['mensaje']?.toString() ??
+        final texto =
+            raw['mensaje']?.toString() ??
             raw['respuesta']?.toString() ??
             raw['contenido']?.toString() ??
             '';
         if (texto.isEmpty) continue;
         _extraerRef(texto);
-        final remitente =
-            (raw['remitente'] ?? raw['rol'] ?? raw['tipo'] ?? '')
-                .toString()
-                .toLowerCase()
-                .trim();
+        final remitente = (raw['remitente'] ?? raw['rol'] ?? raw['tipo'] ?? '')
+            .toString()
+            .toLowerCase()
+            .trim();
         // Vista admin: mensajes del usuario a la izquierda, del admin a la derecha
-        final deUsuario = remitente != 'admin' &&
+        final deUsuario =
+            remitente != 'admin' &&
             remitente != 'administrador' &&
             remitente != 'agente';
         // Si no viene remitente, intentar flags legacy
@@ -176,6 +175,15 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
             _esPagoPersonalDetectado = true;
           }
         });
+      }
+      final firmaUltimoUsuario = IndicadoresAdmin.firmaUltimoMensajeUsuario(
+        lista,
+      );
+      if (firmaUltimoUsuario != null) {
+        await ApiService.marcarConversacionRevisada(
+          id,
+          ultimoMensajeUsuario: firmaUltimoUsuario,
+        );
       }
     } catch (_) {
       // Mantiene mensajes locales
@@ -234,12 +242,6 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
       );
       if (!mounted) return;
       setState(() => _pagoValidado = true);
-      final idConv = widget.idConversacion;
-      if (idConv != null && idConv.isNotEmpty) {
-        try {
-          await ApiService.marcarConversacionRevisada(idConv);
-        } catch (_) {}
-      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Pago personal validado correctamente.')),
       );
@@ -332,8 +334,10 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
             if (widget.esPagoPersonal || _esPagoPersonalDetectado) ...[
               const SizedBox(height: 6),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE8F0FE),
                   borderRadius: BorderRadius.circular(8),
@@ -456,8 +460,8 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                 texto: _validando
                     ? 'Validando…'
                     : (_esNequi
-                        ? 'Validar pago Nequi'
-                        : 'Validar pago personal'),
+                          ? 'Validar pago Nequi'
+                          : 'Validar pago personal'),
                 alPresionar: _validando ? null : _validarPago,
               ),
               const SizedBox(height: 10),
@@ -479,8 +483,10 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                       onSubmitted: (_) => _enviar(),
                       decoration: const InputDecoration(
                         hintText: 'Escribe tu mensaje',
-                        hintStyle:
-                            TextStyle(fontSize: 14, color: Color(0xFF94A0B3)),
+                        hintStyle: TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF94A0B3),
+                        ),
                         border: InputBorder.none,
                       ),
                     ),

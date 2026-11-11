@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../nucleo/api_service.dart';
+import '../../models/notificacion_model.dart';
 import '../../pantallas/pantalla_inicio.dart';
 import '../../pantallas/pantalla_mis_prestamos.dart';
 import '../../pantallas/pantalla_asistente_virtual.dart';
@@ -18,8 +18,6 @@ class BarraNavegacion extends StatefulWidget {
 }
 
 class _BarraNavegacionState extends State<BarraNavegacion> {
-  bool _notifPendientes = false;
-
   @override
   void initState() {
     super.initState();
@@ -28,14 +26,9 @@ class _BarraNavegacionState extends State<BarraNavegacion> {
 
   Future<void> _cargarNotif() async {
     try {
-      final lista = await ApiService.obtenerNotificaciones();
-      final hay = lista.any((n) {
-        final leida = n['leida'];
-        return leida != true && leida != 'true' && leida != 1;
-      });
-      if (mounted) setState(() => _notifPendientes = hay);
-    } catch (_) {
-      // Silencioso: si falla no mostramos punto
+      await EstadoNotificacionesUsuario.cargar();
+    } catch (error) {
+      debugPrint('No se pudo consultar el estado de notificaciones: $error');
     }
   }
 
@@ -97,13 +90,16 @@ class _BarraNavegacionState extends State<BarraNavegacion> {
               const PantallaAsistenteVirtual(),
             ),
           ),
-          _Item(
-            icono: Icons.person_outline_rounded,
-            etiqueta: 'Perfil',
-            activo: widget.actual == DestinoNav.perfil,
-            mostrarPunto: _notifPendientes,
-            onTap: () =>
-                _ir(context, DestinoNav.perfil, const PantallaPerfil()),
+          ValueListenableBuilder<bool>(
+            valueListenable: EstadoNotificacionesUsuario.hayNoLeidas,
+            builder: (context, hayNoLeidas, _) => _Item(
+              icono: Icons.person_outline_rounded,
+              etiqueta: 'Perfil',
+              activo: widget.actual == DestinoNav.perfil,
+              mostrarPunto: hayNoLeidas,
+              onTap: () =>
+                  _ir(context, DestinoNav.perfil, const PantallaPerfil()),
+            ),
           ),
         ],
       ),

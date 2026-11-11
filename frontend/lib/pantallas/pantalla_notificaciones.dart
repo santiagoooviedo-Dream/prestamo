@@ -22,7 +22,13 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
   bool _cargando = true;
   String? _error;
 
-  static const _filtros = ['Todas', 'No leídas', 'Préstamos', 'Pagos'];
+  static const _filtros = [
+    'Todas',
+    'No leídas',
+    'Préstamos',
+    'Pagos',
+    'Generales',
+  ];
 
   @override
   void initState() {
@@ -37,18 +43,10 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
     });
     try {
       final items = await _modelo.obtenerTodas();
-      // Al abrir, marcar no leídas en el servidor
-      for (final item in items) {
-        if (!item.leida && item.id.isNotEmpty) {
-          try {
-            await _modelo.marcarLeida(item.id);
-          } catch (_) {}
-        }
-      }
-      final actualizadas = items
-          .map((item) => item.leida ? item : item.marcarComoLeida())
-          .toList();
-      if (mounted) setState(() => _items = actualizadas);
+      EstadoNotificacionesUsuario.actualizarDesdeApi(
+        items.map((item) => {'leida': item.leida}).toList(),
+      );
+      if (mounted) setState(() => _items = items);
     } on ApiException catch (error) {
       if (mounted) setState(() => _error = error.mensaje);
     } finally {
@@ -60,6 +58,7 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
     1 => _items.where((item) => !item.leida).toList(),
     2 => _items.where((item) => item.categoria == 'prestamos').toList(),
     3 => _items.where((item) => item.categoria == 'pagos').toList(),
+    4 => _items.where((item) => item.categoria == 'generales').toList(),
     _ => _items,
   };
 
@@ -75,6 +74,9 @@ class _PantallaNotificacionesState extends State<PantallaNotificaciones> {
                     actual.id == item.id ? actual.marcarComoLeida() : actual,
               )
               .toList();
+          EstadoNotificacionesUsuario.actualizarDesdeApi(
+            _items.map((actual) => {'leida': actual.leida}).toList(),
+          );
         });
       }
     } on ApiException catch (error) {

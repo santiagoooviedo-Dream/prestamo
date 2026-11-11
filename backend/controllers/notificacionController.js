@@ -82,14 +82,21 @@ export const marcarNotificacionLeida = async (req, res) => {
             leida: true
         })
         .eq('id_notificacion', id_notificacion)
+        .eq('id_usuario', req.usuario.id_usuario)
         .select()
-        .single();
+        .maybeSingle();
 
     //comprobamos si ocurre un error
     if (error) {
         return res.status(500).json({
             mensaje: 'Error al marcar la notificacion',
             error: error.message
+        });
+    }
+
+    if (!data) {
+        return res.status(404).json({
+            mensaje: 'No se encontró la notificación para este usuario'
         });
     }
 

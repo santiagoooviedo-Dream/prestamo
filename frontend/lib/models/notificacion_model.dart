@@ -64,19 +64,19 @@ class NotificacionModel {
           : '${local.day.toString().padLeft(2, '0')}/${local.month.toString().padLeft(2, '0')}/${local.year} · ${local.hour.toString().padLeft(2, '0')}:${local.minute.toString().padLeft(2, '0')}',
       icono: _iconoDe(tipo, mensajeRaw),
       categoria: _categoriaDe(tipo, mensajeRaw),
-      leida: dato['leida'] == true,
+      leida: _estaLeida(dato['leida']),
     );
   }
 
   NotificacionModel marcarComoLeida() => NotificacionModel(
-        id: id,
-        titulo: titulo,
-        cuerpo: cuerpo,
-        tiempo: tiempo,
-        icono: icono,
-        categoria: categoria,
-        leida: true,
-      );
+    id: id,
+    titulo: titulo,
+    cuerpo: cuerpo,
+    tiempo: tiempo,
+    icono: icono,
+    categoria: categoria,
+    leida: true,
+  );
 
   static IconData _iconoDe(String tipo, String mensaje) {
     final lower = mensaje.toLowerCase();
@@ -93,10 +93,35 @@ class NotificacionModel {
 
   static String _categoriaDe(String tipo, String mensaje) {
     final lower = mensaje.toLowerCase();
+    if (tipo == 'admin') return 'generales';
+    if (tipo == 'solicitud' ||
+        lower.contains('solicitud') ||
+        lower.contains('aprob') ||
+        lower.contains('rechaz')) {
+      return 'prestamos';
+    }
     if (tipo == 'pago' || lower.contains('pago') || lower.contains('cuota')) {
       return 'pagos';
     }
-    return 'prestamos';
+    return 'generales';
+  }
+
+  static bool _estaLeida(dynamic valor) =>
+      valor == true || valor == 'true' || valor == 1;
+}
+
+class EstadoNotificacionesUsuario {
+  static final ValueNotifier<bool> hayNoLeidas = ValueNotifier(false);
+
+  static Future<void> cargar() async {
+    final datos = await ApiService.obtenerNotificaciones();
+    actualizarDesdeApi(datos);
+  }
+
+  static void actualizarDesdeApi(List<Map<String, dynamic>> datos) {
+    hayNoLeidas.value = datos.any(
+      (dato) => !NotificacionModel._estaLeida(dato['leida']),
+    );
   }
 }
 

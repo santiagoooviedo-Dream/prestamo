@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../nucleo/api_service.dart';
+import '../../models/notificacion_model.dart';
 
 import '../../nucleo/colores_app.dart';
 import '../../widgets/comunes/barra_navegacion.dart';
@@ -140,29 +140,15 @@ class ContenidoPerfil extends StatelessWidget {
                         _abrir(context, const PantallaEstadoCuenta()),
                   ),
                   const SizedBox(height: 10),
-                  FutureBuilder<bool>(
-                    future: () async {
-                      try {
-                        final lista = await ApiService.obtenerNotificaciones();
-                        return lista.any((n) {
-                          final leida = n['leida'];
-                          return leida != true &&
-                              leida != 'true' &&
-                              leida != 1;
-                        });
-                      } catch (_) {
-                        return false;
-                      }
-                    }(),
-                    builder: (context, snap) {
-                      return _OpcionPerfil(
-                        icono: Icons.notifications_none_rounded,
-                        titulo: 'Notificaciones',
-                        mostrarPunto: snap.data == true,
-                        alPresionar: () =>
-                            _abrir(context, const PantallaNotificaciones()),
-                      );
-                    },
+                  ValueListenableBuilder<bool>(
+                    valueListenable: EstadoNotificacionesUsuario.hayNoLeidas,
+                    builder: (context, hayNoLeidas, _) => _OpcionPerfil(
+                      icono: Icons.notifications_none_rounded,
+                      titulo: 'Notificaciones',
+                      mostrarPunto: hayNoLeidas,
+                      alPresionar: () =>
+                          _abrir(context, const PantallaNotificaciones()),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   _OpcionPerfil(

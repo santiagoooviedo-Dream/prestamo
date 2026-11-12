@@ -11,13 +11,23 @@ class UsuarioModel {
     return ApiService.obtenerPerfil();
   }
 
-  Future<void> cambiarCorreo({
+  Future<Map<String, dynamic>> cambiarCorreo({
     required String nuevoCorreo,
     required String contrasena,
   }) {
     return ApiService.cambiarCorreo(
       nuevoCorreo: nuevoCorreo,
       contrasena: contrasena,
+    );
+  }
+
+  Future<void> verificarCambioCorreo({
+    required String tokenVerificacion,
+    required String codigo,
+  }) {
+    return ApiService.verificarCambioCorreo(
+      tokenVerificacion: tokenVerificacion,
+      codigo: codigo,
     );
   }
 

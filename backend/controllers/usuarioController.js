@@ -1,13 +1,15 @@
 //importamos bcrypt para encriptar la contraseña
 import bcrypt from 'bcrypt';
 
+import { createHmac, randomInt, timingSafeEqual } from 'node:crypto';
+
 //importamos jwt para generar el token
 import jwt from 'jsonwebtoken';
 
 import { buscarUsuarioPorCorreo, buscarUsuarioPorCedula, crearUsuario, actualizarCodigoVerificacion, actualizarCorreoUsuario, cambiarContrasena, buscarUsuarioPorId, crearCodigoRecuperacion, buscarCodigoRecuperacion, actualizarFotoUsuario, verificarUsuario } from '../models/usuarioModel.js';
 
 //importamos el brave para enviar codigos de recuperacion de contraseña
-import { enviarCodigoRecuperacion, enviarCodigoVerificacion } from '../utils/sendEmails.js';
+import { enviarCodigoCambioCorreo, enviarCodigoRecuperacion, enviarCodigoVerificacion } from '../utils/sendEmails.js';
 
 // Funcion para registrar un nuevo usuario
 export const registrarUsuario = async (req, res) => {
@@ -415,11 +417,20 @@ export const cambiarCorreoUsuario = async (req, res) => {
 
     // Obtenemos el ID del usuario desde el token
     const id_usuario = req.usuario.id_usuario;
+    const correoNormalizado = typeof nuevoCorreo === 'string'
+        ? nuevoCorreo.trim().toLowerCase()
+        : '';
 
     // Verificamos que los datos sean obligatorios
-    if (!nuevoCorreo || !contrasena) {
+    if (!correoNormalizado || !contrasena) {
         return res.status(400).json({
             mensaje: 'El nuevo correo y la contraseña son obligatorios'
+        });
+    }
+
+    if (correoNormalizado.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoNormalizado)) {
+        return res.status(400).json({
+            mensaje: 'Ingresa un correo electrónico válido'
         });
     }
 
@@ -455,9 +466,22 @@ export const cambiarCorreoUsuario = async (req, res) => {
         });
     }
 
+    if (correoNormalizado === usuario.correo.toLowerCase()) {
+        return res.status(400).json({
+            mensaje: 'El nuevo correo debe ser diferente al actual'
+        });
+    }
+
     // Comprobamos que el nuevo correo no este utilizado
-    const { data: correoExistente } =
-        await buscarUsuarioPorCorreo(nuevoCorreo);
+    const { data: correoExistente, error: errorCorreo } =
+        await buscarUsuarioPorCorreo(correoNormalizado);
+
+    if (errorCorreo) {
+        return res.status(500).json({
+            mensaje: 'Error al comprobar si el correo está disponible',
+            error: errorCorreo.message
+        });
+    }
 
     if (correoExistente) {
         return res.status(400).json({
@@ -465,13 +489,129 @@ export const cambiarCorreoUsuario = async (req, res) => {
         });
     }
 
-    // Actualizamos el correo
-    const { data, error } = await actualizarCorreoUsuario(
+    if (!process.env.JWT_SECRET) {
+        return res.status(500).json({
+            mensaje: 'No está configurada la verificación de cambios de correo'
+        });
+    }
+
+    const codigo = randomInt(10_000_000, 100_000_000).toString();
+    const codigoHash = createHmac('sha256', process.env.JWT_SECRET)
+        .update(`${id_usuario}:${correoNormalizado}:${codigo}`)
+        .digest('hex');
+    const tokenVerificacion = jwt.sign({
         id_usuario,
-        nuevoCorreo
+        correoActual: usuario.correo,
+        nuevoCorreo: correoNormalizado,
+        codigoHash,
+        proposito: 'cambio-correo'
+    }, process.env.JWT_SECRET, { expiresIn: '15m' });
+
+    const resultado = await enviarCodigoCambioCorreo(usuario.correo, codigo);
+    if (!resultado.enviado) {
+        return res.status(500).json({
+            mensaje: 'No se pudo enviar el código al correo actual',
+            error: resultado.error
+        });
+    }
+
+    const [parteLocal, dominio] = usuario.correo.split('@');
+    const correoEnmascarado = `${parteLocal.slice(0, 1)}${'*'.repeat(Math.max(parteLocal.length - 1, 3))}@${dominio}`;
+
+    return res.status(200).json({
+        mensaje: 'Enviamos un código de verificación a tu correo actual',
+        correoEnmascarado,
+        tokenVerificacion
+    });
+};
+
+export const verificarCambioCorreoUsuario = async (req, res) => {
+    const { tokenVerificacion, codigo } = req.body;
+
+    if (typeof tokenVerificacion !== 'string' || !/^\d{8}$/.test(codigo || '')) {
+        return res.status(400).json({
+            mensaje: 'El código de verificación es obligatorio y debe tener 8 dígitos'
+        });
+    }
+
+    if (!process.env.JWT_SECRET) {
+        return res.status(500).json({
+            mensaje: 'No está configurada la verificación de cambios de correo'
+        });
+    }
+
+    let desafio;
+    try {
+        desafio = jwt.verify(tokenVerificacion, process.env.JWT_SECRET);
+    } catch {
+        return res.status(400).json({
+            mensaje: 'El código de verificación expiró o no es válido'
+        });
+    }
+
+    if (
+        typeof desafio !== 'object' ||
+        desafio === null ||
+        desafio.proposito !== 'cambio-correo' ||
+        desafio.id_usuario !== req.usuario.id_usuario ||
+        typeof desafio.correoActual !== 'string' ||
+        typeof desafio.nuevoCorreo !== 'string' ||
+        typeof desafio.codigoHash !== 'string' ||
+        !/^[a-f0-9]{64}$/.test(desafio.codigoHash)
+    ) {
+        return res.status(400).json({
+            mensaje: 'El código de verificación no es válido'
+        });
+    }
+
+    const codigoHash = createHmac('sha256', process.env.JWT_SECRET)
+        .update(`${desafio.id_usuario}:${desafio.nuevoCorreo}:${codigo}`)
+        .digest();
+    const codigoHashEsperado = Buffer.from(desafio.codigoHash, 'hex');
+
+    if (!timingSafeEqual(codigoHash, codigoHashEsperado)) {
+        return res.status(400).json({
+            mensaje: 'El código de verificación es incorrecto'
+        });
+    }
+
+    const { data: usuario, error: errorUsuario } =
+        await buscarUsuarioPorId(req.usuario.id_usuario);
+
+    if (errorUsuario) {
+        return res.status(500).json({
+            mensaje: 'Error al comprobar el correo actual',
+            error: errorUsuario.message
+        });
+    }
+
+    if (!usuario || usuario.correo !== desafio.correoActual) {
+        return res.status(400).json({
+            mensaje: 'La solicitud de cambio de correo ya no es válida'
+        });
+    }
+
+    const { data: correoExistente, error: errorCorreo } =
+        await buscarUsuarioPorCorreo(desafio.nuevoCorreo);
+
+    if (errorCorreo) {
+        return res.status(500).json({
+            mensaje: 'Error al comprobar si el correo está disponible',
+            error: errorCorreo.message
+        });
+    }
+
+    if (correoExistente) {
+        return res.status(400).json({
+            mensaje: 'El correo ya está en uso'
+        });
+    }
+
+    const { error } = await actualizarCorreoUsuario(
+        req.usuario.id_usuario,
+        desafio.nuevoCorreo
     );
 
-    // Comprobamos si ocurrió un error
     if (error) {
         return res.status(500).json({
             mensaje: 'Error al actualizar el correo',
@@ -479,10 +619,9 @@ export const cambiarCorreoUsuario = async (req, res) => {
         });
     }
 
-    // Respondemos
-    res.status(200).json({
+    return res.status(200).json({
         mensaje: 'Correo actualizado correctamente',
-        usuario: data
+        correo: desafio.nuevoCorreo
     });
 };
 

@@ -47,17 +47,35 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
       return;
     }
 
+    if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(nuevoCorreo)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ingresa un correo electrónico válido.')),
+      );
+      return;
+    }
+
     setState(() => _guardando = true);
     try {
-      await _usuarioModel.cambiarCorreo(
-        nuevoCorreo: nuevoCorreo,
+      final respuesta = await _usuarioModel.cambiarCorreo(
+        nuevoCorreo: nuevoCorreo.toLowerCase(),
         contrasena: _contrasenaCtrl.text,
       );
+      final tokenVerificacion = respuesta['tokenVerificacion'];
+      final correoEnmascarado = respuesta['correoEnmascarado'];
+      if (tokenVerificacion is! String || correoEnmascarado is! String) {
+        throw const ApiException(
+          'El servidor no devolvió los datos de verificación.',
+        );
+      }
       if (!mounted) return;
       await Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => PantallaCodigoCambioCorreo(correo: nuevoCorreo),
+          builder: (_) => PantallaCodigoCambioCorreo(
+            correo: nuevoCorreo.toLowerCase(),
+            correoEnmascarado: correoEnmascarado,
+            tokenVerificacion: tokenVerificacion,
+          ),
         ),
       );
     } on ApiException catch (error) {
@@ -106,7 +124,7 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
             ),
             const SizedBox(height: 6),
             const Text(
-              'Confirma el nuevo correo con tu contraseña actual.',
+              'Ingresa tu contraseña y el nuevo correo. Te enviaremos un código a tu correo actual para confirmar el cambio.',
               style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
             ),
             const SizedBox(height: 24),
@@ -163,13 +181,15 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide:
-                              const BorderSide(color: ColoresApp.bordeInput),
+                          borderSide: const BorderSide(
+                            color: ColoresApp.bordeInput,
+                          ),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
-                          borderSide:
-                              const BorderSide(color: ColoresApp.bordeInput),
+                          borderSide: const BorderSide(
+                            color: ColoresApp.bordeInput,
+                          ),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(14),
@@ -206,15 +226,16 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
                     ),
                     const SizedBox(height: 20),
                     const AvisoSeguridad(
-                      texto:
-                          'Tras confirmar, se validará tu contraseña y se actualizará el correo.',
+                      texto: 'El correo solo se actualizará después de validar el código enviado a tu correo actual.',
                     ),
                   ],
                 ),
               ),
             ),
             BotonPrimario(
-              texto: _guardando ? 'Actualizando…' : 'Guardar correo',
+              texto: _guardando
+                  ? 'Enviando código…'
+                  : 'Confirmar y enviar código',
               alPresionar: _guardando ? null : _guardar,
               cargando: _guardando,
             ),

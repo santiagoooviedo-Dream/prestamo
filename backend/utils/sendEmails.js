@@ -159,6 +159,20 @@ export const enviarCodigoRecuperacion = async (correo, codigo) => {
     }
 };
 
+export const enviarCodigoCambioCorreo = async (correo, codigo) => {
+    return enviarCorreoPrestamo(
+        correo,
+        'Código para cambiar tu correo electrónico',
+        `<div style="font-family:Arial,sans-serif;max-width:500px;margin:auto;color:#17243C">
+          <h2>Confirmación de cambio de correo</h2>
+          <p>Recibimos una solicitud para cambiar el correo de tu cuenta.</p>
+          <p>Ingresa este código en la aplicación para confirmar el cambio:</p>
+          <h1 style="letter-spacing:6px">${codigo}</h1>
+          <p>El código vence en 15 minutos. Si no solicitaste este cambio, ignora este mensaje.</p>
+        </div>`
+    );
+};
+
 // CORREO PARA VERIFICAR REGISTRO
 
 // Funcion para enviar codigo de verificacion

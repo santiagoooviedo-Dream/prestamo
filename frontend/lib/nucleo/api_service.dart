@@ -146,14 +146,25 @@ class ApiService {
     );
   }
 
-  static Future<void> cambiarCorreo({
+  static Future<Map<String, dynamic>> cambiarCorreo({
     required String nuevoCorreo,
     required String contrasena,
   }) async {
-    await _solicitar(
+    return _solicitar(
       'PUT',
       '/usuarios/correo',
       datos: {'nuevoCorreo': nuevoCorreo, 'contrasena': contrasena},
+    );
+  }
+
+  static Future<void> verificarCambioCorreo({
+    required String tokenVerificacion,
+    required String codigo,
+  }) async {
+    await _solicitar(
+      'POST',
+      '/usuarios/correo/verificar',
+      datos: {'tokenVerificacion': tokenVerificacion, 'codigo': codigo},
     );
   }
 

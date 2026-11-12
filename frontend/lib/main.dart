@@ -33,3 +33,13 @@ class AppPrestamos extends StatelessWidget {
     ); 
   } 
 } 
+
+// solucionar bug de calendario de pago inicia en el mes actual y no en el siguiente 
+// y la cantidad de couta que el usuario debe pagar es erronea 
+
+//solucionar bu de pagar con nequi a el momento de el usuario mande su factura que pueda ver con mayor facilidad la imagen
+
+// en conversasciones con el administrador (usuario) Pueda ver la imagen que este mando
+
+//modulo de admin el boton rojo de notificacion se demora mucho y ahi un usuario que constantemente dice que ahi una notificacion
+//pero no ahi nada 

@@ -88,12 +88,3 @@ app.listen(PORT, () => {
 });
 // https://jlombanar.github.io/adso_3169657/
 
-// que se pueda copiar el texto de el chat bot y que se mire mejor a la hora de que se digita una peticion
-// modificar el metodo de pago (A el momento de que quiere hacer un pago el administrador debe actualizar con un boton)
-// mas informacion en errores de las pantalals
-// corregir pantalla de admin 
-// pantalla admin "solicitud prestamo" solo se debe mostrar la solicitudes pendientes 
-// admin seleccionar usuario "solicitudes de prestamo" solo debe mostrar las solicitudes de ese usuario
-// admin pantalla a el momento de cerrar sesion debe mandar a la pantalla de inisiar sesion 
-// poner loogo en pantalla bienvenida admin 
-// a el momento que un administrador Acepta o rechaza un prestamo es muy lento 

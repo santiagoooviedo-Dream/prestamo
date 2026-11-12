@@ -45,8 +45,30 @@ class PantallaDetallePrestamo extends StatelessWidget {
           '',
     );
     final interes = (interesRaw == null || interesRaw == 0) ? 0.10 : interesRaw;
+    final tasa = interes > 1 ? interes / 100.0 : interes;
     final interesPorcentaje =
         '${interes > 1 ? interes.toStringAsFixed(0) : (interes * 100).toStringAsFixed(0)}%';
+    final montoNum = num.tryParse(prestamo['monto']?.toString() ?? '0') ?? 0;
+    final nCuotas = int.tryParse(
+          prestamo['coutas']?.toString() ??
+              prestamo['cuotas']?.toString() ??
+              prestamo['numero_cuotas']?.toString() ??
+              '0',
+        ) ??
+        0;
+    var cuotaMensualRaw = num.tryParse(
+      prestamo['coutas_mensual']?.toString() ??
+          prestamo['cuota_mensual']?.toString() ??
+          '',
+    );
+    // Si la cuota no incluye el 10%, recalcular
+    if (montoNum > 0 && nCuotas > 0) {
+      final esperada = (montoNum * (1 + tasa)) / nCuotas;
+      if (cuotaMensualRaw == null ||
+          cuotaMensualRaw < esperada * 0.95) {
+        cuotaMensualRaw = esperada;
+      }
+    }
     final estadoRecibido = prestamo['estado']?.toString() ?? '';
     final estado = estadoRecibido.isEmpty ? 'Activo' : estadoRecibido;
 
@@ -117,7 +139,7 @@ class PantallaDetallePrestamo extends StatelessWidget {
                         _FilaDetalle(
                           etiqueta: 'Cuota mensual',
                           valor:
-                              '\$${formatoMontoPrestamo(prestamo['coutas_mensual'])}',
+                              '\$${formatoMontoPrestamo(cuotaMensualRaw)}',
                           claro: true,
                         ),
                         const SizedBox(height: 8),

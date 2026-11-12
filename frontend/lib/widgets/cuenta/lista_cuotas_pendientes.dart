@@ -63,7 +63,7 @@ class ListaCuotasPendientes extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '\$${cuota.monto.toStringAsFixed(0)}',
+                    '\$${formatoMontoCuota(cuota.monto)}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       color: Color(0xFF17243C),

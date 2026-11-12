@@ -55,7 +55,9 @@ class CuotaPrestamoModel {
 class CalendarioPagosModel {
   const CalendarioPagosModel();
 
-  /// Solo cuotas del préstamo activo, con fechas mes a mes.
+  /// Cuotas del préstamo activo.
+  /// - Primera cuota: mes siguiente a la fecha de inicio (día 15).
+  /// - Monto: aplica 10% de interés si el backend no lo trajo.
   Future<List<CuotaPrestamoModel>> obtenerCuotas() async {
     final prestamosRaw = await ApiService.obtenerPrestamos();
     final cuotasRaw = await ApiService.obtenerCuotas();
@@ -69,7 +71,6 @@ class CalendarioPagosModel {
 
     if (activos.isEmpty) return [];
 
-    // Un préstamo en curso: el más reciente
     activos.sort((a, b) {
       final fa = DateTime.tryParse(a['fecha_inicio']?.toString() ?? '');
       final fb = DateTime.tryParse(b['fecha_inicio']?.toString() ?? '');
@@ -82,14 +83,17 @@ class CalendarioPagosModel {
     if (idActivo == null || idActivo.isEmpty) return [];
 
     final totalCuotasPrestamo =
-        int.tryParse(activo['coutas']?.toString() ?? '') ?? 0;
+        int.tryParse(activo['coutas']?.toString() ??
+                activo['cuotas']?.toString() ??
+                activo['numero_cuotas']?.toString() ??
+                '') ??
+            0;
 
     var cuotas = cuotasRaw
         .where((c) => c['id_prestamo']?.toString() == idActivo)
         .map(CuotaPrestamoModel.desdeApi)
         .toList();
 
-    // Orden por número de cuota
     cuotas.sort((a, b) {
       final na = int.tryParse(a.numero) ?? 0;
       final nb = int.tryParse(b.numero) ?? 0;
@@ -98,20 +102,34 @@ class CalendarioPagosModel {
 
     if (cuotas.isEmpty) return [];
 
-    // Base: fecha_inicio del préstamo o la primera fecha de cuota
-    final inicio =
-        DateTime.tryParse(activo['fecha_inicio']?.toString() ?? '');
-    final primeraConFecha = cuotas.cast<CuotaPrestamoModel?>().firstWhere(
-          (c) => c?.fecha != null,
-          orElse: () => null,
-        );
-    final base = inicio ??
-        primeraConFecha?.fecha ??
-        DateTime.now();
-
-    // Siempre repartir mes a mes según el número de cuota
-    // cuota 1 → base, cuota 2 → base+1 mes, etc.
     final total = totalCuotasPrestamo > 0 ? totalCuotasPrestamo : cuotas.length;
+
+    // Primer pago = mes siguiente al inicio / desembolso (día 15)
+    final inicioRaw =
+        DateTime.tryParse(activo['fecha_inicio']?.toString() ?? '');
+    final base = _basePrimerPago(inicioRaw);
+
+    // Interés 10%
+    final montoPrestamo =
+        double.tryParse(activo['monto']?.toString() ?? '0') ?? 0;
+    final tasaRaw = double.tryParse(
+      activo['interes']?.toString() ??
+          activo['tasa_interes']?.toString() ??
+          '0.10',
+    );
+    double tasa = 0.10;
+    if (tasaRaw != null && tasaRaw > 0) {
+      tasa = tasaRaw > 1 ? tasaRaw / 100.0 : tasaRaw;
+    }
+
+    List<int>? montosCorregidos;
+    if (montoPrestamo > 0 && total > 0) {
+      final totalConInteres = (montoPrestamo * (1 + tasa)).round();
+      final sumaActual = cuotas.fold<double>(0, (s, c) => s + c.monto);
+      if (sumaActual < totalConInteres * 0.95) {
+        montosCorregidos = _montosCuotasRedondeados(totalConInteres, total);
+      }
+    }
 
     return [
       for (var i = 0; i < cuotas.length; i++)
@@ -124,13 +142,19 @@ class CalendarioPagosModel {
             base,
             (int.tryParse(cuotas[i].numero) ?? (i + 1)) - 1,
           ),
-          monto: cuotas[i].monto,
+          monto: montosCorregidos != null && i < montosCorregidos.length
+              ? montosCorregidos[i].toDouble()
+              : cuotas[i].monto,
           totalCuotas: total,
         ),
     ];
   }
 
-  /// Suma [meses] a [base] sin romper el día (ej. 31 ene → 28/29 feb).
+  static DateTime _basePrimerPago(DateTime? fechaInicio) {
+    final ref = fechaInicio ?? DateTime.now();
+    return DateTime(ref.year, ref.month + 1, 15);
+  }
+
   static DateTime _fechaMensual(DateTime base, int meses) {
     final y = base.year;
     final m = base.month + meses;
@@ -139,6 +163,23 @@ class CalendarioPagosModel {
     final lastDay = DateTime(year, month + 1, 0).day;
     final day = base.day > lastDay ? lastDay : base.day;
     return DateTime(year, month, day);
+  }
+
+  static List<int> _montosCuotasRedondeados(int total, int n) {
+    if (n <= 0) return const [];
+    if (n == 1) return [total];
+    final crudo = total / n;
+    var base = ((crudo / 100).round() * 100);
+    if (base <= 0) base = total ~/ n;
+    final lista = List<int>.filled(n, base);
+    final sumaParcial = base * (n - 1);
+    lista[n - 1] = total - sumaParcial;
+    if (lista[n - 1] <= 0) {
+      final b = total ~/ n;
+      final r = total - b * n;
+      return [for (var i = 0; i < n; i++) i == n - 1 ? b + r : b];
+    }
+    return lista;
   }
 }
 

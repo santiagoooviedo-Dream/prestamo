@@ -301,17 +301,68 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                       ),
                       const SizedBox(height: 10),
                       if (_previewBytes != null)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(14),
-                          child: Image.memory(
-                            _previewBytes!,
-                            height: 180,
+                        GestureDetector(
+                          onTap: () {
+                            final bytes = _previewBytes!;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (_) => Scaffold(
+                                  backgroundColor: Colors.black,
+                                  appBar: AppBar(
+                                    backgroundColor: Colors.black,
+                                    foregroundColor: Colors.white,
+                                    title: const Text(
+                                      'Comprobante',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ),
+                                  body: Center(
+                                    child: InteractiveViewer(
+                                      minScale: 0.8,
+                                      maxScale: 4,
+                                      child: Image.memory(
+                                        bytes,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
                             width: double.infinity,
-                            fit: BoxFit.cover,
+                            height: 220,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF3F6FC),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                color: const Color(0xFFE1E8F3),
+                              ),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14),
+                              child: Image.memory(
+                                _previewBytes!,
+                                fit: BoxFit.contain,
+                                gaplessPlayback: true,
+                              ),
+                            ),
                           ),
                         )
                       else
                         _placeholderImagen(),
+                      if (_previewBytes != null)
+                        const Padding(
+                          padding: EdgeInsets.only(top: 6),
+                          child: Text(
+                            'Toca la imagen para verla completa',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xFF66758D),
+                            ),
+                          ),
+                        ),
                       const SizedBox(height: 12),
                       Row(
                         children: [

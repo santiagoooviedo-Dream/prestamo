@@ -10,7 +10,9 @@ import '../widgets/comunes/campo_texto.dart';
 import 'pantalla_codigo_cambio_correo.dart';
 
 class PantallaCambiarCorreo extends StatefulWidget {
-  const PantallaCambiarCorreo({super.key});
+  final String correoActual;
+
+  const PantallaCambiarCorreo({super.key, required this.correoActual});
 
   @override
   State<PantallaCambiarCorreo> createState() => _PantallaCambiarCorreoState();
@@ -61,8 +63,7 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
         contrasena: _contrasenaCtrl.text,
       );
       final tokenVerificacion = respuesta['tokenVerificacion'];
-      final correoEnmascarado = respuesta['correoEnmascarado'];
-      if (tokenVerificacion is! String || correoEnmascarado is! String) {
+      if (tokenVerificacion is! String) {
         throw const ApiException(
           'El servidor no devolvió los datos de verificación.',
         );
@@ -73,7 +74,7 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
         MaterialPageRoute(
           builder: (_) => PantallaCodigoCambioCorreo(
             correo: nuevoCorreo.toLowerCase(),
-            correoEnmascarado: correoEnmascarado,
+            correoActual: widget.correoActual,
             tokenVerificacion: tokenVerificacion,
           ),
         ),

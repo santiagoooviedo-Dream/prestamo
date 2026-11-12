@@ -129,8 +129,10 @@ class ContenidoPerfil extends StatelessWidget {
                   _OpcionPerfil(
                     icono: Icons.mail_outline_rounded,
                     titulo: 'Cambiar correo',
-                    alPresionar: () =>
-                        _abrir(context, const PantallaCambiarCorreo()),
+                    alPresionar: () => _abrir(
+                      context,
+                      PantallaCambiarCorreo(correoActual: correo),
+                    ),
                   ),
                   const SizedBox(height: 10),
                   _OpcionPerfil(

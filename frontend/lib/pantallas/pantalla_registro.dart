@@ -65,16 +65,10 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       return;
     }
 
-    if (!RegExp(r'^\d+$').hasMatch(cedula)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('La cédula solo debe contener números.')),
-      );
-      return;
-    }
-    if (cedula.length != 10) {
+    if (!RegExp(r'^\d{1,12}$').hasMatch(cedula)) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('La cédula debe tener exactamente 10 dígitos.'),
+          content: Text('La cédula debe tener entre 1 y 12 dígitos.'),
         ),
       );
       return;

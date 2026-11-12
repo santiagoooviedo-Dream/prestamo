@@ -10,13 +10,13 @@ import 'pantalla_perfil.dart';
 
 class PantallaCodigoCambioCorreo extends StatefulWidget {
   final String correo;
-  final String correoEnmascarado;
+  final String correoActual;
   final String tokenVerificacion;
 
   const PantallaCodigoCambioCorreo({
     super.key,
     required this.correo,
-    required this.correoEnmascarado,
+    required this.correoActual,
     required this.tokenVerificacion,
   });
 
@@ -133,7 +133,7 @@ class _PantallaCodigoCambioCorreoState
                       Text(
                         _actualizado
                             ? 'Tu cuenta ahora usa ${widget.correo}.'
-                            : 'Enviamos un código a tu correo actual ${widget.correoEnmascarado}. Ingrésalo para confirmar el cambio a ${widget.correo}.',
+                            : 'Enviamos un código a tu correo actual ${widget.correoActual}. Ingrésalo para confirmar el cambio a ${widget.correo}.',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 15,

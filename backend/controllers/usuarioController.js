@@ -24,6 +24,12 @@ export const registrarUsuario = async (req, res) => {
         });
     }
 
+    if (typeof cedula !== 'string' || !/^\d{1,12}$/.test(cedula)) {
+        return res.status(400).json({
+            mensaje: 'La cédula debe tener entre 1 y 12 dígitos'
+        });
+    }
+
     // Buscamos si el correo ya existe
     const { data: usuarioExistente, error: errorCorreo } =
         await buscarUsuarioPorCorreo(correo);

@@ -73,7 +73,7 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
           controlador: widget.cedula,
           tipoTeclado: TextInputType.number,
           formateadores: _formateadoresNumericos(
-            maximo: 10,
+            maximo: 12,
             alRechazar: (mensaje) => setState(() => _errorCedula = mensaje),
           ),
           mensajeError: _errorCedula,

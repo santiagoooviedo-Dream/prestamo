@@ -43,17 +43,17 @@ router.post('/login', loginUsuario
 //se inicia sesion y se devuelve un token tambien admin
 );
 
-//ruta para cambiar correo
-router.put('/correo',
+//ruta para solicitar un cambio de correo y enviar el código al correo actual
+router.post('/correo/solicitar-cambio',
     verificarToken,
     cambiarCorreoUsuario
 
-//http://localhost:3000/usuarios/correo         PUT
+//http://localhost:3000/usuarios/correo/solicitar-cambio         POST
 
 //"nuevoCorreo":""
 //"contrasena":""
 
-//ruta para cambiar correo electronico del usuario
+//el correo solo se actualiza después de verificar el código
 
 )
 router.post('/correo/verificar',

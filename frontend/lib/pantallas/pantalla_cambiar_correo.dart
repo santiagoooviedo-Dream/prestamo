@@ -58,7 +58,7 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
 
     setState(() => _guardando = true);
     try {
-      final respuesta = await _usuarioModel.cambiarCorreo(
+      final respuesta = await _usuarioModel.solicitarCambioCorreo(
         nuevoCorreo: nuevoCorreo.toLowerCase(),
         contrasena: _contrasenaCtrl.text,
       );

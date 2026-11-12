@@ -146,13 +146,13 @@ class ApiService {
     );
   }
 
-  static Future<Map<String, dynamic>> cambiarCorreo({
+  static Future<Map<String, dynamic>> solicitarCambioCorreo({
     required String nuevoCorreo,
     required String contrasena,
   }) async {
     return _solicitar(
-      'PUT',
-      '/usuarios/correo',
+      'POST',
+      '/usuarios/correo/solicitar-cambio',
       datos: {'nuevoCorreo': nuevoCorreo, 'contrasena': contrasena},
     );
   }

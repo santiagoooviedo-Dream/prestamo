@@ -125,3 +125,76 @@ String formatoFechaPrestamo(dynamic valor) {
   ];
   return '${fecha.day} ${meses[fecha.month - 1]} ${fecha.year}';
 }
+
+/// Tasa por defecto de la app (10 %).
+const double tasaInteresApp = 0.10;
+
+/// Lee la tasa del préstamo. Si no viene o es 0, usa 10 %.
+double tasaDelPrestamo(Map<String, dynamic> prestamo) {
+  final raw = num.tryParse(
+    prestamo['interes']?.toString() ??
+        prestamo['tasa_interes']?.toString() ??
+        prestamo['tasa']?.toString() ??
+        '',
+  );
+  if (raw == null || raw == 0) return tasaInteresApp;
+  return raw > 1 ? raw / 100.0 : raw.toDouble();
+}
+
+/// Número de cuotas del préstamo.
+int numeroCuotasPrestamo(
+  Map<String, dynamic> prestamo, [
+  List<Map<String, dynamic>>? cuotas,
+]) {
+  return int.tryParse(
+        prestamo['coutas']?.toString() ??
+            prestamo['cuotas']?.toString() ??
+            prestamo['numero_cuotas']?.toString() ??
+            '',
+      ) ??
+      (cuotas?.length ?? 0);
+}
+
+/// Cuota mensual con el 10 % incluido.
+/// Si el backend guardó la cuota sin interés, la corrige.
+num cuotaMensualConInteres(
+  Map<String, dynamic> prestamo, [
+  List<Map<String, dynamic>>? cuotas,
+]) {
+  final monto = num.tryParse(prestamo['monto']?.toString() ?? '0') ?? 0;
+  final n = numeroCuotasPrestamo(prestamo, cuotas);
+  final tasa = tasaDelPrestamo(prestamo);
+
+  var cuota = num.tryParse(
+    prestamo['coutas_mensual']?.toString() ??
+        prestamo['cuota_mensual']?.toString() ??
+        '',
+  );
+
+  if (monto > 0 && n > 0) {
+    final esperada = (monto * (1 + tasa)) / n;
+    if (cuota == null || cuota < esperada * 0.95) {
+      cuota = esperada;
+    }
+  }
+
+  if ((cuota == null || cuota <= 0) && cuotas != null && cuotas.isNotEmpty) {
+    final montos = cuotas
+        .map((c) => num.tryParse(c['monto']?.toString() ?? '') ?? 0)
+        .where((m) => m > 0)
+        .toList();
+    if (montos.isNotEmpty) {
+      // Si las cuotas del API tampoco traen interés, promedia con interés
+      final suma = montos.fold<num>(0, (s, m) => s + m);
+      if (monto > 0 && n > 0) {
+        final totalEsperado = monto * (1 + tasa);
+        if (suma < totalEsperado * 0.95) {
+          return totalEsperado / n;
+        }
+      }
+      cuota = montos.first;
+    }
+  }
+
+  return cuota ?? 0;
+}

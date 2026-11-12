@@ -256,7 +256,7 @@ class _TarjetaPrestamoActual extends StatelessWidget {
                 _FilaDato(
                   etiqueta: 'Cuota mensual',
                   valor:
-                      '\$${formatoMontoPrestamo(prestamo['coutas_mensual'])}',
+                      '\$${formatoMontoPrestamo(cuotaMensualConInteres(prestamo, cuotas))}',
                 ),
                 const SizedBox(height: 10),
                 ClipRRect(

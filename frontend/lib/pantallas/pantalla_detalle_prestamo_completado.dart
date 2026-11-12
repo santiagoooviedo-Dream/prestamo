@@ -14,54 +14,39 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
     required this.cuotas,
   });
 
+  /// Misma regla que el calendario: primer pago = mes siguiente al inicio, día 15.
+  static DateTime _basePrimerPago(DateTime? fechaInicio) {
+    final ref = fechaInicio ?? DateTime.now();
+    return DateTime(ref.year, ref.month + 1, 15);
+  }
+
+  static DateTime _fechaMensual(DateTime base, int meses) {
+    final y = base.year;
+    final m = base.month + meses;
+    final year = y + ((m - 1) ~/ 12);
+    final month = ((m - 1) % 12) + 1;
+    final lastDay = DateTime(year, month + 1, 0).day;
+    final day = base.day > lastDay ? lastDay : base.day;
+    return DateTime(year, month, day);
+  }
+
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
     final bottom = MediaQuery.paddingOf(context).bottom;
-    final fechaFinRaw = prestamo['fecha_finalizacion'] ?? prestamo['fecha_fin'];
-    final numeroCuotas =
-        int.tryParse(prestamo['coutas']?.toString() ?? '') ?? cuotas.length;
 
-    // Calcular fecha de finalización si el backend no la envía
-    String fechaFinCalculada = '—';
-    if (fechaFinRaw != null && fechaFinRaw.toString().isNotEmpty) {
-      fechaFinCalculada = formatoFechaPrestamo(fechaFinRaw);
-    } else {
-      // Intentar con la última cuota pagada/programada
-      if (cuotas.isNotEmpty) {
-        final ordenadas = List<Map<String, dynamic>>.from(cuotas)
-          ..sort((a, b) {
-            final fa = DateTime.tryParse(a['fecha_pago']?.toString() ?? '');
-            final fb = DateTime.tryParse(b['fecha_pago']?.toString() ?? '');
-            if (fa == null) return 1;
-            if (fb == null) return -1;
-            return fa.compareTo(fb);
-          });
-        final ultima = ordenadas.last['fecha_pago'];
-        if (ultima != null) {
-          fechaFinCalculada = formatoFechaPrestamo(ultima);
-        }
-      }
-      // Fallback: fecha_inicio + plazo en meses
-      if (fechaFinCalculada == '—') {
-        final inicio = DateTime.tryParse(prestamo['fecha_inicio']?.toString() ?? '');
-        if (inicio != null && numeroCuotas > 0) {
-          final fin = DateTime(inicio.year, inicio.month + numeroCuotas, inicio.day);
-          fechaFinCalculada = formatoFechaPrestamo(fin.toIso8601String());
-        }
-      }
-    }
+    final numeroCuotas = numeroCuotasPrestamo(prestamo, cuotas);
+    final inicioRaw =
+        DateTime.tryParse(prestamo['fecha_inicio']?.toString() ?? '');
 
-    // La app usa tasa fija del 10%. Si el backend no envía el campo o llega 0, mostramos 10%.
-    final interesRaw = num.tryParse(
-      prestamo['interes']?.toString() ??
-          prestamo['tasa_interes']?.toString() ??
-          prestamo['tasa']?.toString() ??
-          '',
-    );
-    final interes = (interesRaw == null || interesRaw == 0) ? 0.10 : interesRaw;
-    final interesPorcentaje =
-        '${interes > 1 ? interes.toStringAsFixed(0) : (interes * 100).toStringAsFixed(0)}%';
+    final basePrimerPago = _basePrimerPago(inicioRaw);
+    final fechaFinCalculada = numeroCuotas > 0
+        ? _fechaMensual(basePrimerPago, numeroCuotas - 1)
+        : null;
+
+    final tasa = tasaDelPrestamo(prestamo);
+    final interesPorcentaje = '${(tasa * 100).toStringAsFixed(0)}%';
+    final cuotaMensualRaw = cuotaMensualConInteres(prestamo, cuotas);
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -98,19 +83,19 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: const Color(0xFFEAF7F0),
-                borderRadius: BorderRadius.circular(100),
+                color: const Color(0xFFE7F7F0),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: const Text(
                 'Completado',
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 11,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF168261),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
@@ -125,14 +110,14 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                 children: [
                   const Text(
                     'Monto total',
-                    style: TextStyle(fontSize: 12, color: Color(0xFFE4EDFF)),
+                    style: TextStyle(fontSize: 12, color: Colors.white70),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     '\$${formatoMontoPrestamo(prestamo['monto'])}',
                     style: const TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w600,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
                       color: Colors.white,
                     ),
                   ),
@@ -144,9 +129,8 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFFEAF7F0),
+                color: const Color(0xFFE7F7F0),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFD1FAE5)),
               ),
               child: const Row(
                 children: [
@@ -185,8 +169,18 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                     valor: formatoFechaPrestamo(prestamo['fecha_inicio']),
                   ),
                   _Fila(
+                    label: 'Primer pago',
+                    valor: formatoFechaPrestamo(
+                      basePrimerPago.toIso8601String(),
+                    ),
+                  ),
+                  _Fila(
                     label: 'Fecha de finalización',
-                    valor: fechaFinCalculada,
+                    valor: fechaFinCalculada == null
+                        ? '—'
+                        : formatoFechaPrestamo(
+                            fechaFinCalculada.toIso8601String(),
+                          ),
                   ),
                   _Fila(
                     label: 'Plazo',
@@ -195,8 +189,9 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                   _Fila(label: 'Tasa de interés', valor: interesPorcentaje),
                   _Fila(
                     label: 'Cuota mensual',
-                    valor:
-                        '\$${formatoMontoPrestamo(prestamo['coutas_mensual'])}',
+                    valor: cuotaMensualRaw <= 0
+                        ? '—'
+                        : '\$${formatoMontoPrestamo(cuotaMensualRaw)}',
                   ),
                 ],
               ),

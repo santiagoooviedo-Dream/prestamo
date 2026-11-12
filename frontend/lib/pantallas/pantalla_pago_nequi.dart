@@ -13,8 +13,7 @@ import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_inicio.dart';
 
 /// Número Nequi donde el usuario debe enviar el dinero.
-/// Cámbialo por el de tu negocio antes de publicar.
-const String kNumeroNequiNegocio = '3001234567';
+const String kNumeroNequiNegocio = '3115533495';
 
 /// Pago por Nequi semi-manual: el usuario transfiere, sube comprobante
 /// y el administrador confirma el pago.

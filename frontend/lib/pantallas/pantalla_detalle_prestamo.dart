@@ -37,38 +37,10 @@ class PantallaDetallePrestamo extends StatelessWidget {
     final proximoPago = pendientes.isEmpty
         ? '—'
         : formatoFechaPrestamo(pendientes.first['fecha_pago']);
-    // La app usa tasa fija del 10%. Si el backend no envía el campo o llega 0, mostramos 10%.
-    final interesRaw = num.tryParse(
-      prestamo['interes']?.toString() ??
-          prestamo['tasa_interes']?.toString() ??
-          prestamo['tasa']?.toString() ??
-          '',
-    );
-    final interes = (interesRaw == null || interesRaw == 0) ? 0.10 : interesRaw;
-    final tasa = interes > 1 ? interes / 100.0 : interes;
-    final interesPorcentaje =
-        '${interes > 1 ? interes.toStringAsFixed(0) : (interes * 100).toStringAsFixed(0)}%';
-    final montoNum = num.tryParse(prestamo['monto']?.toString() ?? '0') ?? 0;
-    final nCuotas = int.tryParse(
-          prestamo['coutas']?.toString() ??
-              prestamo['cuotas']?.toString() ??
-              prestamo['numero_cuotas']?.toString() ??
-              '0',
-        ) ??
-        0;
-    var cuotaMensualRaw = num.tryParse(
-      prestamo['coutas_mensual']?.toString() ??
-          prestamo['cuota_mensual']?.toString() ??
-          '',
-    );
-    // Si la cuota no incluye el 10%, recalcular
-    if (montoNum > 0 && nCuotas > 0) {
-      final esperada = (montoNum * (1 + tasa)) / nCuotas;
-      if (cuotaMensualRaw == null ||
-          cuotaMensualRaw < esperada * 0.95) {
-        cuotaMensualRaw = esperada;
-      }
-    }
+    // Interés y cuota con la misma regla del calendario (10 % por defecto)
+    final tasa = tasaDelPrestamo(prestamo);
+    final interesPorcentaje = '${(tasa * 100).toStringAsFixed(0)}%';
+    final cuotaMensualRaw = cuotaMensualConInteres(prestamo, cuotas);
     final estadoRecibido = prestamo['estado']?.toString() ?? '';
     final estado = estadoRecibido.isEmpty ? 'Activo' : estadoRecibido;
 

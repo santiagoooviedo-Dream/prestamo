@@ -122,11 +122,14 @@ class CalendarioPagosModel {
       tasa = tasaRaw > 1 ? tasaRaw / 100.0 : tasaRaw;
     }
 
+    // Siempre corregir montos si no incluyen el 10 % (todas las cuotas)
     List<int>? montosCorregidos;
     if (montoPrestamo > 0 && total > 0) {
       final totalConInteres = (montoPrestamo * (1 + tasa)).round();
       final sumaActual = cuotas.fold<double>(0, (s, c) => s + c.monto);
-      if (sumaActual < totalConInteres * 0.95) {
+      final promedioEsperado = totalConInteres / total;
+      final algunaBaja = cuotas.any((c) => c.monto < promedioEsperado * 0.95);
+      if (sumaActual < totalConInteres * 0.95 || algunaBaja) {
         montosCorregidos = _montosCuotasRedondeados(totalConInteres, total);
       }
     }

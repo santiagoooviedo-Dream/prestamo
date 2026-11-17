@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../utilidades/abrir_manual.dart';
+
 import '../../models/notificacion_model.dart';
 
 import '../../nucleo/colores_app.dart';
@@ -151,6 +153,18 @@ class ContenidoPerfil extends StatelessWidget {
                       alPresionar: () =>
                           _abrir(context, const PantallaNotificaciones()),
                     ),
+                  ),
+                  const SizedBox(height: 10),
+                  _OpcionPerfil(
+                    icono: Icons.menu_book_outlined,
+                    titulo: 'Manual de usuario',
+                    alPresionar: () {
+                      abrirManualPdf(
+                        context,
+                        assetPath: 'assets/manuales/manual_usuario.pdf',
+                        titulo: 'Manual de usuario',
+                      );
+                    },
                   ),
                   const SizedBox(height: 10),
                   _OpcionPerfil(

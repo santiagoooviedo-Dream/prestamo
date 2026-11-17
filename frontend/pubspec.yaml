@@ -14,6 +14,7 @@ dependencies:
   google_fonts: ^6.2.1
   image_picker: ^1.2.4
   gal: ^2.3.3
+  pdfrx: ^2.13.0
 
 dev_dependencies:
   flutter_test:
@@ -33,3 +34,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/imagenes/
+    - assets/manuales/manual_administrador.pdf
+    - assets/manuales/manual_usuario.pdf

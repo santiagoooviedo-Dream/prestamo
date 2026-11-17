@@ -25,6 +25,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   final _contrasena = TextEditingController();
   bool _ocultar = true;
   bool _registrando = false;
+  bool _aceptoTerminos = false;
 
   @override
   void initState() {
@@ -45,6 +46,15 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   }
 
   Future<void> _registrar() async {
+    if (!_aceptoTerminos) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Debes aceptar los términos y condiciones.'),
+        ),
+      );
+      return;
+    }
+
     final correo = _correo.text.trim();
     final completo = _nombreCompleto.text.trim();
     final cedula = _cedula.text.trim();
@@ -127,6 +137,34 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
     }
   }
 
+  Future<void> _mostrarTerminos() {
+    return showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Términos y condiciones'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'Al aceptar los términos y condiciones, usted autoriza el '
+            'tratamiento de sus datos personales (nombre, documento, correo '
+            'electrónico y fecha de nacimiento) conforme a la Ley 1581 de '
+            '2012 y el Decreto 1377 de 2013, con la finalidad de gestionar '
+            'su registro, acceso y uso de la aplicación. Sus datos serán '
+            'almacenados de forma segura y no serán compartidos con terceros '
+            'sin su consentimiento, salvo obligación legal. Puede ejercer '
+            'sus derechos de acceso, rectificación, cancelación y oposición '
+            'en cualquier momento.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cerrar'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
@@ -184,15 +222,60 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                child: FormularioRegistro(
-                  cedula: _cedula,
-                  nombreCompleto: _nombreCompleto,
-                  correo: _correo,
-                  telefono: _telefono,
-                  contrasena: _contrasena,
-                  ocultar: _ocultar,
-                  alAlternarVisibilidad: () =>
-                      setState(() => _ocultar = !_ocultar),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FormularioRegistro(
+                      cedula: _cedula,
+                      nombreCompleto: _nombreCompleto,
+                      correo: _correo,
+                      telefono: _telefono,
+                      contrasena: _contrasena,
+                      ocultar: _ocultar,
+                      alAlternarVisibilidad: () =>
+                          setState(() => _ocultar = !_ocultar),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Checkbox(
+                          value: _aceptoTerminos,
+                          activeColor: const Color(0xFF285FE8),
+                          onChanged: (aceptado) => setState(
+                            () => _aceptoTerminos = aceptado ?? false,
+                          ),
+                        ),
+                        Expanded(
+                          child: InkWell(
+                            onTap: _mostrarTerminos,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8),
+                              child: Text.rich(
+                                TextSpan(
+                                  text: 'Acepto los ',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    color: Color(0xFF66758D),
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text: 'términos y condiciones',
+                                      style: TextStyle(
+                                        color: Color(0xFF285FE8),
+                                        fontWeight: FontWeight.w600,
+                                        decoration: TextDecoration.underline,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),

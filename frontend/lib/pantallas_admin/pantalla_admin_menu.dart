@@ -164,30 +164,6 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                 ),
               ),
             ),
-            const SizedBox(height: 10),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  abrirManualPdf(
-                    context,
-                    assetPath: 'assets/manuales/manual_usuario.pdf',
-                    titulo: 'Manual de usuario',
-                  );
-                },
-                icon: const Icon(Icons.person_outline_rounded, size: 20),
-                label: const Text('Manual de usuario'),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF3FBF6),
-                  side: const BorderSide(color: Color(0xFFD3EDDE)),
-                  foregroundColor: const Color(0xFF2E7D4F),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                ),
-              ),
-            ),
             const SizedBox(height: 14),
             SizedBox(
               width: double.infinity,

@@ -14,6 +14,16 @@ class FormularioRegistro extends StatefulWidget {
   final TextEditingController contrasena;
   final bool ocultar;
   final VoidCallback alAlternarVisibilidad;
+  final String? errorCedula;
+  final String? errorNombre;
+  final String? errorCorreo;
+  final String? errorTelefono;
+  final String? errorContrasena;
+  final ValueChanged<String>? alCambiarCedula;
+  final ValueChanged<String>? alCambiarNombre;
+  final ValueChanged<String>? alCambiarCorreo;
+  final ValueChanged<String>? alCambiarTelefono;
+  final ValueChanged<String>? alCambiarContrasena;
 
   const FormularioRegistro({
     super.key,
@@ -24,6 +34,16 @@ class FormularioRegistro extends StatefulWidget {
     required this.contrasena,
     required this.ocultar,
     required this.alAlternarVisibilidad,
+    this.errorCedula,
+    this.errorNombre,
+    this.errorCorreo,
+    this.errorTelefono,
+    this.errorContrasena,
+    this.alCambiarCedula,
+    this.alCambiarNombre,
+    this.alCambiarCorreo,
+    this.alCambiarTelefono,
+    this.alCambiarContrasena,
   });
 
   @override
@@ -53,12 +73,14 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
     ];
   }
 
-  void _limpiarErrorCedula(String _) {
+  void _limpiarErrorCedula(String valor) {
     if (_errorCedula != null) setState(() => _errorCedula = null);
+    widget.alCambiarCedula?.call(valor);
   }
 
-  void _limpiarErrorTelefono(String _) {
+  void _limpiarErrorTelefono(String valor) {
     if (_errorTelefono != null) setState(() => _errorTelefono = null);
+    widget.alCambiarTelefono?.call(valor);
   }
 
   @override
@@ -76,7 +98,7 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
             maximo: 12,
             alRechazar: (mensaje) => setState(() => _errorCedula = mensaje),
           ),
-          mensajeError: _errorCedula,
+          mensajeError: widget.errorCedula ?? _errorCedula,
           alCambiar: _limpiarErrorCedula,
           iconoIzquierdo: const Icon(
             Icons.badge_outlined,
@@ -90,6 +112,8 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
           pista: 'Nombre y apellido',
           controlador: widget.nombreCompleto,
           formateadores: [LengthLimitingTextInputFormatter(65)],
+          mensajeError: widget.errorNombre,
+          alCambiar: widget.alCambiarNombre,
           iconoIzquierdo: const Icon(
             Icons.person_outline_rounded,
             size: 20,
@@ -102,6 +126,8 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
           pista: 'correo@ejemplo.com',
           controlador: widget.correo,
           tipoTeclado: TextInputType.emailAddress,
+          mensajeError: widget.errorCorreo,
+          alCambiar: widget.alCambiarCorreo,
           iconoIzquierdo: const Icon(
             Icons.mail_outline_rounded,
             size: 20,
@@ -118,7 +144,7 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
             maximo: 10,
             alRechazar: (mensaje) => setState(() => _errorTelefono = mensaje),
           ),
-          mensajeError: _errorTelefono,
+          mensajeError: widget.errorTelefono ?? _errorTelefono,
           alCambiar: _limpiarErrorTelefono,
           iconoIzquierdo: const Icon(
             Icons.phone_outlined,
@@ -132,6 +158,8 @@ class _FormularioRegistroState extends State<FormularioRegistro> {
           pista: 'Crea tu contraseña',
           controlador: widget.contrasena,
           ocultarTexto: widget.ocultar,
+          mensajeError: widget.errorContrasena,
+          alCambiar: widget.alCambiarContrasena,
           iconoIzquierdo: const Icon(
             Icons.lock_outline_rounded,
             size: 20,

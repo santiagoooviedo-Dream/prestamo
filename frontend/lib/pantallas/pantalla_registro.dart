@@ -26,6 +26,8 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   bool _ocultar = true;
   bool _registrando = false;
   bool _aceptoTerminos = false;
+  bool _errorTerminos = false;
+  Map<String, String> _errores = {};
 
   @override
   void initState() {
@@ -34,6 +36,40 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   }
 
   void _actualizar() => setState(() {});
+
+  void _limpiarError(String campo) {
+    if (!_errores.containsKey(campo)) return;
+    setState(() => _errores = Map.of(_errores)..remove(campo));
+  }
+
+  void _mostrarErrorApi(String mensaje) {
+    final texto = mensaje.toLowerCase();
+    final errores = <String, String>{};
+
+    if (texto.contains('correo')) {
+      errores['correo'] = mensaje;
+    }
+    if (texto.contains('cédula') || texto.contains('cedula')) {
+      errores['cedula'] = mensaje;
+    }
+    if (texto.contains('teléfono') || texto.contains('telefono')) {
+      errores['telefono'] = mensaje;
+    }
+    if (texto.contains('contraseña') || texto.contains('contrasena')) {
+      errores['contrasena'] = mensaje;
+    }
+    if (texto.contains('nombre')) {
+      errores['nombre'] = mensaje;
+    }
+
+    if (errores.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(mensaje)));
+      return;
+    }
+
+    setState(() => _errores = errores);
+  }
 
   @override
   void dispose() {
@@ -46,65 +82,47 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
   }
 
   Future<void> _registrar() async {
-    if (!_aceptoTerminos) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Debes aceptar los términos y condiciones.'),
-        ),
-      );
-      return;
-    }
-
-    final correo = _correo.text.trim();
+    final correo = _correo.text.trim().toLowerCase();
     final completo = _nombreCompleto.text.trim();
     final cedula = _cedula.text.trim();
     final telefono = _telefono.text.trim();
+    final errores = <String, String>{};
 
-    if (cedula.isEmpty ||
-        completo.isEmpty ||
-        correo.isEmpty ||
-        telefono.isEmpty ||
-        !RegistroModel.contrasenaValida(_contrasena.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Completa todos los datos y cumple los requisitos de la contraseña.',
-          ),
-        ),
-      );
-      return;
+    if (completo.isEmpty) {
+      errores['nombre'] = 'Ingresa tu nombre y apellido.';
+    } else if (completo.length > 65) {
+      errores['nombre'] = 'No puede superar 65 caracteres.';
     }
 
-    if (!RegExp(r'^\d{1,12}$').hasMatch(cedula)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('La cédula debe tener entre 1 y 12 dígitos.'),
-        ),
-      );
-      return;
+    if (cedula.isEmpty) {
+      errores['cedula'] = 'Ingresa tu número de cédula.';
+    } else if (!RegExp(r'^\d{1,12}$').hasMatch(cedula)) {
+      errores['cedula'] = 'Debe tener entre 1 y 12 dígitos.';
     }
-    if (!RegExp(r'^\d+$').hasMatch(telefono)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('El teléfono solo debe contener números.'),
-        ),
-      );
-      return;
+
+    if (correo.isEmpty) {
+      errores['correo'] = 'Ingresa tu correo electrónico.';
+    } else if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(correo)) {
+      errores['correo'] = 'Ingresa un correo electrónico válido.';
     }
-    if (telefono.length != 10) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('El teléfono debe tener exactamente 10 dígitos.'),
-        ),
-      );
-      return;
+
+    if (telefono.isEmpty) {
+      errores['telefono'] = 'Ingresa tu número de teléfono.';
+    } else if (!RegExp(r'^\d{10}$').hasMatch(telefono)) {
+      errores['telefono'] = 'Debe tener exactamente 10 dígitos.';
     }
-    if (completo.length > 65) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Nombre y apellido no puede superar 65 caracteres.'),
-        ),
-      );
+
+    if (!RegistroModel.contrasenaValida(_contrasena.text)) {
+      errores['contrasena'] =
+          'Cumple todos los requisitos indicados para la contraseña.';
+    }
+
+    setState(() {
+      _errores = errores;
+      _errorTerminos = !_aceptoTerminos;
+    });
+
+    if (errores.isNotEmpty || !_aceptoTerminos) {
       return;
     }
 
@@ -130,8 +148,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
       );
     } on ApiException catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(error.mensaje)));
+      _mostrarErrorApi(error.mensaje);
     } finally {
       if (mounted) setState(() => _registrando = false);
     }
@@ -234,6 +251,16 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                       ocultar: _ocultar,
                       alAlternarVisibilidad: () =>
                           setState(() => _ocultar = !_ocultar),
+                      errorCedula: _errores['cedula'],
+                      errorNombre: _errores['nombre'],
+                      errorCorreo: _errores['correo'],
+                      errorTelefono: _errores['telefono'],
+                      errorContrasena: _errores['contrasena'],
+                      alCambiarCedula: (_) => _limpiarError('cedula'),
+                      alCambiarNombre: (_) => _limpiarError('nombre'),
+                      alCambiarCorreo: (_) => _limpiarError('correo'),
+                      alCambiarTelefono: (_) => _limpiarError('telefono'),
+                      alCambiarContrasena: (_) => _limpiarError('contrasena'),
                     ),
                     const SizedBox(height: 12),
                     Row(
@@ -242,9 +269,10 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                         Checkbox(
                           value: _aceptoTerminos,
                           activeColor: const Color(0xFF285FE8),
-                          onChanged: (aceptado) => setState(
-                            () => _aceptoTerminos = aceptado ?? false,
-                          ),
+                          onChanged: (aceptado) => setState(() {
+                            _aceptoTerminos = aceptado ?? false;
+                            if (_aceptoTerminos) _errorTerminos = false;
+                          }),
                         ),
                         Expanded(
                           child: InkWell(
@@ -275,6 +303,17 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                         ),
                       ],
                     ),
+                    if (_errorTerminos)
+                      const Padding(
+                        padding: EdgeInsets.only(left: 12, top: 2),
+                        child: Text(
+                          'Debes aceptar los términos y condiciones.',
+                          style: TextStyle(
+                            color: Color(0xFFB3261E),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

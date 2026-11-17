@@ -13,14 +13,20 @@ void main() {
     expect(find.textContaining('Ley 1581 de 2012'), findsOneWidget);
   });
 
-  testWidgets('no permite crear la cuenta sin aceptar los términos', (
-    tester,
-  ) async {
+  testWidgets('muestra errores junto a los campos que faltan', (tester) async {
     await tester.pumpWidget(const MaterialApp(home: PantallaRegistro()));
 
     await tester.tap(find.text('Crear cuenta'));
     await tester.pump();
 
+    expect(find.text('Ingresa tu nombre y apellido.'), findsOneWidget);
+    expect(find.text('Ingresa tu número de cédula.'), findsOneWidget);
+    expect(find.text('Ingresa tu correo electrónico.'), findsOneWidget);
+    expect(find.text('Ingresa tu número de teléfono.'), findsOneWidget);
+    expect(
+      find.text('Cumple todos los requisitos indicados para la contraseña.'),
+      findsOneWidget,
+    );
     expect(
       find.text('Debes aceptar los términos y condiciones.'),
       findsOneWidget,

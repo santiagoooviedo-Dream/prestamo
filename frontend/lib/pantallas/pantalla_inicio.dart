@@ -7,6 +7,9 @@ import 'pantalla_asistente_virtual.dart';
 import 'pantalla_perfil.dart';
 import 'pantalla_mis_prestamos.dart';
 import 'pantalla_solicitar_prestamo.dart';
+import 'pantalla_notificaciones.dart';
+import '../models/notificacion_model.dart';
+import '../widgets/comunes/punto_rojo.dart';
 
 class PantallaInicio extends StatelessWidget {
   const PantallaInicio({super.key});
@@ -26,10 +29,10 @@ class PantallaInicio extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Cabecera
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
+                      const Text(
                         'Préstamos',
                         style: TextStyle(
                           fontSize: 16,
@@ -37,13 +40,36 @@ class PantallaInicio extends StatelessWidget {
                           color: Color(0xFF285FE8),
                         ),
                       ),
-                      Text(
-                        'INICIO',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF41618E),
-                          letterSpacing: 0.4,
+                      // Icono de notificaciones (mismo que en perfil)
+                      Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(20),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const PantallaNotificaciones(),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: ValueListenableBuilder<bool>(
+                              valueListenable:
+                                  EstadoNotificacionesUsuario.hayNoLeidas,
+                              builder: (context, hayNoLeidas, _) {
+                                return IconoConPunto(
+                                  activo: hayNoLeidas,
+                                  child: const Icon(
+                                    Icons.notifications_none_rounded,
+                                    size: 26,
+                                    color: Color(0xFF41618E),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     ],

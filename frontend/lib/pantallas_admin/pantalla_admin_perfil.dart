@@ -19,6 +19,7 @@ class PantallaAdminPerfil extends StatefulWidget {
   final String telefono;
   final String cedula;
   final String fechaRegistro;
+  final String? foto;
 
   const PantallaAdminPerfil({
     super.key,
@@ -29,6 +30,7 @@ class PantallaAdminPerfil extends StatefulWidget {
     this.telefono = '',
     this.cedula = '',
     this.fechaRegistro = '',
+    this.foto,
   });
 
   @override
@@ -122,6 +124,7 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                       nombre: widget.nombre,
                       apellidos: widget.apellidos,
                       fechaRegistro: widget.fechaRegistro,
+                      foto: widget.foto,
                     ),
                     const SizedBox(height: 18),
                     DatosPerfilUsuario(

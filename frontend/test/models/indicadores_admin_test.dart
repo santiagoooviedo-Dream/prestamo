@@ -41,5 +41,23 @@ void main() {
         isTrue,
       );
     });
+
+    test('solo marca préstamos si hay solicitudes pendientes', () {
+      expect(IndicadoresAdmin.haySolicitudesPendientes([]), isFalse);
+      expect(
+        IndicadoresAdmin.haySolicitudesPendientes([
+          {'estado': 'aceptada'},
+          {'estado': 'rechazada'},
+        ]),
+        isFalse,
+      );
+      expect(
+        IndicadoresAdmin.haySolicitudesPendientes([
+          {'estado': 'aceptada'},
+          {'estado': ' Pendiente '},
+        ]),
+        isTrue,
+      );
+    });
   });
 }

@@ -86,6 +86,16 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
     }).toList();
   }
 
+  Widget _inicialesWidget(String iniciales) => Center(
+    child: Text(
+      iniciales.isEmpty ? '?' : iniciales,
+      style: const TextStyle(
+        fontWeight: FontWeight.w700,
+        color: Color(0xFF285FE8),
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     final top = MediaQuery.paddingOf(context).top;
@@ -213,6 +223,7 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                                       ),
                                       nombre: nom,
                                       apellidos: ape,
+                                      foto: u['foto']?.toString(),
                                       correo: correo,
                                       telefono: u['telefono']?.toString() ?? '',
                                       cedula: u['cedula']?.toString() ?? '',
@@ -256,14 +267,29 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                                               backgroundColor: const Color(
                                                 0xFFE8F0FE,
                                               ),
-                                              child: Text(
-                                                iniciales.isEmpty
-                                                    ? '?'
-                                                    : iniciales,
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Color(0xFF285FE8),
-                                                ),
+                                              child: ClipOval(
+                                                child:
+                                                    (u['foto']
+                                                            ?.toString()
+                                                            .trim()
+                                                            .isNotEmpty ??
+                                                        false)
+                                                    ? Image.network(
+                                                        u['foto']
+                                                            .toString()
+                                                            .trim(),
+                                                        width: 48,
+                                                        height: 48,
+                                                        fit: BoxFit.cover,
+                                                        errorBuilder:
+                                                            (_, _, _) =>
+                                                                _inicialesWidget(
+                                                                  iniciales,
+                                                                ),
+                                                      )
+                                                    : _inicialesWidget(
+                                                        iniciales,
+                                                      ),
                                               ),
                                             ),
                                             if (conPunto)

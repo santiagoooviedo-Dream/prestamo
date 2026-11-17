@@ -3,6 +3,7 @@ class SolicitudAdmin {
   final int idUsuario;
   final String nombre;
   final String apellidos;
+  final String? foto;
   final int monto;
   final String estado;
   final String fecha;
@@ -17,6 +18,7 @@ class SolicitudAdmin {
     required this.idUsuario,
     required this.nombre,
     required this.apellidos,
+    this.foto,
     required this.monto,
     required this.estado,
     required this.fecha,
@@ -43,6 +45,7 @@ class SolicitudAdmin {
       idUsuario: int.tryParse(j['id_usuario']?.toString() ?? '') ?? 0,
       nombre: nombre,
       apellidos: apellido,
+      foto: usuario?['foto']?.toString(),
       monto: int.tryParse(j['monto_solicitado']?.toString() ?? '') ?? 0,
       estado: estado,
       fecha: j['created_at']?.toString() ?? j['fecha']?.toString() ?? '',

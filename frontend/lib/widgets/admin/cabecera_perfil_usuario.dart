@@ -4,12 +4,14 @@ class CabeceraPerfilUsuario extends StatelessWidget {
   final String nombre;
   final String apellidos;
   final String fechaRegistro;
+  final String? foto;
 
   const CabeceraPerfilUsuario({
     super.key,
     required this.nombre,
     required this.apellidos,
     required this.fechaRegistro,
+    this.foto,
   });
 
   String get _iniciales {
@@ -20,22 +22,25 @@ class CabeceraPerfilUsuario extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fotoUrl = foto?.trim();
     return Column(
       children: [
-        Container(
+        SizedBox(
           width: 72,
           height: 72,
-          decoration: const BoxDecoration(
-            color: Color(0xFFE8F0FE),
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            _iniciales,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF285FE8),
+          child: CircleAvatar(
+            radius: 36,
+            backgroundColor: const Color(0xFFE8F0FE),
+            child: ClipOval(
+              child: fotoUrl != null && fotoUrl.isNotEmpty
+                  ? Image.network(
+                      fotoUrl,
+                      width: 72,
+                      height: 72,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, _, _) => _avatarIniciales,
+                    )
+                  : _avatarIniciales,
             ),
           ),
         ),
@@ -62,4 +67,15 @@ class CabeceraPerfilUsuario extends StatelessWidget {
       ],
     );
   }
+
+  Widget get _avatarIniciales => Center(
+    child: Text(
+      _iniciales.isEmpty ? '?' : _iniciales,
+      style: const TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.w700,
+        color: Color(0xFF285FE8),
+      ),
+    ),
+  );
 }

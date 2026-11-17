@@ -6,17 +6,25 @@ class ItemHistorialAdmin {
   final String titulo;
   final int monto;
   final String cuotaTexto;
+  final int numeroCuotas;
   final String estado;
   final String fechaPago;
   final String metodo;
+  final String fechaInicio;
+  final String fechaFin;
+  final DateTime? fechaOrden;
 
   const ItemHistorialAdmin({
     required this.titulo,
     required this.monto,
     required this.cuotaTexto,
+    this.numeroCuotas = 0,
     required this.estado,
     required this.fechaPago,
     required this.metodo,
+    this.fechaInicio = '—',
+    this.fechaFin = '—',
+    this.fechaOrden,
   });
 }
 
@@ -99,6 +107,13 @@ class TarjetaHistorialAdmin extends StatelessWidget {
               item.cuotaTexto,
               style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
             ),
+            if (item.fechaInicio != '—' || item.fechaFin != '—') ...[
+              const SizedBox(height: 6),
+              Text(
+                '${item.fechaInicio}  →  ${item.fechaFin}',
+                style: const TextStyle(fontSize: 12, color: Color(0xFF8A96A8)),
+              ),
+            ],
           ],
         ),
       ),

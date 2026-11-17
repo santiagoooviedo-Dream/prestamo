@@ -33,6 +33,10 @@ class IndicadoresAdmin {
     return e == 'pendiente';
   }
 
+  static bool haySolicitudesPendientes(List<Map<String, dynamic>> solicitudes) {
+    return solicitudes.any(solicitudPendiente);
+  }
+
   static int? idUsuarioDe(Map<String, dynamic> m) {
     final raw =
         m['id_usuario'] ??
@@ -240,9 +244,9 @@ class IndicadoresAdmin {
 
     try {
       final sols = await ApiService.obtenerSolicitudesAdmin();
+      prestamos = haySolicitudesPendientes(sols);
       for (final s in sols) {
         if (!solicitudPendiente(s)) continue;
-        prestamos = true;
         final id = idUsuarioDe(s);
         if (id != null) usuariosConPunto.add(id);
       }
@@ -268,7 +272,6 @@ class IndicadoresAdmin {
         if (flag.id != null && (flag.soporte || flag.pago)) {
           usuariosConPunto.add(flag.id!);
         }
-        if (flag.pago) prestamos = true;
       }
     } catch (_) {}
 

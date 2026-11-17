@@ -15,6 +15,8 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = solicitud;
+    final fotoUrl = s.foto?.trim();
+    final iniciales = s.nombre.isNotEmpty ? s.nombre[0].toUpperCase() : '?';
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -26,20 +28,19 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Container(
-              width: 44,
-              height: 44,
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F0FE),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                s.nombre.isNotEmpty ? s.nombre[0].toUpperCase() : '?',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF285FE8),
-                ),
+            CircleAvatar(
+              radius: 22,
+              backgroundColor: const Color(0xFFE8F0FE),
+              child: ClipOval(
+                child: fotoUrl != null && fotoUrl.isNotEmpty
+                    ? Image.network(
+                        fotoUrl,
+                        width: 44,
+                        height: 44,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, _, _) => _avatarInicial(iniciales),
+                      )
+                    : _avatarInicial(iniciales),
               ),
             ),
             const SizedBox(width: 12),
@@ -86,4 +87,14 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
       ),
     );
   }
+
+  Widget _avatarInicial(String inicial) => Center(
+    child: Text(
+      inicial,
+      style: const TextStyle(
+        fontWeight: FontWeight.w700,
+        color: Color(0xFF285FE8),
+      ),
+    ),
+  );
 }

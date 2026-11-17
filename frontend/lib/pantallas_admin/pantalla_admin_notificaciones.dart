@@ -136,9 +136,9 @@ class _PantallaAdminNotificacionesState
         porUsuario[id] = _Dest(
           id: id,
           nombre: nombreRaw.isEmpty ? 'Usuario #$id' : nombreRaw,
-          detalle: detallePorUsuario[id] ?? 'Usuario registrado',
           correo: u['correo']?.toString() ?? '',
           cedula: u['cedula']?.toString() ?? '',
+          foto: u['foto']?.toString(),
           mostrarPunto: usuariosConPendientes.contains(id),
         );
       }
@@ -149,7 +149,6 @@ class _PantallaAdminNotificacionesState
           porUsuario[e.key] = _Dest(
             id: e.key,
             nombre: 'Usuario #${e.key}',
-            detalle: e.value,
             mostrarPunto: usuariosConPendientes.contains(e.key),
           );
         }
@@ -343,7 +342,8 @@ class _PantallaAdminNotificacionesState
                       ...lista.map(
                         (d) => TarjetaDestinatario(
                           nombre: d.nombre,
-                          detalle: d.detalle,
+                          correo: d.correo,
+                          foto: d.foto,
                           seleccionado: _usuarioSel == d.id,
                           mostrarPunto: d.mostrarPunto,
                           onTap: () => setState(() => _usuarioSel = d.id),
@@ -381,17 +381,17 @@ class _PantallaAdminNotificacionesState
 class _Dest {
   final int id;
   final String nombre;
-  final String detalle;
   final String correo;
   final String cedula;
+  final String? foto;
   final bool mostrarPunto;
 
   _Dest({
     required this.id,
     required this.nombre,
-    required this.detalle,
     this.correo = '',
     this.cedula = '',
+    this.foto,
     this.mostrarPunto = false,
   });
 }

@@ -24,7 +24,7 @@ class DatosPerfilUsuario extends StatelessWidget {
   Widget build(BuildContext context) {
     final prestamosTxt = cargando
         ? '…'
-        : '$prestamosActivos activo${prestamosActivos == 1 ? '' : 's'}';
+        : '$prestamosActivos préstamo${prestamosActivos == 1 ? '' : 's'}';
     final solTxt = cargando
         ? '…'
         : '$solicitudesRealizadas realizada${solicitudesRealizadas == 1 ? '' : 's'}';

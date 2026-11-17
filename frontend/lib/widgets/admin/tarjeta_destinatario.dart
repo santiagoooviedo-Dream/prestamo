@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 
 class TarjetaDestinatario extends StatelessWidget {
   final String nombre;
-  final String detalle;
+  final String correo;
+  final String? foto;
   final bool seleccionado;
   final bool mostrarPunto;
   final VoidCallback onTap;
@@ -10,15 +11,17 @@ class TarjetaDestinatario extends StatelessWidget {
   const TarjetaDestinatario({
     super.key,
     required this.nombre,
-    required this.detalle,
+    required this.correo,
     required this.seleccionado,
     required this.onTap,
+    this.foto,
     this.mostrarPunto = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final inicial = nombre.isNotEmpty ? nombre[0].toUpperCase() : '?';
+    final fotoUrl = foto?.trim();
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -42,25 +45,17 @@ class TarjetaDestinatario extends StatelessWidget {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: seleccionado
-                          ? const Color(0xFF285FE8)
-                          : const Color(0xFFE8F0FE),
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      inicial,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: seleccionado
-                            ? Colors.white
-                            : const Color(0xFF285FE8),
-                      ),
-                    ),
+                  ClipOval(
+                    child: fotoUrl != null && fotoUrl.isNotEmpty
+                        ? Image.network(
+                            fotoUrl,
+                            width: 40,
+                            height: 40,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, _, _) =>
+                                _avatarInicial(inicial, seleccionado),
+                          )
+                        : _avatarInicial(inicial, seleccionado),
                   ),
                   if (mostrarPunto)
                     Positioned(
@@ -93,7 +88,7 @@ class TarjetaDestinatario extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    detalle,
+                    correo,
                     style: const TextStyle(
                       fontSize: 13,
                       color: Color(0xFF66758D),
@@ -113,4 +108,18 @@ class TarjetaDestinatario extends StatelessWidget {
       ),
     );
   }
+
+  Widget _avatarInicial(String inicial, bool seleccionado) => Container(
+    width: 40,
+    height: 40,
+    color: seleccionado ? const Color(0xFF285FE8) : const Color(0xFFE8F0FE),
+    alignment: Alignment.center,
+    child: Text(
+      inicial,
+      style: TextStyle(
+        fontWeight: FontWeight.w700,
+        color: seleccionado ? Colors.white : const Color(0xFF285FE8),
+      ),
+    ),
+  );
 }

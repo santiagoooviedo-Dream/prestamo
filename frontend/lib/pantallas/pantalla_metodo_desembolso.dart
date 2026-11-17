@@ -102,6 +102,13 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
                         seleccionado: _sel == 0,
                         onTap: () => setState(() => _sel = 0),
                       ),
+                      const SizedBox(height: 12),
+                      OpcionMetodo(
+                        icono: Icons.smartphone_outlined,
+                        titulo: 'Nequi',
+                        seleccionado: _sel == 1,
+                        onTap: () => setState(() => _sel = 1),
+                      ),
                       if (_sel == 1) ...[
                         const SizedBox(height: 16),
                         const Text(
@@ -147,13 +154,6 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
                           ),
                         ),
                       ],
-                      const SizedBox(height: 12),
-                      OpcionMetodo(
-                        icono: Icons.smartphone_outlined,
-                        titulo: 'Nequi',
-                        seleccionado: _sel == 1,
-                        onTap: () => setState(() => _sel = 1),
-                      ),
                       const SizedBox(height: 20),
                       const AvisoSeguridad(
                         texto: 'Tus datos de desembolso están protegidos.',

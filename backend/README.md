@@ -78,6 +78,15 @@ El servidor se ejecutará en:
 http://localhost:3000
 ```
 
+## Registro y verificación de correo
+
+Antes de desplegar esta versión, ejecuta `migrations/20261117_registros_pendientes.sql`
+en el editor SQL de Supabase. Los datos del registro se guardan temporalmente en
+`registros_pendientes`; la fila de `usuarios` solo se crea cuando se confirma el
+código de seis dígitos enviado al correo. La migración también mueve allí las
+cuentas antiguas que todavía no estaban verificadas. El backend debe conectarse
+con la clave `service_role` para acceder a la tabla protegida.
+
 ## Solicitudes y desembolso
 
 Antes de iniciar el servidor, aplica una sola vez el SQL de

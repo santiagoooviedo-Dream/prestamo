@@ -41,14 +41,86 @@ export const crearUsuario = async (usuario) => {
             cedula: usuario.cedula,
             contrasena: usuario.contrasena,
             rol: usuario.rol,
-            isVerified: false,
-            codigoVerificacion: usuario.codigoVerificacion,
-            codigoVerificacionExpiracion: usuario.codigoVerificacionExpiracion
+            isVerified: true,
+            codigoVerificacion: null,
+            codigoVerificacionExpiracion: null
         })
         .select()
         .single();
 
     return { data, error };
+};
+
+export const buscarRegistroPendientePorCorreo = async (correo) => {
+    const { data, error } = await supabase
+        .from('registros_pendientes')
+        .select('*')
+        .eq('correo', correo)
+        .maybeSingle();
+
+    return { data, error };
+};
+
+export const buscarRegistroPendientePorCedula = async (cedula) => {
+    const { data, error } = await supabase
+        .from('registros_pendientes')
+        .select('correo')
+        .eq('cedula', cedula)
+        .limit(1)
+        .maybeSingle();
+
+    return { data, error };
+};
+
+export const guardarRegistroPendiente = async (registro) => {
+    const { data, error } = await supabase
+        .from('registros_pendientes')
+        .upsert({
+            correo: registro.correo,
+            nombre: registro.nombre,
+            apellido: registro.apellido,
+            telefono: registro.telefono,
+            cedula: registro.cedula,
+            contrasena: registro.contrasena,
+            codigo_verificacion: registro.codigoVerificacion,
+            codigo_verificacion_expiracion: registro.codigoVerificacionExpiracion
+        }, { onConflict: 'correo' })
+        .select()
+        .single();
+
+    return { data, error };
+};
+
+export const eliminarRegistrosPendientesExpirados = async (ahora) => {
+    const { error } = await supabase
+        .from('registros_pendientes')
+        .delete()
+        .lt('codigo_verificacion_expiracion', ahora);
+
+    return { error };
+};
+
+export const actualizarCodigoRegistroPendiente = async (correo, codigo, expiracion) => {
+    const { data, error } = await supabase
+        .from('registros_pendientes')
+        .update({
+            codigo_verificacion: codigo,
+            codigo_verificacion_expiracion: expiracion
+        })
+        .eq('correo', correo)
+        .select()
+        .maybeSingle();
+
+    return { data, error };
+};
+
+export const eliminarRegistroPendiente = async (correo) => {
+    const { error } = await supabase
+        .from('registros_pendientes')
+        .delete()
+        .eq('correo', correo);
+
+    return { error };
 };
 
 // cambiar el correo electronico

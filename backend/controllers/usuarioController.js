@@ -6,27 +6,74 @@ import { createHmac, randomInt, timingSafeEqual } from 'node:crypto';
 //importamos jwt para generar el token
 import jwt from 'jsonwebtoken';
 
-import { buscarUsuarioPorCorreo, buscarUsuarioPorCedula, crearUsuario, actualizarCodigoVerificacion, actualizarCorreoUsuario, cambiarContrasena, buscarUsuarioPorId, crearCodigoRecuperacion, buscarCodigoRecuperacion, actualizarFotoUsuario, verificarUsuario } from '../models/usuarioModel.js';
+import {
+    buscarUsuarioPorCorreo,
+    buscarUsuarioPorCedula,
+    crearUsuario,
+    actualizarCorreoUsuario,
+    cambiarContrasena,
+    buscarUsuarioPorId,
+    crearCodigoRecuperacion,
+    buscarCodigoRecuperacion,
+    actualizarFotoUsuario,
+    buscarRegistroPendientePorCorreo,
+    buscarRegistroPendientePorCedula,
+    guardarRegistroPendiente,
+    eliminarRegistrosPendientesExpirados,
+    actualizarCodigoRegistroPendiente,
+    eliminarRegistroPendiente
+} from '../models/usuarioModel.js';
 
 //importamos el brave para enviar codigos de recuperacion de contraseña
 import { enviarCodigoCambioCorreo, enviarCodigoRecuperacion, enviarCodigoVerificacion } from '../utils/sendEmails.js';
 
 // Funcion para registrar un nuevo usuario
 export const registrarUsuario = async (req, res) => {
+    const datos = req.body ?? {};
+    const nombre = typeof datos.nombre === 'string' ? datos.nombre.trim() : '';
+    const apellido = typeof datos.apellido === 'string' ? datos.apellido.trim() : '';
+    const correo = typeof datos.correo === 'string'
+        ? datos.correo.trim().toLowerCase()
+        : '';
+    const telefono = typeof datos.telefono === 'string' ? datos.telefono.trim() : '';
+    const cedula = typeof datos.cedula === 'string' ? datos.cedula.trim() : '';
+    const contrasena = datos.contrasena;
 
-    // Obtenemos los datos enviados
-    const { nombre, apellido, correo, telefono, cedula, contrasena} = req.body;
-
-    // Verificamos que todos los datos lleguen
-    if ( !nombre || !apellido || !correo || !telefono || !cedula || !contrasena) {
+    if (!nombre || !apellido || !correo || !telefono || !cedula || !contrasena) {
         return res.status(400).json({
             mensaje: 'Todos los campos son obligatorios'
         });
     }
 
-    if (typeof cedula !== 'string' || !/^\d{1,12}$/.test(cedula)) {
+    if (`${nombre} ${apellido}`.length > 65) {
+        return res.status(400).json({
+            mensaje: 'Nombre y apellido no puede superar 65 caracteres'
+        });
+    }
+    if (correo.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+        return res.status(400).json({
+            mensaje: 'Ingresa un correo electrónico válido'
+        });
+    }
+    if (!/^\d{1,12}$/.test(cedula)) {
         return res.status(400).json({
             mensaje: 'La cédula debe tener entre 1 y 12 dígitos'
+        });
+    }
+    if (!/^\d{10}$/.test(telefono)) {
+        return res.status(400).json({
+            mensaje: 'El teléfono debe tener exactamente 10 dígitos'
+        });
+    }
+    if (
+        typeof contrasena !== 'string' ||
+        contrasena.length < 8 ||
+        !/[0-9]/.test(contrasena) ||
+        !/[A-Z]/.test(contrasena) ||
+        !/[!@#$%^&*(),.?":{}|<>_\-+=\[\]\\;\/]/.test(contrasena)
+    ) {
+        return res.status(400).json({
+            mensaje: 'La contraseña no cumple los requisitos'
         });
     }
 
@@ -49,57 +96,85 @@ export const registrarUsuario = async (req, res) => {
         });
     }
 
-    // Protegemos la contraseña
-    const contrasenaSegura =
-        await bcrypt.hash(contrasena, 10);
-
-    // Creamos un codigo de 6 numeros
-    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
-
-    // El codigo sera valido durante 15 minutos
-    const codigoVerificacionExpiracion =
-        new Date(Date.now() + 15 * 60 * 1000);
-
-const { data, error } = await crearUsuario({
-    nombre,
-    apellido,
-    correo,
-    telefono,
-    cedula,
-    contrasena: contrasenaSegura,
-    rol: 'usuario',
-    codigoVerificacion: codigo,
-    codigoVerificacionExpiracion: codigoVerificacionExpiracion
-});
-
-    // Comprobamos si ocurrio un error
-    if (error) {
+    const { error: errorLimpieza } =
+        await eliminarRegistrosPendientesExpirados(new Date().toISOString());
+    if (errorLimpieza) {
         return res.status(500).json({
-            mensaje: 'Error al registrar el usuario',
-            error: error.message
+            mensaje: 'No se pudieron validar registros pendientes',
+            error: errorLimpieza.message
         });
     }
 
-    // Enviamos el codigo por Brevo
-    const resultado =await enviarCodigoVerificacion(
-            correo,
-            nombre,
-            codigo
-        );
+    const { data: usuarioPorCedula, error: errorCedula } =
+        await buscarUsuarioPorCedula(cedula);
+    if (errorCedula) {
+        return res.status(500).json({
+            mensaje: 'Error al buscar la cédula',
+            error: errorCedula.message
+        });
+    }
+    if (usuarioPorCedula) {
+        return res.status(409).json({
+            mensaje: 'La cédula ya está registrada'
+        });
+    }
 
-    // Si no se pudo enviar el correo
+    const correoNormalizado = correo.trim().toLowerCase();
+    const { data: registroPorCedula, error: errorRegistroPorCedula } =
+        await buscarRegistroPendientePorCedula(cedula);
+    if (errorRegistroPorCedula) {
+        return res.status(500).json({
+            mensaje: 'Error al buscar la cédula pendiente',
+            error: errorRegistroPorCedula.message
+        });
+    }
+    if (registroPorCedula && registroPorCedula.correo !== correoNormalizado) {
+        return res.status(409).json({
+            mensaje: 'La cédula ya está en otro registro pendiente'
+        });
+    }
+
+    const contrasenaSegura = await bcrypt.hash(contrasena, 10);
+    const codigo = randomInt(100000, 1000000).toString();
+    const expiracion = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+    const { error: errorPendiente } = await guardarRegistroPendiente({
+        nombre,
+        apellido,
+        correo: correoNormalizado,
+        telefono,
+        cedula,
+        contrasena: contrasenaSegura,
+        codigoVerificacion: codigo,
+        codigoVerificacionExpiracion: expiracion
+    });
+
+    if (errorPendiente) {
+        if (errorPendiente.code === '23505') {
+            return res.status(409).json({
+                mensaje: 'El correo o la cédula ya está en uso'
+            });
+        }
+        return res.status(500).json({
+            mensaje: 'No se pudo iniciar el registro',
+            error: errorPendiente.message
+        });
+    }
+
+    const resultado = await enviarCodigoVerificacion(
+        correoNormalizado,
+        nombre,
+        codigo
+    );
     if (!resultado.exito) {
-
-        return res.status(500).json({
-            mensaje: 'El usuario fue creado pero no se pudo enviar el codigo',
-            error: resultado.error
+        return res.status(503).json({
+            mensaje: 'No se pudo enviar el código. Intenta registrarte nuevamente.',
+            error: resultado.error?.mensaje ?? resultado.error
         });
     }
 
-    // Respondemos
-    return res.status(201).json({
-        mensaje: 'Usuario creado. Revisa tu correo para verificar la cuenta',
-        correo: correo
+    return res.status(200).json({
+        mensaje: 'Código enviado. La cuenta se creará después de verificar el correo.',
+        correo: correoNormalizado
     });
 };
 // Funcion para solicitar codigo de verificacion para registrarse
@@ -168,18 +243,22 @@ export const solicitarRegistro = async (req, res) => {
 export const verificarRegistro = async (req, res) => {
 
     // Obtenemos los datos
-    const { correo, codigo } = req.body;
+    const datos = req.body ?? {};
+    const correo = typeof datos.correo === 'string'
+        ? datos.correo.trim().toLowerCase()
+        : '';
+    const codigo = typeof datos.codigo === 'string' ? datos.codigo.trim() : '';
 
     // Verificamos que lleguen
-    if (!correo || !codigo) {
+    if (!correo || !/^\d{6}$/.test(codigo)) {
         return res.status(400).json({
-            mensaje: 'El correo y el codigo son obligatorios'
+            mensaje: 'El correo y un código de 6 dígitos son obligatorios'
         });
     }
 
     // Buscamos el usuario
-    const { data: usuario, error } =
-        await buscarUsuarioPorCorreo(correo);
+    const { data: registroPendiente, error } =
+        await buscarRegistroPendientePorCorreo(correo);
 
     // Comprobamos si ocurrio un error
     if (error) {
@@ -190,50 +269,110 @@ export const verificarRegistro = async (req, res) => {
     }
 
     // Comprobamos si existe
-    if (!usuario) {
+    if (!registroPendiente) {
         return res.status(404).json({
-            mensaje: 'No se encontro el usuario'
-        });
-    }
-
-    // Comprobamos si ya esta verificado
-    if (usuario.isVerified) {
-        return res.status(400).json({
-            mensaje: 'El usuario ya esta verificado'
+            mensaje: 'No se encontró un registro pendiente para este correo'
         });
     }
 
     // Comprobamos si el codigo ya vencio
     if (
-        !usuario.codigoVerificacionExpiracion ||
-        new Date() > new Date(usuario.codigoVerificacionExpiracion)
+        !registroPendiente.codigo_verificacion_expiracion ||
+        Date.now() > new Date(
+            registroPendiente.codigo_verificacion_expiracion
+        ).getTime()
     ) {
         return res.status(400).json({
-            mensaje: 'El codigo de verificacion ha expirado'
+            mensaje: 'El código de verificación ha expirado. Solicita uno nuevo.'
         });
     }
 
     // Comprobamos si el codigo es correcto
-    if (usuario.codigoVerificacion !== codigo) {
+    if (registroPendiente.codigo_verificacion !== codigo) {
         return res.status(400).json({
             mensaje: 'El codigo de verificacion es incorrecto'
         });
     }
 
-    // Verificamos el usuario
-    const { data: usuarioVerificado, error: errorVerificacion} = await verificarUsuario(usuario.id_usuario);
-
-    // Comprobamos si ocurrio un error
-    if (errorVerificacion) {
+    const { data: usuarioPorCorreo, error: errorCorreo } =
+        await buscarUsuarioPorCorreo(correo);
+    if (errorCorreo) {
         return res.status(500).json({
-            mensaje: 'No se pudo verificar la cuenta',
+            mensaje: 'Error al validar el correo',
+            error: errorCorreo.message
+        });
+    }
+    const { data: usuarioPorCedula, error: errorCedula } =
+        await buscarUsuarioPorCedula(registroPendiente.cedula);
+    if (errorCedula) {
+        return res.status(500).json({
+            mensaje: 'Error al validar la cédula',
+            error: errorCedula.message
+        });
+    }
+    if (
+        usuarioPorCorreo?.isVerified &&
+        usuarioPorCorreo.cedula === registroPendiente.cedula
+    ) {
+        const { error: errorEliminacion } =
+            await eliminarRegistroPendiente(correo);
+        if (errorEliminacion) {
+            return res.status(500).json({
+                mensaje: 'La cuenta ya fue creada, pero no se pudo limpiar el registro pendiente',
+                error: errorEliminacion.message
+            });
+        }
+        return res.status(200).json({
+            mensaje: 'Cuenta verificada y creada correctamente',
+            usuario: {
+                id_usuario: usuarioPorCorreo.id_usuario,
+                nombre: usuarioPorCorreo.nombre,
+                apellido: usuarioPorCorreo.apellido,
+                correo: usuarioPorCorreo.correo,
+                isVerified: usuarioPorCorreo.isVerified
+            }
+        });
+    }
+    if (usuarioPorCorreo || usuarioPorCedula) {
+        return res.status(409).json({
+            mensaje: 'El correo o la cédula ya fueron registrados por otra cuenta'
+        });
+    }
+
+    const { data: usuarioVerificado, error: errorVerificacion } =
+        await crearUsuario({
+            nombre: registroPendiente.nombre,
+            apellido: registroPendiente.apellido,
+            correo: registroPendiente.correo,
+            telefono: registroPendiente.telefono,
+            cedula: registroPendiente.cedula,
+            contrasena: registroPendiente.contrasena,
+            rol: 'usuario'
+        });
+    if (errorVerificacion) {
+        if (errorVerificacion.code === '23505') {
+            return res.status(409).json({
+                mensaje: 'El correo o la cédula ya están registrados'
+            });
+        }
+        return res.status(500).json({
+            mensaje: 'No se pudo crear la cuenta',
             error: errorVerificacion.message
+        });
+    }
+
+    const { error: errorEliminacion } =
+        await eliminarRegistroPendiente(correo);
+    if (errorEliminacion) {
+        return res.status(500).json({
+            mensaje: 'La cuenta fue verificada, pero no se pudo limpiar el registro pendiente',
+            error: errorEliminacion.message
         });
     }
 
     // Respondemos
     return res.status(200).json({
-        mensaje: 'Cuenta verificada correctamente',
+        mensaje: 'Cuenta verificada y creada correctamente',
         usuario: {
             id_usuario: usuarioVerificado.id_usuario,
             nombre: usuarioVerificado.nombre,
@@ -245,7 +384,9 @@ export const verificarRegistro = async (req, res) => {
 };
 
 export const reenviarCodigoRegistro = async (req, res) => {
-    const { correo } = req.body;
+    const correo = typeof req.body?.correo === 'string'
+        ? req.body.correo.trim().toLowerCase()
+        : '';
 
     if (!correo) {
         return res.status(400).json({
@@ -253,28 +394,24 @@ export const reenviarCodigoRegistro = async (req, res) => {
         });
     }
 
-    const { data: usuario, error } = await buscarUsuarioPorCorreo(correo);
+    const { data: registroPendiente, error } =
+        await buscarRegistroPendientePorCorreo(correo);
     if (error) {
         return res.status(500).json({
-            mensaje: 'Error al buscar el usuario',
+            mensaje: 'Error al buscar el registro pendiente',
             error: error.message
         });
     }
-    if (!usuario) {
+    if (!registroPendiente) {
         return res.status(404).json({
-            mensaje: 'No se encontró una cuenta con ese correo'
-        });
-    }
-    if (usuario.isVerified) {
-        return res.status(400).json({
-            mensaje: 'La cuenta ya está verificada'
+            mensaje: 'No se encontró un registro pendiente para este correo'
         });
     }
 
-    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
-    const expiracion = new Date(Date.now() + 15 * 60 * 1000);
-    const { error: errorActualizacion } = await actualizarCodigoVerificacion(
-        usuario.id_usuario,
+    const codigo = randomInt(100000, 1000000).toString();
+    const expiracion = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+    const { error: errorActualizacion } = await actualizarCodigoRegistroPendiente(
+        correo,
         codigo,
         expiracion
     );
@@ -285,7 +422,11 @@ export const reenviarCodigoRegistro = async (req, res) => {
         });
     }
 
-    const resultado = await enviarCodigoVerificacion(correo, usuario.nombre, codigo);
+    const resultado = await enviarCodigoVerificacion(
+        correo,
+        registroPendiente.nombre,
+        codigo
+    );
     if (!resultado.exito) {
         return res.status(500).json({
             mensaje: 'No se pudo enviar el código',

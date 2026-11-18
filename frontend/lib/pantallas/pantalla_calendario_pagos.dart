@@ -222,6 +222,8 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                                           int.tryParse(c.idPrestamo),
                                       idCuota: int.tryParse(c.idCuota),
                                       monto: c.monto,
+                                      numeroCuota: c.numero,
+                                      fechaPago: c.fecha,
                                     ),
                                   ),
                                 ).then((_) {

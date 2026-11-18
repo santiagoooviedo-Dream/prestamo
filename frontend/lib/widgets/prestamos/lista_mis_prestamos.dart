@@ -30,18 +30,8 @@ class ListaMisPrestamos extends StatelessWidget {
   Widget build(BuildContext context) {
     final actual = datos?.prestamosActivos;
     final prestamo = actual == null || actual.isEmpty ? null : actual.first;
-    final prestamos = datos?.prestamos ?? const <Map<String, dynamic>>[];
-    final solicitudesPendientes =
-        datos?.solicitudes.where((solicitud) {
-          final estado = solicitud['estado']?.toString().toLowerCase();
-          if (estado != 'aceptada') return true;
-          return !prestamos.any(
-            (prestamo) =>
-                prestamo['id_solicitud']?.toString() ==
-                solicitud['id_solicitud']?.toString(),
-          );
-        }).toList() ??
-        const <Map<String, dynamic>>[];
+    final solicitudesEnCurso =
+        datos?.solicitudesEnCurso ?? const <Map<String, dynamic>>[];
 
     return RefreshIndicator(
       onRefresh: () async => alReintentar(),
@@ -100,7 +90,7 @@ class ListaMisPrestamos extends StatelessWidget {
             )
           else
             const _EstadoVacio(),
-          for (final solicitud in solicitudesPendientes)
+          for (final solicitud in solicitudesEnCurso)
             _TarjetaSolicitud(solicitud: solicitud),
           const SizedBox(height: 12),
           _AccesoHistorial(
@@ -155,7 +145,6 @@ class _TarjetaPrestamoActual extends StatelessWidget {
     final total =
         int.tryParse(prestamo['coutas']?.toString() ?? '') ?? cuotas.length;
     final pagadas = cuotas.where(_estaPagada).length;
-    final pendientes = (total - pagadas).clamp(0, total);
     final progreso = total == 0
         ? 0.0
         : (pagadas / total).clamp(0.0, 1.0).toDouble();

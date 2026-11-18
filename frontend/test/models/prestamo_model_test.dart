@@ -46,6 +46,61 @@ void main() {
       expect(datos.prestamosAnteriores, isEmpty);
       expect(datos.prestamosActivos, hasLength(1));
     });
+
+    test('separa solicitudes rechazadas para mostrarlas en el historial', () {
+      final datos = PrestamosUsuario(
+        solicitudes: const [
+          {
+            'id_solicitud': 1,
+            'estado': 'rechazada',
+            'created_at': '2026-03-01',
+          },
+          {
+            'id_solicitud': 2,
+            'estado': 'pendiente',
+            'created_at': '2026-04-01',
+          },
+          {
+            'id_solicitud': 3,
+            'estado': 'rechazada',
+            'created_at': '2026-05-01',
+          },
+        ],
+        prestamos: const [],
+        cuotas: const [],
+      );
+
+      expect(datos.solicitudesRechazadas.map((s) => s['id_solicitud']), [3, 1]);
+      expect(datos.puedeSolicitarNuevo, isFalse);
+    });
+
+    test('una solicitud rechazada no bloquea una nueva solicitud', () {
+      final datos = PrestamosUsuario(
+        solicitudes: const [
+          {'id_solicitud': 1, 'estado': 'rechazada'},
+        ],
+        prestamos: const [],
+        cuotas: const [],
+      );
+
+      expect(datos.puedeSolicitarNuevo, isTrue);
+    });
+
+    test('oculta las rechazadas de préstamos en curso', () {
+      final datos = PrestamosUsuario(
+        solicitudes: const [
+          {'id_solicitud': 1, 'estado': 'rechazada'},
+          {'id_solicitud': 2, 'estado': 'pendiente'},
+          {'id_solicitud': 3, 'estado': 'aceptada'},
+        ],
+        prestamos: const [
+          {'id_prestamo': 10, 'id_solicitud': 3, 'estado': 'activo'},
+        ],
+        cuotas: const [],
+      );
+
+      expect(datos.solicitudesEnCurso.map((s) => s['id_solicitud']), [2]);
+    });
   });
 
   test('formatea montos y fechas para la interfaz en español', () {

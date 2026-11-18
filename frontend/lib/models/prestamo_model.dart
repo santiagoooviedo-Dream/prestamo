@@ -14,6 +14,18 @@ class PrestamosUsuario {
   List<Map<String, dynamic>> get prestamosActivos =>
       prestamos.where((prestamo) => !estaCompletado(prestamo)).toList();
 
+  List<Map<String, dynamic>> get solicitudesEnCurso =>
+      solicitudes.where((solicitud) {
+        final estado = solicitud['estado']?.toString().toLowerCase().trim();
+        if (estado == 'rechazada') return false;
+        if (estado != 'aceptada') return true;
+        return !prestamos.any(
+          (prestamo) =>
+              prestamo['id_solicitud']?.toString() ==
+              solicitud['id_solicitud']?.toString(),
+        );
+      }).toList();
+
   List<Map<String, dynamic>> get prestamosAnteriores {
     final anteriores = prestamos.where(estaCompletado).toList();
     anteriores.sort((a, b) {
@@ -24,6 +36,29 @@ class PrestamosUsuario {
       return fechaB.compareTo(fechaA);
     });
     return anteriores;
+  }
+
+  List<Map<String, dynamic>> get solicitudesRechazadas {
+    final rechazadas = solicitudes
+        .where(
+          (solicitud) =>
+              solicitud['estado']?.toString().toLowerCase().trim() ==
+              'rechazada',
+        )
+        .toList();
+    rechazadas.sort((a, b) {
+      final fechaA = DateTime.tryParse(
+        (a['created_at'] ?? a['fecha_solicitud'])?.toString() ?? '',
+      );
+      final fechaB = DateTime.tryParse(
+        (b['created_at'] ?? b['fecha_solicitud'])?.toString() ?? '',
+      );
+      if (fechaA == null && fechaB == null) return 0;
+      if (fechaA == null) return 1;
+      if (fechaB == null) return -1;
+      return fechaB.compareTo(fechaA);
+    });
+    return rechazadas;
   }
 
   List<Map<String, dynamic>> cuotasDelPrestamo(dynamic idPrestamo) => cuotas
@@ -46,7 +81,7 @@ class PrestamosUsuario {
     final cuotasPrestamo = cuotasDelPrestamo(prestamo['id_prestamo']);
     final totalCuotas =
         int.tryParse(prestamo['coutas']?.toString() ?? '') ??
-            cuotasPrestamo.length;
+        cuotasPrestamo.length;
     if (totalCuotas == 0 || cuotasPrestamo.length < totalCuotas) return false;
 
     final cuotasPagadas = cuotasPrestamo.where((cuota) {

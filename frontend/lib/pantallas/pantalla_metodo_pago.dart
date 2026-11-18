@@ -13,12 +13,16 @@ class PantallaMetodoPago extends StatefulWidget {
   final int? idPrestamo;
   final int? idCuota;
   final num? monto;
+  final String? numeroCuota;
+  final DateTime? fechaPago;
 
   const PantallaMetodoPago({
     super.key,
     this.idPrestamo,
     this.idCuota,
     this.monto,
+    this.numeroCuota,
+    this.fechaPago,
   });
 
   @override
@@ -53,6 +57,8 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
           idPrestamo: widget.idPrestamo,
           idCuota: widget.idCuota,
           monto: widget.monto,
+          numeroCuota: widget.numeroCuota,
+          fechaPago: widget.fechaPago,
         ),
       ),
     );

@@ -1,9 +1,8 @@
-import 'dart:typed_data';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../models/calendario_pagos_model.dart';
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
 import '../widgets/comunes/aviso_seguridad.dart';
@@ -21,12 +20,16 @@ class PantallaPagoNequi extends StatefulWidget {
   final int? idPrestamo;
   final int? idCuota;
   final num? monto;
+  final String? numeroCuota;
+  final DateTime? fechaPago;
 
   const PantallaPagoNequi({
     super.key,
     this.idPrestamo,
     this.idCuota,
     this.monto,
+    this.numeroCuota,
+    this.fechaPago,
   });
 
   @override
@@ -54,6 +57,21 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
   String get _referencia =>
       'REF_NEQUI id_prestamo=${widget.idPrestamo ?? 0} '
       'id_cuota=${widget.idCuota ?? 0} monto=${widget.monto ?? 0}';
+
+  String get _referenciaVisible {
+    final fecha = widget.fechaPago;
+    final fechaTexto = fecha == null
+        ? 'fecha no disponible'
+        : '${formatoFechaLarga(fecha)} ${fecha.year}';
+    return 'Cuota ${widget.numeroCuota ?? '—'} · $fechaTexto';
+  }
+
+  Future<void> _copiar(String valor, String nombre) async {
+    await Clipboard.setData(ClipboardData(text: valor));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('$nombre copiado.')));
+  }
 
   Future<void> _elegirComprobante(ImageSource fuente) async {
     try {
@@ -258,13 +276,26 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                         ),
                         child: Column(
                           children: [
-                            _fila('Monto a pagar', _montoTexto, resaltar: true),
+                            _fila(
+                              'Monto a pagar',
+                              _montoTexto,
+                              resaltar: true,
+                              textoCopiar: widget.monto?.round().toString(),
+                              nombreCopiado: 'Monto',
+                            ),
                             const Divider(height: 20),
-                            _fila('Pagar al Nequi', kNumeroNequiNegocio),
+                            _fila(
+                              'Pagar al Nequi',
+                              kNumeroNequiNegocio,
+                              textoCopiar: kNumeroNequiNegocio,
+                              nombreCopiado: 'Número Nequi',
+                            ),
                             const Divider(height: 20),
                             _fila(
                               'Referencia',
-                              'Cuota ${widget.idCuota ?? '—'} · Préstamo ${widget.idPrestamo ?? '—'}',
+                              _referenciaVisible,
+                              textoCopiar: _referenciaVisible,
+                              nombreCopiado: 'Referencia',
                             ),
                           ],
                         ),
@@ -455,27 +486,49 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
     );
   }
 
-  Widget _fila(String label, String valor, {bool resaltar = false}) {
+  Widget _fila(
+    String label,
+    String valor, {
+    bool resaltar = false,
+    String? textoCopiar,
+    String? nombreCopiado,
+  }) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
           style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
         ),
+        const SizedBox(width: 8),
         Flexible(
-          child: Text(
-            valor,
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              fontSize: resaltar ? 18 : 14,
-              fontWeight: FontWeight.w700,
-              color: resaltar
-                  ? const Color(0xFF285FE8)
-                  : const Color(0xFF17243C),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: SelectableText(
+              valor,
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                fontSize: resaltar ? 18 : 14,
+                fontWeight: FontWeight.w700,
+                color: resaltar
+                    ? const Color(0xFF285FE8)
+                    : const Color(0xFF17243C),
+              ),
             ),
           ),
         ),
+        if (textoCopiar != null)
+          IconButton(
+            tooltip: 'Copiar ${nombreCopiado ?? label.toLowerCase()}',
+            visualDensity: VisualDensity.compact,
+            constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+            padding: EdgeInsets.zero,
+            onPressed: () => _copiar(textoCopiar, nombreCopiado ?? label),
+            icon: const Icon(
+              Icons.copy_rounded,
+              size: 16,
+              color: Color(0xFF285FE8),
+            ),
+          ),
       ],
     );
   }

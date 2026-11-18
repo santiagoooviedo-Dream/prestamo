@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../services/notificaciones_push_service.dart';
 import '../pantallas/pantalla_bienvenida.dart';
 import '../widgets/comunes/boton_primario.dart';
 import '../widgets/comunes/boton_volver.dart';
@@ -12,6 +13,7 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
 
   Future<void> _cerrar(BuildContext context) async {
     try {
+      await NotificacionesPushService.detener();
       await ApiService.cerrarSesion();
     } catch (_) {}
     if (!context.mounted) return;
@@ -52,7 +54,11 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
               ],
             ),
             const Spacer(flex: 2),
-            const Icon(Icons.logout_rounded, size: 64, color: Color(0xFF285FE8)),
+            const Icon(
+              Icons.logout_rounded,
+              size: 64,
+              color: Color(0xFF285FE8),
+            ),
             const SizedBox(height: 20),
             const Text(
               'Cerrar sesión',
@@ -81,7 +87,9 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
                 onPressed: () {
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (_) => const PantallaAdminMenu()),
+                    MaterialPageRoute(
+                      builder: (_) => const PantallaAdminMenu(),
+                    ),
                     (_) => false,
                   );
                 },

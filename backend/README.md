@@ -120,6 +120,14 @@ entorno; las respuestas indican explícitamente si el correo pudo enviarse.
 `GET /prestamos` y `GET /solicitudes` requieren el token del usuario y solo
 devuelven sus propios datos. `GET /notificaciones` permite consultar sus
 notificaciones y `PUT /notificaciones/:id` marcar una como leída.
+Para registrar notificaciones push, aplica
+`migrations/20261118_tokens_notificaciones.sql`. El cliente registra y quita
+sus identificadores FID mediante `PUT` y `DELETE /notificaciones/dispositivo`;
+el backend envía un push cuando guarda una notificación. Configura
+`FIREBASE_SERVICE_ACCOUNT_JSON` con la clave JSON privada de una cuenta de
+servicio Firebase en el entorno del servidor. No la guardes en el repositorio.
+Sin esa variable, las notificaciones siguen guardándose en la bandeja, pero no
+se envían al teléfono.
 
 El perfil se consulta con `GET /usuarios/perfil`; los datos se obtienen del
 usuario autenticado. `GET /prestamos/cuotas` devuelve únicamente las cuotas

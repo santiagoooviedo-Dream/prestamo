@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/usuario_model.dart';
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../services/notificaciones_push_service.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_bienvenida.dart';
 
@@ -12,6 +13,7 @@ class PantallaCerrarSesion extends StatelessWidget {
 
   Future<void> _cerrarSesion(BuildContext context) async {
     try {
+      await NotificacionesPushService.detener();
       await _usuarioModel.cerrarSesion();
       if (!context.mounted) return;
       Navigator.pushAndRemoveUntil(

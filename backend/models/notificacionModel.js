@@ -1,5 +1,6 @@
 // Importamos Supabase
 import { supabase } from "../config/supabase.js";
+import { enviarNotificacionPush } from '../utils/enviarNotificacionPush.js';
 
 // Crear una notificacion
 export const crearNotificacionModel = async (notificacion) => {
@@ -9,6 +10,17 @@ export const crearNotificacionModel = async (notificacion) => {
         .insert(notificacion)
         .select()
         .single();
+
+    if (!error) {
+        try {
+            await enviarNotificacionPush(data);
+        } catch (errorPush) {
+            console.error(
+                'La notificación se guardó, pero no se pudo enviar al teléfono:',
+                errorPush
+            );
+        }
+    }
 
     return { data, error };
 };

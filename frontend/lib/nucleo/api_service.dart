@@ -253,6 +253,19 @@ class ApiService {
     return items.whereType<Map<String, dynamic>>().toList();
   }
 
+  static Future<void> registrarInstalacionNotificaciones(String fid) async {
+    await _solicitar('PUT', '/notificaciones/dispositivo', datos: {'fid': fid});
+    await _guardarDatoSeguro('fcm_installation_id', fid);
+  }
+
+  static Future<void> eliminarInstalacionNotificaciones(String fid) async {
+    await _solicitar(
+      'DELETE',
+      '/notificaciones/dispositivo',
+      datos: {'fid': fid},
+    );
+  }
+
   static Future<List<Map<String, dynamic>>> obtenerSolicitudes() async {
     final respuesta = await _solicitar('GET', '/solicitudes');
     final items = respuesta['solicitud'];
@@ -613,6 +626,17 @@ class ApiService {
   }
 
   static Future<void> cerrarSesion() async {
+    final idInstalacionPush = await _leerDatoSeguro('fcm_installation_id');
+    if (idInstalacionPush != null && idInstalacionPush.isNotEmpty) {
+      try {
+        await eliminarInstalacionNotificaciones(idInstalacionPush);
+      } on ApiException catch (error) {
+        debugPrint(
+          'No se pudo desvincular el dispositivo de notificaciones: ${error.mensaje}',
+        );
+      }
+    }
+    await _borrarDatoSeguro('fcm_installation_id');
     await _borrarDatoSeguro('token');
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/usuario_model.dart';
 import '../nucleo/api_service.dart';
+import '../services/notificaciones_push_service.dart';
 import '../widgets/acceso/formulario_inicio_sesion.dart';
 import '../pantallas_admin/pantalla_admin_menu.dart';
 import 'pantalla_inicio.dart';
@@ -38,12 +39,18 @@ class _PantallaIniciarSesionState extends State<PantallaIniciarSesion> {
     }
     setState(() => _cargando = true);
     try {
-      final usuario =
-          await _modelo.iniciarSesion(_cedulaCtrl.text.trim(), _claveCtrl.text);
+      final usuario = await _modelo.iniciarSesion(
+        _cedulaCtrl.text.trim(),
+        _claveCtrl.text,
+      );
       if (!mounted) return;
 
       final rol = (usuario['rol'] ?? '').toString().toLowerCase().trim();
       final esAdmin = rol == 'admin' || rol == 'administrador';
+      if (!esAdmin) {
+        await NotificacionesPushService.activarParaUsuario();
+      }
+      if (!mounted) return;
 
       Navigator.pushAndRemoveUntil(
         context,

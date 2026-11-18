@@ -34,3 +34,29 @@ las cuotas y no marca pagos como realizados.
 El usuario debe iniciar sesión antes de solicitar préstamos o consultar sus
 datos. La aprobación la realiza un administrador mediante `PATCH /solicitudes/:id`;
 las instrucciones y el cuerpo requerido están en `../backend/README.md`.
+
+## Notificaciones push
+
+La app usa Firebase Cloud Messaging para mostrar en el teléfono las
+notificaciones que también aparecen en la bandeja de la aplicación. Para
+habilitarlas:
+
+1. Crea un proyecto en Firebase y registra la app Android con el identificador
+   `com.front_prestamo.app`. Copia `google-services.json` en
+   `android/app/google-services.json`. El plugin de Google Services se aplica
+   automáticamente cuando ese archivo existe.
+2. Para iOS, registra el identificador `com.example.frontPrestamo`, copia
+   `GoogleService-Info.plist` a `ios/Runner` y habilita Push Notifications y
+   Remote notifications en Xcode. También configura una clave APNs en Firebase.
+3. En Firebase habilita Firebase Cloud Messaging. Crea una clave privada de
+   cuenta de servicio y configura el JSON completo como la variable
+   `FIREBASE_SERVICE_ACCOUNT_JSON` del backend. No guardes esa clave en Git.
+4. Aplica la migración
+   `../backend/migrations/20261118_tokens_notificaciones.sql`
+   en Supabase y despliega la versión actualizada del backend.
+5. Inicia sesión en la app y acepta el permiso de notificaciones. Android
+   requiere un dispositivo o emulador con Google Play Services; iOS requiere un
+   dispositivo físico y la configuración APNs.
+
+Sin los archivos de Firebase de la plataforma, la app seguirá funcionando,
+pero no podrá registrar el dispositivo para recibir notificaciones push.

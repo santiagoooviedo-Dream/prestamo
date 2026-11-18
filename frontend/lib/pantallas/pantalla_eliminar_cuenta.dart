@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../nucleo/api_service.dart';
 import '../nucleo/colores_app.dart';
+import '../services/notificaciones_push_service.dart';
 import '../widgets/comunes/boton_volver.dart';
 import 'pantalla_bienvenida.dart';
 
@@ -19,6 +20,7 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
     setState(() => _eliminando = true);
     try {
       await ApiService.eliminarCuenta();
+      await NotificacionesPushService.detener();
       await ApiService.cerrarSesion();
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(

@@ -30,6 +30,58 @@ export const buscarUsuarioPorCedula = async (cedula) => {
 
         return { data, error };
     };
+export const agregarInstalacionNotificaciones = async (id_usuario, fid) => {
+    const { data: usuario, error: errorLectura } = await supabase
+        .from('usuarios')
+        .select('fcm_installation_ids')
+        .eq('id_usuario', id_usuario)
+        .maybeSingle();
+
+    if (errorLectura || !usuario) {
+        return { data: usuario, error: errorLectura };
+    }
+
+    const instalaciones = Array.isArray(usuario.fcm_installation_ids)
+        ? usuario.fcm_installation_ids.filter((actual) => typeof actual === 'string')
+        : [];
+    if (instalaciones.includes(fid)) {
+        return { data: usuario, error: null };
+    }
+
+    const { data, error } = await supabase
+        .from('usuarios')
+        .update({ fcm_installation_ids: [...instalaciones, fid] })
+        .eq('id_usuario', id_usuario)
+        .select('id_usuario')
+        .maybeSingle();
+
+    return { data, error };
+};
+export const eliminarInstalacionesNotificaciones = async (id_usuario, instalacionesEliminar) => {
+    const { data: usuario, error: errorLectura } = await supabase
+        .from('usuarios')
+        .select('fcm_installation_ids')
+        .eq('id_usuario', id_usuario)
+        .maybeSingle();
+
+    if (errorLectura || !usuario) {
+        return { data: usuario, error: errorLectura };
+    }
+
+    const instalacionesActuales = Array.isArray(usuario.fcm_installation_ids)
+        ? usuario.fcm_installation_ids.filter((fid) =>
+            typeof fid === 'string' && !instalacionesEliminar.includes(fid)
+        )
+        : [];
+    const { data, error } = await supabase
+        .from('usuarios')
+        .update({ fcm_installation_ids: instalacionesActuales })
+        .eq('id_usuario', id_usuario)
+        .select('id_usuario')
+        .maybeSingle();
+
+    return { data, error };
+};
 export const eliminarUsuarioPorId = async (id_usuario) => {
     const { data, error } = await supabase
         .from('usuarios')

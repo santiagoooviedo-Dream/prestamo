@@ -125,7 +125,7 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
             child: TextField(
               controller: montoCtrl,
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [SeparadorMilesInputFormatter()],
               onChanged: (_) => alCambiarMonto(),
               style: const TextStyle(fontSize: 15, color: Color(0xFF17243C)),
               decoration: const InputDecoration(
@@ -273,5 +273,70 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class SeparadorMilesInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    if (!newValue.composing.isCollapsed) return newValue;
+
+    final digitos = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if (digitos.isEmpty) {
+      return const TextEditingValue(
+        text: '',
+        selection: TextSelection.collapsed(offset: 0),
+      );
+    }
+
+    final cursorOriginal = newValue.selection.extentOffset < 0
+        ? newValue.text.length
+        : newValue.selection.extentOffset.clamp(0, newValue.text.length);
+    final textoAntesDelCursor = newValue.text.substring(0, cursorOriginal);
+    final digitosAntesDelCursor =
+        textoAntesDelCursor.replaceAll(RegExp(r'[^0-9]'), '').length;
+    final separadoresAntesDelCursor =
+        '.'.allMatches(textoAntesDelCursor).length;
+    final formateado = _agruparMiles(digitos);
+
+    var cursorFormateado = 0;
+    var digitosContados = 0;
+    var separadoresContados = 0;
+    for (var i = 0; i < formateado.length; i++) {
+      if (formateado[i] == '.') {
+        separadoresContados++;
+      } else {
+        digitosContados++;
+      }
+      if (digitosContados >= digitosAntesDelCursor &&
+          separadoresContados >= separadoresAntesDelCursor) {
+        cursorFormateado = i + 1;
+        break;
+      }
+    }
+    if (digitosAntesDelCursor == 0 && separadoresAntesDelCursor == 0) {
+      cursorFormateado = 0;
+    } else if (cursorFormateado == 0) {
+      cursorFormateado = formateado.length;
+    }
+
+    return TextEditingValue(
+      text: formateado,
+      selection: TextSelection.collapsed(offset: cursorFormateado),
+    );
+  }
+
+  String _agruparMiles(String digitos) {
+    final buffer = StringBuffer();
+    for (var i = 0; i < digitos.length; i++) {
+      if (i > 0 && (digitos.length - i) % 3 == 0) {
+        buffer.write('.');
+      }
+      buffer.write(digitos[i]);
+    }
+    return buffer.toString();
   }
 }

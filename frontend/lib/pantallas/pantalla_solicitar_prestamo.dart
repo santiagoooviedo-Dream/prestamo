@@ -19,7 +19,7 @@ class PantallaSolicitarPrestamo extends StatefulWidget {
 }
 
 class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
-  final _montoCtrl = TextEditingController(text: '1000000');
+  final _montoCtrl = TextEditingController(text: '1.000.000');
   final _motivoCtrl = TextEditingController();
   final _prestamoModel = const PrestamoModel();
   int? _cuotas;

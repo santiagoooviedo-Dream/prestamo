@@ -30,6 +30,16 @@ export const buscarUsuarioPorCedula = async (cedula) => {
 
         return { data, error };
     };
+export const eliminarUsuarioPorId = async (id_usuario) => {
+    const { data, error } = await supabase
+        .from('usuarios')
+        .delete()
+        .eq('id_usuario', id_usuario)
+        .select('id_usuario')
+        .maybeSingle();
+
+    return { data, error };
+};
 export const crearUsuario = async (usuario) => {
     const { data, error } = await supabase
         .from('usuarios')

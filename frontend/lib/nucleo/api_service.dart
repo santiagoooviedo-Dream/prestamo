@@ -128,6 +128,10 @@ class ApiService {
     return usuario;
   }
 
+  static Future<void> eliminarCuenta() async {
+    await _solicitar('DELETE', '/usuarios/perfil');
+  }
+
   static Future<void> verificarRegistro(String correo, String codigo) async {
     await _solicitar(
       'POST',

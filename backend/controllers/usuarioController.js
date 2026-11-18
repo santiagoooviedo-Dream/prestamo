@@ -21,7 +21,8 @@ import {
     guardarRegistroPendiente,
     eliminarRegistrosPendientesExpirados,
     actualizarCodigoRegistroPendiente,
-    eliminarRegistroPendiente
+    eliminarRegistroPendiente,
+    eliminarUsuarioPorId
 } from '../models/usuarioModel.js';
 
 //importamos el brave para enviar codigos de recuperacion de contraseña
@@ -553,6 +554,32 @@ export const obtenerPerfilUsuario = async (req, res) => {
             foto: usuario.foto,
             rol: usuario.rol
         }
+    });
+};
+
+export const eliminarCuentaUsuario = async (req, res) => {
+    const { data, error } = await eliminarUsuarioPorId(req.usuario.id_usuario);
+
+    if (error) {
+        if (error.code === '23503') {
+            return res.status(409).json({
+                mensaje: 'No se puede eliminar la cuenta porque tiene información relacionada. Contacta con soporte.'
+            });
+        }
+        return res.status(500).json({
+            mensaje: 'No se pudo eliminar la cuenta',
+            error: error.message
+        });
+    }
+
+    if (!data) {
+        return res.status(404).json({
+            mensaje: 'No se encontró la cuenta para eliminar'
+        });
+    }
+
+    return res.status(200).json({
+        mensaje: 'La cuenta fue eliminada correctamente'
     });
 };
 

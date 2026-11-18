@@ -11,6 +11,7 @@ import '../../pantallas/pantalla_cambiar_contrasena_perfil.dart';
 import '../../pantallas/pantalla_cambiar_correo.dart';
 import '../../pantallas/pantalla_cambiar_foto.dart';
 import '../../pantallas/pantalla_cerrar_sesion.dart';
+import '../../pantallas/pantalla_eliminar_cuenta.dart';
 import '../../pantallas/pantalla_estado_cuenta.dart';
 import '../../pantallas/pantalla_inicio.dart';
 import '../../pantallas/pantalla_notificaciones.dart';
@@ -173,6 +174,14 @@ class ContenidoPerfil extends StatelessWidget {
                     peligro: true,
                     alPresionar: () =>
                         _abrir(context, const PantallaCerrarSesion()),
+                  ),
+                  const SizedBox(height: 10),
+                  _OpcionPerfil(
+                    icono: Icons.delete_forever_rounded,
+                    titulo: 'Eliminar cuenta',
+                    peligro: true,
+                    alPresionar: () =>
+                        _abrir(context, const PantallaEliminarCuenta()),
                   ),
                 ],
               ),

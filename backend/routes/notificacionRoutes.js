@@ -2,10 +2,10 @@
 import express from 'express';
 
 // Importamos las funciones del controlador de notificaciones
-import { crearNotificacionController, obtenerNotificaciones, marcarNotificacionLeida, guardarInstalacionDispositivo, eliminarInstalacionDispositivo } from '../controllers/notificacionController.js';
+import { crearNotificacionController, obtenerNotificaciones, marcarNotificacionLeida } from '../controllers/notificacionController.js';
 
 // Importamos el middleware de autenticación
-import { verificarAdmin, verificarToken } from '../middleware/authMiddleware.js';
+import { verificarToken } from '../middleware/authMiddleware.js';
 
 // Creamos el router
 const router = express.Router();
@@ -14,7 +14,6 @@ const router = express.Router();
 // Crear una notificación
 router.post('/',
     verificarToken,
-    verificarAdmin,
     crearNotificacionController
 //http://localhost:3000/notificaciones  POST
 //Esta ruta necesita un token de autenticación
@@ -34,16 +33,6 @@ router.post('/',
 //La notificación se crea con:
 //leida: false
 //El campo fecha se genera automáticamente en la base de datos
-);
-
-router.put('/dispositivo',
-    verificarToken,
-    guardarInstalacionDispositivo
-);
-
-router.delete('/dispositivo',
-    verificarToken,
-    eliminarInstalacionDispositivo
 );
 
 

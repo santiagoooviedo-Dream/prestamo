@@ -3,10 +3,11 @@ import { supabase } from '../config/supabase.js';
 
 // Buscar un usuario por correo
 export const buscarUsuarioPorCorreo = async (correo) => {
+        const correoNormalizado = String(correo || '').trim().toLowerCase();
         const { data, error } = await supabase
             .from('usuarios')
             .select('*')
-            .eq('correo', correo)
+            .eq('correo', correoNormalizado)
             .maybeSingle();
 
         return { data, error };
@@ -30,68 +31,6 @@ export const buscarUsuarioPorCedula = async (cedula) => {
 
         return { data, error };
     };
-export const agregarInstalacionNotificaciones = async (id_usuario, fid) => {
-    const { data: usuario, error: errorLectura } = await supabase
-        .from('usuarios')
-        .select('fcm_installation_ids')
-        .eq('id_usuario', id_usuario)
-        .maybeSingle();
-
-    if (errorLectura || !usuario) {
-        return { data: usuario, error: errorLectura };
-    }
-
-    const instalaciones = Array.isArray(usuario.fcm_installation_ids)
-        ? usuario.fcm_installation_ids.filter((actual) => typeof actual === 'string')
-        : [];
-    if (instalaciones.includes(fid)) {
-        return { data: usuario, error: null };
-    }
-
-    const { data, error } = await supabase
-        .from('usuarios')
-        .update({ fcm_installation_ids: [...instalaciones, fid] })
-        .eq('id_usuario', id_usuario)
-        .select('id_usuario')
-        .maybeSingle();
-
-    return { data, error };
-};
-export const eliminarInstalacionesNotificaciones = async (id_usuario, instalacionesEliminar) => {
-    const { data: usuario, error: errorLectura } = await supabase
-        .from('usuarios')
-        .select('fcm_installation_ids')
-        .eq('id_usuario', id_usuario)
-        .maybeSingle();
-
-    if (errorLectura || !usuario) {
-        return { data: usuario, error: errorLectura };
-    }
-
-    const instalacionesActuales = Array.isArray(usuario.fcm_installation_ids)
-        ? usuario.fcm_installation_ids.filter((fid) =>
-            typeof fid === 'string' && !instalacionesEliminar.includes(fid)
-        )
-        : [];
-    const { data, error } = await supabase
-        .from('usuarios')
-        .update({ fcm_installation_ids: instalacionesActuales })
-        .eq('id_usuario', id_usuario)
-        .select('id_usuario')
-        .maybeSingle();
-
-    return { data, error };
-};
-export const eliminarUsuarioPorId = async (id_usuario) => {
-    const { data, error } = await supabase
-        .from('usuarios')
-        .delete()
-        .eq('id_usuario', id_usuario)
-        .select('id_usuario')
-        .maybeSingle();
-
-    return { data, error };
-};
 export const crearUsuario = async (usuario) => {
     const { data, error } = await supabase
         .from('usuarios')
@@ -103,86 +42,14 @@ export const crearUsuario = async (usuario) => {
             cedula: usuario.cedula,
             contrasena: usuario.contrasena,
             rol: usuario.rol,
-            isVerified: true,
-            codigoVerificacion: null,
-            codigoVerificacionExpiracion: null
+            isVerified: false,
+            codigoVerificacion: usuario.codigoVerificacion,
+            codigoVerificacionExpiracion: usuario.codigoVerificacionExpiracion
         })
         .select()
         .single();
 
     return { data, error };
-};
-
-export const buscarRegistroPendientePorCorreo = async (correo) => {
-    const { data, error } = await supabase
-        .from('registros_pendientes')
-        .select('*')
-        .eq('correo', correo)
-        .maybeSingle();
-
-    return { data, error };
-};
-
-export const buscarRegistroPendientePorCedula = async (cedula) => {
-    const { data, error } = await supabase
-        .from('registros_pendientes')
-        .select('correo')
-        .eq('cedula', cedula)
-        .limit(1)
-        .maybeSingle();
-
-    return { data, error };
-};
-
-export const guardarRegistroPendiente = async (registro) => {
-    const { data, error } = await supabase
-        .from('registros_pendientes')
-        .upsert({
-            correo: registro.correo,
-            nombre: registro.nombre,
-            apellido: registro.apellido,
-            telefono: registro.telefono,
-            cedula: registro.cedula,
-            contrasena: registro.contrasena,
-            codigo_verificacion: registro.codigoVerificacion,
-            codigo_verificacion_expiracion: registro.codigoVerificacionExpiracion
-        }, { onConflict: 'correo' })
-        .select()
-        .single();
-
-    return { data, error };
-};
-
-export const eliminarRegistrosPendientesExpirados = async (ahora) => {
-    const { error } = await supabase
-        .from('registros_pendientes')
-        .delete()
-        .lt('codigo_verificacion_expiracion', ahora);
-
-    return { error };
-};
-
-export const actualizarCodigoRegistroPendiente = async (correo, codigo, expiracion) => {
-    const { data, error } = await supabase
-        .from('registros_pendientes')
-        .update({
-            codigo_verificacion: codigo,
-            codigo_verificacion_expiracion: expiracion
-        })
-        .eq('correo', correo)
-        .select()
-        .maybeSingle();
-
-    return { data, error };
-};
-
-export const eliminarRegistroPendiente = async (correo) => {
-    const { error } = await supabase
-        .from('registros_pendientes')
-        .delete()
-        .eq('correo', correo);
-
-    return { error };
 };
 
 // cambiar el correo electronico
@@ -281,6 +148,62 @@ export const actualizarCodigoVerificacion = async (id_usuario, codigo, expiracio
         .eq('id_usuario', id_usuario)
         .select()
         .single();
+
+    return { data, error };
+};
+
+// Eliminar datos relacionados y luego el usuario
+export const eliminarUsuarioPorId = async (id_usuario) => {
+    // 1) Buscar prestamos del usuario para borrar cuotas/pagos ligados
+    const { data: prestamos } = await supabase
+        .from('prestamos')
+        .select('id_prestamo')
+        .eq('id_usuario', id_usuario);
+
+    const idsPrestamo = (prestamos || []).map((p) => p.id_prestamo).filter(Boolean);
+
+    if (idsPrestamo.length > 0) {
+        // pagos y cuotas suelen colgar del prestamo
+        await supabase.from('pagos').delete().in('id_prestamos', idsPrestamo);
+        await supabase.from('pagos').delete().in('id_prestamo', idsPrestamo);
+        await supabase.from('cuotas').delete().in('id_prestamo', idsPrestamo);
+        await supabase.from('cuotas').delete().in('id_prestamos', idsPrestamo);
+    }
+
+    // 2) Conversaciones del usuario (y mensajes si usan id_conversacion)
+    const { data: conversaciones } = await supabase
+        .from('conversaciones')
+        .select('id_conversacion')
+        .eq('id_usuario', id_usuario);
+
+    const idsConv = (conversaciones || []).map((c) => c.id_conversacion).filter(Boolean);
+    if (idsConv.length > 0) {
+        await supabase.from('mensajes').delete().in('id_conversacion', idsConv);
+    }
+
+    // 3) Tablas directas por id_usuario
+    const tablasDirectas = [
+        'codigos',
+        'notificaciones',
+        'mensajes',
+        'conversaciones',
+        'pagos',
+        'movimientos',
+        'solicitudes',
+        'prestamos',
+    ];
+
+    for (const tabla of tablasDirectas) {
+        await supabase.from(tabla).delete().eq('id_usuario', id_usuario);
+    }
+
+    // 4) Finalmente el usuario
+    const { data, error } = await supabase
+        .from('usuarios')
+        .delete()
+        .eq('id_usuario', id_usuario)
+        .select()
+        .maybeSingle();
 
     return { data, error };
 };

@@ -129,7 +129,8 @@ class ApiService {
   }
 
   static Future<void> eliminarCuenta() async {
-    await _solicitar('DELETE', '/usuarios/perfil');
+    // Elimina la cuenta del usuario autenticado en el backend
+    await _solicitar('DELETE', '/usuarios/cuenta');
   }
 
   static Future<void> verificarRegistro(String correo, String codigo) async {

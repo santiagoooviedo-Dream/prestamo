@@ -1,7 +1,7 @@
 //importamos express para crear las rutas
 import express from 'express';
 //importamos la funcion registrarUsuario del controller usuarioController
-import { registrarUsuario, loginUsuario, cambiarContraseñaUsuario, cambiarCorreoUsuario, verificarCambioCorreoUsuario, solicitarCodigoRecuperacion, verificarCodigoRecuperacion, recuperarContrasena, cambiarFotoUsuario, verificarRegistro, reenviarCodigoRegistro, obtenerPerfilUsuario, eliminarCuentaUsuario } from '../controllers/usuarioController.js';
+import { registrarUsuario, loginUsuario, cambiarContraseñaUsuario, cambiarCorreoUsuario, verificarCambioCorreoUsuario, solicitarCodigoRecuperacion, verificarCodigoRecuperacion, recuperarContrasena, cambiarFotoUsuario, solicitarRegistro, verificarRegistro, reenviarCodigoRegistro, obtenerPerfilUsuario, eliminarCuentaUsuario } from '../controllers/usuarioController.js';
 //importamos la funcion verificarToken del middleware authMiddleware
 import { verificarToken } from '../middleware/authMiddleware.js';
 //importamos la funcion upload del config cloudinary
@@ -24,10 +24,11 @@ router.post('/registrar', registrarUsuario
 //se crea un nuevo usuario 
 );
 
-router.post('/registrar/verificar', registrarUsuario
+router.post('/registrar/verificar', solicitarRegistro
 
 //http://localhost:3000/usuarios/registrar/verificar  POST   
-// Usa el mismo cuerpo que /registrar para iniciar una verificación de correo.
+//"correo": ""
+//se envia un codigo de verificacion al correo del usuario para verificar que el correo es valido
 );
 
 
@@ -129,7 +130,12 @@ router.post('/registrar/reenviar-codigo',
 );
 //ruta protegida que requiere un token valido para acceder
 router.get('/perfil', verificarToken, obtenerPerfilUsuario);
+
+// Eliminar cuenta del usuario autenticado
+router.delete('/cuenta', verificarToken, eliminarCuentaUsuario);
+// Alias: el frontend antiguo llamaba DELETE /usuarios/perfil
 router.delete('/perfil', verificarToken, eliminarCuentaUsuario);
+
 
 //exportamos el router para usarlo en index.js
 export default router;

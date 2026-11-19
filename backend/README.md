@@ -78,15 +78,6 @@ El servidor se ejecutará en:
 http://localhost:3000
 ```
 
-## Registro y verificación de correo
-
-Antes de desplegar esta versión, ejecuta `migrations/20261117_registros_pendientes.sql`
-en el editor SQL de Supabase. Los datos del registro se guardan temporalmente en
-`registros_pendientes`; la fila de `usuarios` solo se crea cuando se confirma el
-código de seis dígitos enviado al correo. La migración también mueve allí las
-cuentas antiguas que todavía no estaban verificadas. El backend debe conectarse
-con la clave `service_role` para acceder a la tabla protegida.
-
 ## Solicitudes y desembolso
 
 Antes de iniciar el servidor, aplica una sola vez el SQL de
@@ -120,21 +111,10 @@ entorno; las respuestas indican explícitamente si el correo pudo enviarse.
 `GET /prestamos` y `GET /solicitudes` requieren el token del usuario y solo
 devuelven sus propios datos. `GET /notificaciones` permite consultar sus
 notificaciones y `PUT /notificaciones/:id` marcar una como leída.
-Para registrar notificaciones push, aplica
-`migrations/20261118_tokens_notificaciones.sql`. El cliente registra y quita
-sus identificadores FID mediante `PUT` y `DELETE /notificaciones/dispositivo`;
-el backend envía un push cuando guarda una notificación. Configura
-`FIREBASE_SERVICE_ACCOUNT_JSON` con la clave JSON privada de una cuenta de
-servicio Firebase en el entorno del servidor. No la guardes en el repositorio.
-Sin esa variable, las notificaciones siguen guardándose en la bandeja, pero no
-se envían al teléfono.
 
 El perfil se consulta con `GET /usuarios/perfil`; los datos se obtienen del
 usuario autenticado. `GET /prestamos/cuotas` devuelve únicamente las cuotas
 asociadas a los préstamos del usuario autenticado, ordenadas por fecha de pago.
-`DELETE /usuarios/perfil` elimina la cuenta del usuario autenticado. Si existen
-registros relacionados que impiden borrarla, responde con `409` para conservar
-el historial asociado.
 Al generarlas, la primera cuota usa `fecha_inicio` del préstamo (o la fecha
 actual si no está informada) y cada cuota posterior suma un mes a esa fecha
 base. Si el día no existe en el mes de destino, se usa su último día válido.

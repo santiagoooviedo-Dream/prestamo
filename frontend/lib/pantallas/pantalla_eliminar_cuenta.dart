@@ -15,6 +15,7 @@ class PantallaEliminarCuenta extends StatefulWidget {
 
 class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
   bool _eliminando = false;
+  String? _bloqueoEliminacion;
 
   Future<void> _eliminarCuenta() async {
     setState(() => _eliminando = true);
@@ -30,9 +31,16 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
       );
     } on ApiException catch (error) {
       if (!mounted) return;
-      setState(() => _eliminando = false);
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(error.mensaje)));
+      setState(() {
+        _eliminando = false;
+        if (error.statusCode == 409) {
+          _bloqueoEliminacion = error.mensaje;
+        }
+      });
+      if (error.statusCode != 409) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text(error.mensaje)));
+      }
     }
   }
 
@@ -106,6 +114,38 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
                   ),
                 ),
               ),
+              if (_bloqueoEliminacion != null) ...[
+                const SizedBox(height: 20),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(14),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFFF0F2),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: const Color(0xFFF4C9CE)),
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(
+                        Icons.info_outline_rounded,
+                        color: Color(0xFFBC4351),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          _bloqueoEliminacion!,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF8F303B),
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
               const SizedBox(height: 32),
               _OpcionConfirmacion(
                 icono: Icons.person_outline_rounded,
@@ -116,11 +156,18 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
               const SizedBox(height: 12),
               _OpcionConfirmacion(
                 icono: Icons.delete_forever_rounded,
-                titulo: 'Sí, eliminar mi cuenta',
-                subtitulo: 'Esta acción no se puede deshacer',
-                peligro: true,
+                titulo: _bloqueoEliminacion == null
+                    ? 'Sí, eliminar mi cuenta'
+                    : 'No se puede eliminar ahora',
+                subtitulo: _bloqueoEliminacion == null
+                    ? 'Esta acción no se puede deshacer'
+                    : 'Contacta con soporte para resolverlo',
+                peligro: _bloqueoEliminacion == null,
+                bloqueado: _bloqueoEliminacion != null,
                 cargando: _eliminando,
-                alPresionar: _eliminando ? null : _eliminarCuenta,
+                alPresionar: _eliminando || _bloqueoEliminacion != null
+                    ? null
+                    : _eliminarCuenta,
               ),
               const Spacer(flex: 3),
             ],
@@ -136,6 +183,7 @@ class _OpcionConfirmacion extends StatelessWidget {
   final String titulo;
   final String subtitulo;
   final bool peligro;
+  final bool bloqueado;
   final bool cargando;
   final VoidCallback? alPresionar;
 
@@ -145,14 +193,27 @@ class _OpcionConfirmacion extends StatelessWidget {
     required this.subtitulo,
     required this.alPresionar,
     this.peligro = false,
+    this.bloqueado = false,
     this.cargando = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final color = peligro ? const Color(0xFFBC4351) : const Color(0xFF17243C);
-    final fondo = peligro ? const Color(0xFFFFF0F2) : const Color(0xFFEDF3FF);
-    final acento = peligro ? const Color(0xFFBC4351) : const Color(0xFF285FE8);
+    final color = bloqueado
+        ? const Color(0xFF66758D)
+        : peligro
+        ? const Color(0xFFBC4351)
+        : const Color(0xFF17243C);
+    final fondo = bloqueado
+        ? const Color(0xFFF1F4F8)
+        : peligro
+        ? const Color(0xFFFFF0F2)
+        : const Color(0xFFEDF3FF);
+    final acento = bloqueado
+        ? const Color(0xFF8190A5)
+        : peligro
+        ? const Color(0xFFBC4351)
+        : const Color(0xFF285FE8);
 
     return Material(
       color: Colors.white,
@@ -210,7 +271,10 @@ class _OpcionConfirmacion extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: color.withValues(alpha: 0.5)),
+              Icon(
+                bloqueado ? Icons.lock_outline_rounded : Icons.chevron_right,
+                color: color.withValues(alpha: 0.5),
+              ),
             ],
           ),
         ),

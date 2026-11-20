@@ -115,6 +115,11 @@ notificaciones y `PUT /notificaciones/:id` marcar una como leída.
 El perfil se consulta con `GET /usuarios/perfil`; los datos se obtienen del
 usuario autenticado. `GET /prestamos/cuotas` devuelve únicamente las cuotas
 asociadas a los préstamos del usuario autenticado, ordenadas por fecha de pago.
+La eliminación de cuenta usa `DELETE /usuarios/cuenta`. Antes de desplegar,
+aplica `migrations/20261119_eliminar_cuenta_atomico.sql` en Supabase: la función
+borra la cuenta y sus datos relacionados en una sola transacción. Si una
+restricción de datos impide el borrado, no se elimina ninguna parte y la API
+responde `409`.
 Al generarlas, la primera cuota usa `fecha_inicio` del préstamo (o la fecha
 actual si no está informada) y cada cuota posterior suma un mes a esa fecha
 base. Si el día no existe en el mes de destino, se usa su último día válido.

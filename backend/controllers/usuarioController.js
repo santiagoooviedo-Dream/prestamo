@@ -947,16 +947,25 @@ export const eliminarCuentaUsuario = async (req, res) => {
 
         if (error) {
             console.error('Error al eliminar cuenta:', error);
-            // Si falla por FK, devolvemos mensaje claro
-            const msg = String(error.message || '');
-            if (msg.toLowerCase().includes('foreign key') || msg.toLowerCase().includes('violates')) {
-                return res.status(400).json({
-                    mensaje: 'No se puede eliminar la cuenta porque tiene informacion relacionada. Contacta con soporte.'
+            if (error.code === '23503') {
+                return res.status(409).json({
+                    mensaje: 'No se puede eliminar la cuenta porque tiene información relacionada que debe conservarse. Contacta con soporte.'
+                });
+            }
+            if (error.code === 'PGRST202' || error.code === '42883') {
+                return res.status(503).json({
+                    mensaje: 'La eliminación segura aún no está configurada en el servidor. Intenta más tarde.'
                 });
             }
             return res.status(500).json({
                 mensaje: 'No se pudo eliminar la cuenta',
                 error: error.message
+            });
+        }
+
+        if (!data) {
+            return res.status(200).json({
+                mensaje: 'La cuenta ya no existe'
             });
         }
 

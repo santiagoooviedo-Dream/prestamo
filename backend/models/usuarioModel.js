@@ -152,58 +152,9 @@ export const actualizarCodigoVerificacion = async (id_usuario, codigo, expiracio
     return { data, error };
 };
 
-// Eliminar datos relacionados y luego el usuario
 export const eliminarUsuarioPorId = async (id_usuario) => {
-    // 1) Buscar prestamos del usuario para borrar cuotas/pagos ligados
-    const { data: prestamos } = await supabase
-        .from('prestamos')
-        .select('id_prestamo')
-        .eq('id_usuario', id_usuario);
-
-    const idsPrestamo = (prestamos || []).map((p) => p.id_prestamo).filter(Boolean);
-
-    if (idsPrestamo.length > 0) {
-        // pagos y cuotas suelen colgar del prestamo
-        await supabase.from('pagos').delete().in('id_prestamos', idsPrestamo);
-        await supabase.from('pagos').delete().in('id_prestamo', idsPrestamo);
-        await supabase.from('cuotas').delete().in('id_prestamo', idsPrestamo);
-        await supabase.from('cuotas').delete().in('id_prestamos', idsPrestamo);
-    }
-
-    // 2) Conversaciones del usuario (y mensajes si usan id_conversacion)
-    const { data: conversaciones } = await supabase
-        .from('conversaciones')
-        .select('id_conversacion')
-        .eq('id_usuario', id_usuario);
-
-    const idsConv = (conversaciones || []).map((c) => c.id_conversacion).filter(Boolean);
-    if (idsConv.length > 0) {
-        await supabase.from('mensajes').delete().in('id_conversacion', idsConv);
-    }
-
-    // 3) Tablas directas por id_usuario
-    const tablasDirectas = [
-        'codigos',
-        'notificaciones',
-        'mensajes',
-        'conversaciones',
-        'pagos',
-        'movimientos',
-        'solicitudes',
-        'prestamos',
-    ];
-
-    for (const tabla of tablasDirectas) {
-        await supabase.from(tabla).delete().eq('id_usuario', id_usuario);
-    }
-
-    // 4) Finalmente el usuario
-    const { data, error } = await supabase
-        .from('usuarios')
-        .delete()
-        .eq('id_usuario', id_usuario)
-        .select()
-        .maybeSingle();
-
+    const { data, error } = await supabase.rpc('eliminar_cuenta_usuario', {
+        p_id_usuario: id_usuario
+    });
     return { data, error };
 };

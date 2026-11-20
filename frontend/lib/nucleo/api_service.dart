@@ -9,8 +9,9 @@ import 'package:image_picker/image_picker.dart';
 
 class ApiException implements Exception {
   final String mensaje;
+  final int? statusCode;
 
-  const ApiException(this.mensaje);
+  const ApiException(this.mensaje, {this.statusCode});
 
   @override
   String toString() => mensaje;
@@ -77,6 +78,7 @@ class ApiService {
         final mensaje = cuerpo['mensaje'] ?? cuerpo['error'];
         throw ApiException(
           mensaje is String ? mensaje : 'No se pudo completar la solicitud.',
+          statusCode: respuestaCompleta.statusCode,
         );
       }
       return cuerpo;

@@ -61,6 +61,11 @@ app.get('/privacidad', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'privacidad.html'));
 });
 
+//politicas de eliminacion de cuenta (Play Store)
+app.get('/eliminar-cuenta', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'eliminar-cuenta.html'));
+});
+
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });

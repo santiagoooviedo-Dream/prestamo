@@ -1,6 +1,11 @@
 //importamos express
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 //importamos la configuracion de supabase
 import { supabase } from './config/supabase.js';
@@ -50,6 +55,12 @@ app.use('/notificaciones', notificacionRoutes);
 app.use('/conversaciones',conversacionRoutes)
 
 // Montando las rutas de la API
+
+// Politica de privacidad publica (Play Store)
+app.get('/privacidad', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'privacidad.html'));
+});
+
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });

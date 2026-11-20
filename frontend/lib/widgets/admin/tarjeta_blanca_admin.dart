@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class TarjetaBlancaAdmin extends StatelessWidget {
   final Widget child;
@@ -16,9 +17,9 @@ class TarjetaBlancaAdmin extends StatelessWidget {
       width: double.infinity,
       padding: padding,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: child,
     );
@@ -48,7 +49,7 @@ class FilaDatoAdmin extends StatelessWidget {
       decoration: BoxDecoration(
         border: ultimo
             ? null
-            : const Border(bottom: BorderSide(color: Color(0xFFF0F3F8))),
+            : const Border(bottom: BorderSide(color: ColoresApp.fondoGris2)),
       ),
       child: valorAbajo
           ? Column(
@@ -58,7 +59,7 @@ class FilaDatoAdmin extends StatelessWidget {
                   etiqueta,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF66758D),
+                    color: ColoresApp.textoSecundario,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -68,7 +69,7 @@ class FilaDatoAdmin extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                     height: 1.3,
                   ),
                 ),
@@ -83,7 +84,7 @@ class FilaDatoAdmin extends StatelessWidget {
                     etiqueta,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                     ),
                   ),
                 ),
@@ -95,7 +96,7 @@ class FilaDatoAdmin extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                       height: 1.35,
                     ),
                   ),

@@ -76,14 +76,14 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 10),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: const Color(0xFFE7F7F0),
+                color: ColoresApp.exitoClaro3,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: const Text(
@@ -91,7 +91,7 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF168261),
+                  color: ColoresApp.exitoProfundo,
                 ),
               ),
             ),
@@ -101,7 +101,7 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF285FE8), Color(0xFF214EC4)],
+                  colors: [ColoresApp.primario, ColoresApp.primarioMasOscuro],
                 ),
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -118,7 +118,7 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: ColoresApp.blanco,
                     ),
                   ),
                 ],
@@ -129,7 +129,7 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFFE7F7F0),
+                color: ColoresApp.exitoClaro3,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: const Row(
@@ -137,7 +137,7 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                   Icon(
                     Icons.check_circle_outline,
                     size: 18,
-                    color: Color(0xFF168261),
+                    color: ColoresApp.exitoProfundo,
                   ),
                   SizedBox(width: 8),
                   Expanded(
@@ -146,7 +146,7 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF168261),
+                        color: ColoresApp.exitoProfundo,
                       ),
                     ),
                   ),
@@ -158,9 +158,9 @@ class PantallaDetallePrestamoCompletado extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: ColoresApp.blanco,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE1E8F3)),
+                border: Border.all(color: ColoresApp.bordeTarjeta),
               ),
               child: Column(
                 children: [
@@ -218,11 +218,11 @@ class _Fila extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 12, color: ColoresApp.textoSecundario),
           ),
           Text(
             valor,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF17243C)),
+            style: const TextStyle(fontSize: 12, color: ColoresApp.textoPrincipal),
           ),
         ],
       ),

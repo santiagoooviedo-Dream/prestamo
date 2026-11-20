@@ -31,10 +31,10 @@ class FormularioNuevaContrasena extends StatelessWidget {
   Widget build(BuildContext context) {
     final clave = claveCtrl.text;
     final color = switch (puntos) {
-      0 || 1 => const Color(0xFFEF4444),
-      2 => const Color(0xFFF59E0B),
-      3 => const Color(0xFF3B82F6),
-      _ => const Color(0xFF22C55E),
+      0 || 1 => ColoresApp.error,
+      2 => ColoresApp.advertencia,
+      3 => ColoresApp.primarioAlt,
+      _ => ColoresApp.exito,
     };
     final nivel = switch (puntos) {
       0 || 1 => 'Débil',
@@ -51,7 +51,7 @@ class FormularioNuevaContrasena extends StatelessWidget {
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF17243C),
+              color: ColoresApp.textoPrincipal,
               height: 1.18,
             ),
           ),
@@ -60,7 +60,7 @@ class FormularioNuevaContrasena extends StatelessWidget {
             'Crea una contraseña segura para proteger tu cuenta.',
             style: TextStyle(
               fontSize: 15,
-              color: Color(0xFF66758D),
+              color: ColoresApp.textoSecundario,
               height: 1.5,
             ),
           ),
@@ -70,8 +70,8 @@ class FormularioNuevaContrasena extends StatelessWidget {
             child: const LinearProgressIndicator(
               value: 0.5,
               minHeight: 4,
-              backgroundColor: Color(0xFFE3E9F2),
-              valueColor: AlwaysStoppedAnimation(Color(0xFF285FE8)),
+              backgroundColor: ColoresApp.bordeSuave,
+              valueColor: AlwaysStoppedAnimation(ColoresApp.primario),
             ),
           ),
           const SizedBox(height: 24),
@@ -128,7 +128,7 @@ class FormularioNuevaContrasena extends StatelessWidget {
             child: LinearProgressIndicator(
               value: puntos / 4,
               minHeight: 4,
-              backgroundColor: const Color(0xFFE3E9F2),
+              backgroundColor: ColoresApp.bordeSuave,
               valueColor: AlwaysStoppedAnimation(color),
             ),
           ),
@@ -138,7 +138,7 @@ class FormularioNuevaContrasena extends StatelessWidget {
             style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF17243C),
+              color: ColoresApp.textoPrincipal,
             ),
           ),
           const SizedBox(height: 14),
@@ -171,8 +171,8 @@ class FormularioNuevaContrasena extends StatelessWidget {
                   coinciden ? Icons.check_circle : Icons.error_outline,
                   size: 18,
                   color: coinciden
-                      ? const Color(0xFF22C55E)
-                      : const Color(0xFFEF4444),
+                      ? ColoresApp.exito
+                      : ColoresApp.error,
                 ),
                 const SizedBox(width: 8),
                 Text(
@@ -183,8 +183,8 @@ class FormularioNuevaContrasena extends StatelessWidget {
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
                     color: coinciden
-                        ? const Color(0xFF16A34A)
-                        : const Color(0xFFDC2626),
+                        ? ColoresApp.exitoOscuro
+                        : ColoresApp.errorOscuro,
                   ),
                 ),
               ],

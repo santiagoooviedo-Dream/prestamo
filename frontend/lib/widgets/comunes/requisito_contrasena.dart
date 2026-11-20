@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class RequisitoContrasena extends StatelessWidget {
   final String texto;
@@ -15,14 +16,14 @@ class RequisitoContrasena extends StatelessWidget {
           Icon(
             ok ? Icons.check_circle : Icons.circle_outlined,
             size: 18,
-            color: ok ? const Color(0xFF22C55E) : const Color(0xFF94A0B3),
+            color: ok ? ColoresApp.exito : ColoresApp.textoSuave,
           ),
           const SizedBox(width: 8),
           Text(
             texto,
             style: TextStyle(
               fontSize: 13,
-              color: ok ? const Color(0xFF17243C) : const Color(0xFF66758D),
+              color: ok ? ColoresApp.textoPrincipal : ColoresApp.textoSecundario,
             ),
           ),
         ],

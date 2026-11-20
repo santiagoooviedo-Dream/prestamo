@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 Future<void> mostrarCargaAdmin(BuildContext context, String mensaje) {
   return showDialog(
@@ -15,7 +16,7 @@ Future<void> mostrarCargaAdmin(BuildContext context, String mensaje) {
             Expanded(
               child: Text(
                 mensaje,
-                style: const TextStyle(fontSize: 14, color: Color(0xFF17243C)),
+                style: const TextStyle(fontSize: 14, color: ColoresApp.textoPrincipal),
               ),
             ),
           ],

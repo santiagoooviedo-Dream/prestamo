@@ -48,10 +48,10 @@ class _PantallaCargaState extends State<PantallaCarga> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color(0xFFB8D0FF),
-              Color(0xFFD6E4FF),
-              Color(0xFFE8F0FE),
-              Color(0xFFF0F5FF),
+              ColoresApp.chipAzul5,
+              ColoresApp.chipAzul,
+              ColoresApp.fondoSeleccionado,
+              ColoresApp.fondoAzulClaro,
             ],
             stops: [0.0, 0.35, 0.7, 1.0],
           ),
@@ -72,24 +72,24 @@ class _PantallaCargaState extends State<PantallaCarga> {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        Color(0xFFFFFFFF),
-                        Color(0xFFE8F0FE),
+                        ColoresApp.blanco,
+                        ColoresApp.fondoSeleccionado,
                       ],
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF285FE8).withOpacity(0.22),
+                        color: ColoresApp.primario.withOpacity(0.22),
                         blurRadius: 28,
                         offset: const Offset(0, 10),
                       ),
                       BoxShadow(
-                        color: Colors.white.withOpacity(0.8),
+                        color: ColoresApp.blanco.withOpacity(0.8),
                         blurRadius: 12,
                         offset: const Offset(0, -2),
                       ),
                     ],
                     border: Border.all(
-                      color: Colors.white.withOpacity(0.95),
+                      color: ColoresApp.blanco.withOpacity(0.95),
                       width: 4,
                     ),
                   ),
@@ -109,7 +109,7 @@ class _PantallaCargaState extends State<PantallaCarga> {
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF214EC4),
+                    color: ColoresApp.primarioMasOscuro,
                     letterSpacing: -0.3,
                   ),
                 ),
@@ -120,7 +120,7 @@ class _PantallaCargaState extends State<PantallaCarga> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -129,7 +129,7 @@ class _PantallaCargaState extends State<PantallaCarga> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Color(0xFF536887),
+                    color: ColoresApp.textoAzulado,
                     height: 1.5,
                   ),
                 ),
@@ -139,7 +139,7 @@ class _PantallaCargaState extends State<PantallaCarga> {
                   height: 32,
                   child: CircularProgressIndicator(
                     strokeWidth: 3,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
                 const SizedBox(height: 14),

@@ -222,7 +222,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
                 height: 1.15,
               ),
             ),
@@ -231,7 +231,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
               'Completa tus datos para crear tu cuenta.',
               style: TextStyle(
                 fontSize: 15,
-                color: Color(0xFF66758D),
+                color: ColoresApp.textoSecundario,
                 height: 1.4,
               ),
             ),
@@ -268,7 +268,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                       children: [
                         Checkbox(
                           value: _aceptoTerminos,
-                          activeColor: const Color(0xFF285FE8),
+                          activeColor: ColoresApp.primario,
                           onChanged: (aceptado) => setState(() {
                             _aceptoTerminos = aceptado ?? false;
                             if (_aceptoTerminos) _errorTerminos = false;
@@ -284,13 +284,13 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                                   text: 'Acepto los ',
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Color(0xFF66758D),
+                                    color: ColoresApp.textoSecundario,
                                   ),
                                   children: [
                                     TextSpan(
                                       text: 'términos y condiciones',
                                       style: TextStyle(
-                                        color: Color(0xFF285FE8),
+                                        color: ColoresApp.primario,
                                         fontWeight: FontWeight.w600,
                                         decoration: TextDecoration.underline,
                                       ),
@@ -309,7 +309,7 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                         child: Text(
                           'Debes aceptar los términos y condiciones.',
                           style: TextStyle(
-                            color: Color(0xFFB3261E),
+                            color: ColoresApp.errorMaterial,
                             fontSize: 12,
                           ),
                         ),
@@ -334,14 +334,14 @@ class _PantallaRegistroState extends State<PantallaRegistro> {
                 child: const Text.rich(
                   TextSpan(
                     text: '¿Ya tienes cuenta? ',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+                    style: TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
                     children: [
                       TextSpan(
                         text: 'Iniciar sesión',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF285FE8),
+                          color: ColoresApp.primario,
                         ),
                       ),
                     ],

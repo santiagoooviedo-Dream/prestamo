@@ -93,7 +93,7 @@ class _PantallaConfirmarContrasenaState
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
                 height: 1.15,
               ),
             ),
@@ -102,7 +102,7 @@ class _PantallaConfirmarContrasenaState
               'Vuelve a ingresar tu nueva contraseña para confirmar.',
               style: TextStyle(
                 fontSize: 15,
-                color: Color(0xFF66758D),
+                color: ColoresApp.textoSecundario,
                 height: 1.4,
               ),
             ),
@@ -114,8 +114,8 @@ class _PantallaConfirmarContrasenaState
               child: const LinearProgressIndicator(
                 value: 2 / 3,
                 minHeight: 4,
-                backgroundColor: Color(0xFFD6E4FF),
-                valueColor: AlwaysStoppedAnimation(Color(0xFF285FE8)),
+                backgroundColor: ColoresApp.chipAzul,
+                valueColor: AlwaysStoppedAnimation(ColoresApp.primario),
               ),
             ),
 
@@ -152,13 +152,13 @@ class _PantallaConfirmarContrasenaState
                 ),
                 decoration: BoxDecoration(
                   color: _coinciden
-                      ? const Color(0xFFE8F9F0)
-                      : const Color(0xFFFEE2E2),
+                      ? ColoresApp.exitoClaro
+                      : ColoresApp.errorFondo3,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
                     color: _coinciden
-                        ? const Color(0xFF86EFAC)
-                        : const Color(0xFFFECACA),
+                        ? ColoresApp.exitoBorde2
+                        : ColoresApp.errorFondo4,
                   ),
                 ),
                 child: Row(
@@ -167,8 +167,8 @@ class _PantallaConfirmarContrasenaState
                       _coinciden ? Icons.check_circle : Icons.error_outline,
                       size: 20,
                       color: _coinciden
-                          ? const Color(0xFF22C55E)
-                          : const Color(0xFFEF4444),
+                          ? ColoresApp.exito
+                          : ColoresApp.error,
                     ),
                     const SizedBox(width: 10),
                     Text(
@@ -179,8 +179,8 @@ class _PantallaConfirmarContrasenaState
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: _coinciden
-                            ? const Color(0xFF16A34A)
-                            : const Color(0xFFDC2626),
+                            ? ColoresApp.exitoOscuro
+                            : ColoresApp.errorOscuro,
                       ),
                     ),
                   ],

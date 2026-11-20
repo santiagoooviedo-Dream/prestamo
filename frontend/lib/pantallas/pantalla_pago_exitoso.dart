@@ -100,14 +100,14 @@ class PantallaPagoExitoso extends StatelessWidget {
               width: 112,
               height: 112,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F9F0),
+                color: ColoresApp.exitoClaro,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFD1FAE5), width: 8),
+                border: Border.all(color: ColoresApp.exitoFondo, width: 8),
               ),
               child: const Icon(
                 Icons.check_rounded,
                 size: 48,
-                color: Color(0xFF22C55E),
+                color: ColoresApp.exito,
               ),
             ),
             const SizedBox(height: 24),
@@ -117,29 +117,29 @@ class PantallaPagoExitoso extends StatelessWidget {
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
               'Tu cuota ha sido pagada con éxito.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 28),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: ColoresApp.blanco,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFFE1E8F3)),
+                border: Border.all(color: ColoresApp.bordeTarjeta),
               ),
               child: Column(
                 children: [
                   const Text(
                     'Monto pagado',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+                    style: TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
                   ),
                   const SizedBox(height: 6),
                   Text(
@@ -147,11 +147,11 @@ class PantallaPagoExitoso extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Divider(color: Color(0xFFE8EEF6), height: 1),
+                  const Divider(color: ColoresApp.bordeSuave4, height: 1),
                   const SizedBox(height: 16),
                   _Detalle(label: 'Fecha de pago', valor: _fechaTexto),
                   const SizedBox(height: 14),
@@ -184,7 +184,7 @@ class _Detalle extends StatelessWidget {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+          style: const TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -197,7 +197,7 @@ class _Detalle extends StatelessWidget {
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF17243C),
+              color: ColoresApp.textoPrincipal,
             ),
           ),
         ),

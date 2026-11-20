@@ -85,17 +85,17 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
   Color? _colorDia(DateTime dia) {
     final delDia = _cuotasDelDia(dia);
     if (delDia.isEmpty) return null;
-    if (delDia.any((c) => c.estaPagada)) return const Color(0xFF168261);
-    if (delDia.any((c) => c.estaVencida)) return const Color(0xFFC47A00);
+    if (delDia.any((c) => c.estaPagada)) return ColoresApp.exitoProfundo;
+    if (delDia.any((c) => c.estaVencida)) return ColoresApp.advertenciaOscuro;
     // Próximo pago (primera pendiente global) en azul
     final prox = _proximaPendiente();
     if (prox?.fecha != null &&
         prox!.fecha!.year == dia.year &&
         prox.fecha!.month == dia.month &&
         prox.fecha!.day == dia.day) {
-      return const Color(0xFF285FE8);
+      return ColoresApp.primario;
     }
-    return const Color(0xFF285FE8);
+    return ColoresApp.primario;
   }
 
   void _seleccionarDia(DateTime dia) {
@@ -143,7 +143,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
                 height: 1.18,
               ),
             ),
@@ -152,7 +152,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
               'Consulta tus fechas de pago y mantente al día con tus cuotas.',
               style: TextStyle(
                 fontSize: 15,
-                color: Color(0xFF66758D),
+                color: ColoresApp.textoSecundario,
                 height: 1.5,
               ),
             ),
@@ -192,7 +192,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 15,
-                            color: Color(0xFF66758D),
+                            color: ColoresApp.textoSecundario,
                             height: 1.5,
                           ),
                         ),
@@ -240,7 +240,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Color(0xFF66758D),
+                                color: ColoresApp.textoSecundario,
                               ),
                             ),
                           ),
@@ -269,12 +269,12 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
       width: double.infinity,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x0D17243C),
+            color: ColoresApp.sombraSuave,
             blurRadius: 16,
             offset: Offset(0, 5),
           ),
@@ -293,14 +293,14 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                   });
                 },
                 child: const Icon(Icons.chevron_left,
-                    color: Color(0xFF17243C), size: 22),
+                    color: ColoresApp.textoPrincipal, size: 22),
               ),
               Text(
                 '${_meses[_mesVisible.month - 1]} ${_mesVisible.year}',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF17243C),
+                  color: ColoresApp.textoPrincipal,
                 ),
               ),
               GestureDetector(
@@ -311,7 +311,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                   });
                 },
                 child: const Icon(Icons.chevron_right,
-                    color: Color(0xFF17243C), size: 22),
+                    color: ColoresApp.textoPrincipal, size: 22),
               ),
             ],
           ),
@@ -359,8 +359,8 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
     Color? bordeCirculo = colorCuota;
     Color fondoCelda = Colors.transparent;
     if (seleccionado) {
-      fondoCelda = const Color(0xFFE8F0FE);
-      bordeCirculo ??= const Color(0xFF285FE8);
+      fondoCelda = ColoresApp.fondoSeleccionado;
+      bordeCirculo ??= ColoresApp.primario;
     }
 
     return GestureDetector(
@@ -387,7 +387,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                     ? FontWeight.w700
                     : FontWeight.w400,
                 // Número siempre oscuro para legibilidad; el estado lo marca el círculo
-                color: const Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
           ),
@@ -409,7 +409,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
           const SizedBox(width: 6),
           Text(
             texto,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 12, color: ColoresApp.textoSecundario),
           ),
         ],
       );
@@ -418,9 +418,9 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        item(const Color(0xFF168261), 'Pagado'),
-        item(const Color(0xFF285FE8), 'Próximo pago'),
-        item(const Color(0xFFC47A00), 'Vencido'),
+        item(ColoresApp.exitoProfundo, 'Pagado'),
+        item(ColoresApp.primario, 'Próximo pago'),
+        item(ColoresApp.advertenciaOscuro, 'Vencido'),
       ],
     );
   }
@@ -431,9 +431,9 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -446,7 +446,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
               ),
@@ -455,7 +455,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE8F0FE),
+                    color: ColoresApp.fondoSeleccionado,
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: const Text(
@@ -463,7 +463,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF285FE8),
+                      color: ColoresApp.primario,
                     ),
                   ),
                 )
@@ -472,7 +472,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEAF7F0),
+                    color: ColoresApp.exitoClaro2,
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: const Text(
@@ -480,7 +480,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF168261),
+                      color: ColoresApp.exitoProfundo,
                     ),
                   ),
                 )
@@ -489,7 +489,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF4E5),
+                    color: ColoresApp.advertenciaFondo,
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: const Text(
@@ -497,7 +497,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFFC47A00),
+                      color: ColoresApp.advertenciaOscuro,
                     ),
                   ),
                 ),
@@ -525,18 +525,18 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0F5FF),
+              color: ColoresApp.fondoAzulClaro,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFFD9E5FA)),
+              border: Border.all(color: ColoresApp.bordeAviso),
             ),
             child: const Row(
               children: [
-                Icon(Icons.shield_outlined, size: 18, color: Color(0xFF285FE8)),
+                Icon(Icons.shield_outlined, size: 18, color: ColoresApp.primario),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'Paga a tiempo y evita cargos extras.',
-                    style: TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+                    style: TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
                   ),
                 ),
               ],
@@ -555,7 +555,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
           Expanded(
             child: Text(
               k,
-              style: const TextStyle(fontSize: 14, color: Color(0xFF66758D)),
+              style: const TextStyle(fontSize: 14, color: ColoresApp.textoSecundario),
             ),
           ),
           Text(
@@ -563,7 +563,7 @@ class _PantallaCalendarioPagosState extends State<PantallaCalendarioPagos> {
             style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF17243C),
+              color: ColoresApp.textoPrincipal,
             ),
           ),
         ],
@@ -581,7 +581,7 @@ class _DiaSemana extends StatelessWidget {
     return Text(
       texto,
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 11, color: Color(0xFF66758D)),
+      style: const TextStyle(fontSize: 11, color: ColoresApp.textoSecundario),
     );
   }
 }

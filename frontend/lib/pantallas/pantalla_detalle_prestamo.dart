@@ -75,7 +75,7 @@ class PantallaDetallePrestamo extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -84,7 +84,7 @@ class PantallaDetallePrestamo extends StatelessWidget {
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF285FE8), Color(0xFF214EC4)],
+                        colors: [ColoresApp.primario, ColoresApp.primarioMasOscuro],
                       ),
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -95,7 +95,7 @@ class PantallaDetallePrestamo extends StatelessWidget {
                           'Monto total',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFFE4EDFF),
+                            color: ColoresApp.fondoAzulMedio,
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -104,7 +104,7 @@ class PantallaDetallePrestamo extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: ColoresApp.blanco,
                           ),
                         ),
                         const SizedBox(height: 14),
@@ -128,9 +128,9 @@ class PantallaDetallePrestamo extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(14),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ColoresApp.blanco,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFFE1E8F3)),
+                      border: Border.all(color: ColoresApp.bordeTarjeta),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,7 +144,7 @@ class PantallaDetallePrestamo extends StatelessWidget {
                                   : '$pagadas de $totalCuotas cuotas',
                               style: const TextStyle(
                                 fontSize: 12,
-                                color: Color(0xFF17243C),
+                                color: ColoresApp.textoPrincipal,
                               ),
                             ),
                             Text(
@@ -152,7 +152,7 @@ class PantallaDetallePrestamo extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF285FE8),
+                                color: ColoresApp.primario,
                               ),
                             ),
                           ],
@@ -163,9 +163,9 @@ class PantallaDetallePrestamo extends StatelessWidget {
                           child: LinearProgressIndicator(
                             value: progreso,
                             minHeight: 5,
-                            backgroundColor: const Color(0xFFE3E9F2),
+                            backgroundColor: ColoresApp.bordeSuave,
                             valueColor: const AlwaysStoppedAnimation(
-                              Color(0xFF285FE8),
+                              ColoresApp.primario,
                             ),
                           ),
                         ),
@@ -177,9 +177,9 @@ class PantallaDetallePrestamo extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ColoresApp.blanco,
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: const Color(0xFFE1E8F3)),
+                      border: Border.all(color: ColoresApp.bordeTarjeta),
                     ),
                     child: Column(
                       children: [
@@ -247,14 +247,14 @@ class _FilaDetalle extends StatelessWidget {
           etiqueta,
           style: TextStyle(
             fontSize: 12,
-            color: claro ? const Color(0xFFE4EDFF) : const Color(0xFF66758D),
+            color: claro ? ColoresApp.fondoAzulMedio : ColoresApp.textoSecundario,
           ),
         ),
         Text(
           valor,
           style: TextStyle(
             fontSize: 12,
-            color: claro ? Colors.white : const Color(0xFF17243C),
+            color: claro ? ColoresApp.blanco : ColoresApp.textoPrincipal,
           ),
         ),
       ],

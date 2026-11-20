@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../nucleo/colores_app.dart';
 
 class CampoCodigoRecuperacion extends StatelessWidget {
   final List<TextEditingController> controladores;
@@ -24,12 +25,12 @@ class CampoCodigoRecuperacion extends StatelessWidget {
             margin: EdgeInsets.only(right: indice < 5 ? 8 : 0),
             height: 60,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColoresApp.blanco,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: enfocado || lleno
-                    ? const Color(0xFF285FE8)
-                    : const Color(0xFFE3E9F2),
+                    ? ColoresApp.primario
+                    : ColoresApp.bordeSuave,
                 width: enfocado ? 2 : 1,
               ),
             ),
@@ -40,12 +41,12 @@ class CampoCodigoRecuperacion extends StatelessWidget {
               textAlign: TextAlign.center,
               keyboardType: TextInputType.number,
               maxLength: 1,
-              style: const TextStyle(fontSize: 24, color: Color(0xFF285FE8)),
+              style: const TextStyle(fontSize: 24, color: ColoresApp.primario),
               decoration: const InputDecoration(
                 counterText: '',
                 border: InputBorder.none,
                 hintText: '–',
-                hintStyle: TextStyle(fontSize: 24, color: Color(0xFF94A0B3)),
+                hintStyle: TextStyle(fontSize: 24, color: ColoresApp.textoSuave),
               ),
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               onChanged: (valor) => alCambiar(indice, valor),

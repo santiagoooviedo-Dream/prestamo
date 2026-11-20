@@ -137,13 +137,13 @@ class _PantallaMisConversacionesState extends State<PantallaMisConversaciones> {
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 6),
             const Text(
               'Solo tus chats con el administrador.',
-              style: TextStyle(fontSize: 14, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 14, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 16),
             Expanded(child: _cuerpo()),
@@ -172,7 +172,7 @@ class _PantallaMisConversacionesState extends State<PantallaMisConversaciones> {
       return const Center(
         child: Text(
           'Aún no tienes conversaciones con el administrador.',
-          style: TextStyle(color: Color(0xFF66758D)),
+          style: TextStyle(color: ColoresApp.textoSecundario),
           textAlign: TextAlign.center,
         ),
       );
@@ -199,9 +199,9 @@ class _PantallaMisConversacionesState extends State<PantallaMisConversaciones> {
             child: Container(
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: ColoresApp.blanco,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE1E8F3)),
+                border: Border.all(color: ColoresApp.bordeTarjeta),
               ),
               child: Row(
                 children: [
@@ -209,12 +209,12 @@ class _PantallaMisConversacionesState extends State<PantallaMisConversaciones> {
                     width: 44,
                     height: 44,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE8F0FE),
+                      color: ColoresApp.fondoSeleccionado,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Icon(
                       Icons.support_agent_rounded,
-                      color: Color(0xFF285FE8),
+                      color: ColoresApp.primario,
                       size: 22,
                     ),
                   ),
@@ -228,7 +228,7 @@ class _PantallaMisConversacionesState extends State<PantallaMisConversaciones> {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF17243C),
+                            color: ColoresApp.textoPrincipal,
                           ),
                         ),
                         const SizedBox(height: 4),
@@ -238,13 +238,13 @@ class _PantallaMisConversacionesState extends State<PantallaMisConversaciones> {
                           overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF66758D),
+                            color: ColoresApp.textoSecundario,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(Icons.chevron_right, color: Color(0xFF94A0B3)),
+                  const Icon(Icons.chevron_right, color: ColoresApp.textoSuave),
                 ],
               ),
             ),
@@ -448,13 +448,13 @@ class _PantallaVerConversacionState extends State<_PantallaVerConversacion> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 4),
             const Text(
               'Puedes seguir escribiendo. El administrador te responderá aquí.',
-              style: TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 16),
             Expanded(
@@ -478,7 +478,7 @@ class _PantallaVerConversacionState extends State<_PantallaVerConversacion> {
                               child: Text(
                                 'No hay mensajes todavía.\nEscribe el primero.',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Color(0xFF66758D)),
+                                style: TextStyle(color: ColoresApp.textoSecundario),
                               ),
                             )
                           : ListView.builder(
@@ -502,9 +502,9 @@ class _PantallaVerConversacionState extends State<_PantallaVerConversacion> {
                     height: 48,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ColoresApp.blanco,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: const Color(0xFFE1E8F3)),
+                      border: Border.all(color: ColoresApp.bordeTarjeta),
                     ),
                     alignment: Alignment.centerLeft,
                     child: TextField(
@@ -514,7 +514,7 @@ class _PantallaVerConversacionState extends State<_PantallaVerConversacion> {
                         hintText: 'Escribe tu mensaje...',
                         hintStyle: TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF94A0B3),
+                          color: ColoresApp.textoSuave,
                         ),
                         border: InputBorder.none,
                         isDense: true,
@@ -531,8 +531,8 @@ class _PantallaVerConversacionState extends State<_PantallaVerConversacion> {
                     height: 48,
                     decoration: BoxDecoration(
                       color: _enviando
-                          ? const Color(0xFF94A0B3)
-                          : const Color(0xFF285FE8),
+                          ? ColoresApp.textoSuave
+                          : ColoresApp.primario,
                       shape: BoxShape.circle,
                     ),
                     child: _enviando
@@ -540,12 +540,12 @@ class _PantallaVerConversacionState extends State<_PantallaVerConversacion> {
                             padding: EdgeInsets.all(12),
                             child: CircularProgressIndicator(
                               strokeWidth: 2,
-                              color: Colors.white,
+                              color: ColoresApp.blanco,
                             ),
                           )
                         : const Icon(
                             Icons.send_rounded,
-                            color: Colors.white,
+                            color: ColoresApp.blanco,
                             size: 22,
                           ),
                   ),

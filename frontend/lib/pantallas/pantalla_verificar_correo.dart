@@ -131,7 +131,7 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                           height: 1.15,
                         ),
                       ),
@@ -140,7 +140,7 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
                         'Ingresa el código que enviamos a tu correo para verificar tu cuenta.',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Color(0xFF66758D),
+                          color: ColoresApp.textoSecundario,
                           height: 1.4,
                         ),
                       ),
@@ -150,13 +150,13 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
                           width: teclado > 0 ? 64 : 88,
                           height: teclado > 0 ? 64 : 88,
                           decoration: const BoxDecoration(
-                            color: Color(0xFFE8F0FE),
+                            color: ColoresApp.fondoSeleccionado,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             Icons.mail_outline_rounded,
                             size: teclado > 0 ? 28 : 40,
-                            color: const Color(0xFF285FE8),
+                            color: ColoresApp.primario,
                           ),
                         ),
                       ),
@@ -178,7 +178,7 @@ class _PantallaVerificarCorreoState extends State<PantallaVerificarCorreo> {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF285FE8),
+                      color: ColoresApp.primario,
                     ),
                   ),
                 ),

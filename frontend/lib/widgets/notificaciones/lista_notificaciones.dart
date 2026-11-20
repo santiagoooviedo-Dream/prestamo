@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/notificacion_model.dart';
+import '../../nucleo/colores_app.dart';
 
 class FiltrosNotificaciones extends StatelessWidget {
   final List<String> filtros;
@@ -32,12 +33,12 @@ class FiltrosNotificaciones extends StatelessWidget {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: activo ? const Color(0xFF285FE8) : Colors.white,
+                  color: activo ? ColoresApp.primario : ColoresApp.blanco,
                   borderRadius: BorderRadius.circular(100),
                   border: Border.all(
                     color: activo
-                        ? const Color(0xFF285FE8)
-                        : const Color(0xFFE1E8F3),
+                        ? ColoresApp.primario
+                        : ColoresApp.bordeTarjeta,
                   ),
                 ),
                 child: Text(
@@ -45,7 +46,7 @@ class FiltrosNotificaciones extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: activo ? Colors.white : const Color(0xFF66758D),
+                    color: activo ? ColoresApp.blanco : ColoresApp.textoSecundario,
                   ),
                 ),
               ),
@@ -121,9 +122,9 @@ class _TarjetaNotificacion extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: item.leida ? Colors.white : const Color(0xFFEDF3FF),
+          color: item.leida ? ColoresApp.blanco : ColoresApp.fondoInicio,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
+          border: Border.all(color: ColoresApp.bordeTarjeta),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,10 +133,10 @@ class _TarjetaNotificacion extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFFEDF3FF),
+                color: ColoresApp.fondoInicio,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(item.icono, size: 20, color: const Color(0xFF285FE8)),
+              child: Icon(item.icono, size: 20, color: ColoresApp.primario),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -150,7 +151,7 @@ class _TarjetaNotificacion extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF17243C),
+                            color: ColoresApp.textoPrincipal,
                           ),
                         ),
                       ),
@@ -159,7 +160,7 @@ class _TarjetaNotificacion extends StatelessWidget {
                           width: 8,
                           height: 8,
                           decoration: const BoxDecoration(
-                            color: Color(0xFF285FE8),
+                            color: ColoresApp.primario,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -170,7 +171,7 @@ class _TarjetaNotificacion extends StatelessWidget {
                     item.cuerpo,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -178,7 +179,7 @@ class _TarjetaNotificacion extends StatelessWidget {
                     item.tiempo,
                     style: const TextStyle(
                       fontSize: 11,
-                      color: Color(0xFF94A0B3),
+                      color: ColoresApp.textoSuave,
                     ),
                   ),
                 ],

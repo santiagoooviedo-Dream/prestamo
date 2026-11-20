@@ -143,7 +143,7 @@ class _PantallaAdminPerfilState extends State<PantallaAdminPerfil> {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                     ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 /// Puntito rojo de notificación (sin leer / pendiente).
 class PuntoRojo extends StatelessWidget {
@@ -22,9 +23,9 @@ class PuntoRojo extends StatelessWidget {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          color: const Color(0xFFE53935),
+          color: ColoresApp.errorFuerte,
           shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 1.5),
+          border: Border.all(color: ColoresApp.blanco, width: 1.5),
         ),
       ),
     );

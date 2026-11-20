@@ -285,13 +285,13 @@ class _PantallaAdminNotificacionesState
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
               'Elige un usuario y escribe el título y mensaje.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 16),
             TextField(
@@ -299,15 +299,15 @@ class _PantallaAdminNotificacionesState
               decoration: InputDecoration(
                 hintText: 'Buscar por nombre, correo o cédula',
                 filled: true,
-                fillColor: Colors.white,
-                prefixIcon: const Icon(Icons.search, color: Color(0xFF94A0B3)),
+                fillColor: ColoresApp.blanco,
+                prefixIcon: const Icon(Icons.search, color: ColoresApp.textoSuave),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Color(0xFFE1E8F3)),
+                  borderSide: const BorderSide(color: ColoresApp.bordeTarjeta),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Color(0xFFE1E8F3)),
+                  borderSide: const BorderSide(color: ColoresApp.bordeTarjeta),
                 ),
               ),
             ),
@@ -322,7 +322,7 @@ class _PantallaAdminNotificacionesState
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
+                        color: ColoresApp.textoPrincipal,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -331,12 +331,12 @@ class _PantallaAdminNotificacionesState
                     else if (_error != null)
                       Text(
                         _error!,
-                        style: const TextStyle(color: Color(0xFFDC2626)),
+                        style: const TextStyle(color: ColoresApp.errorOscuro),
                       )
                     else if (lista.isEmpty)
                       const Text(
                         'No hay destinatarios con ese filtro.',
-                        style: TextStyle(color: Color(0xFF66758D)),
+                        style: TextStyle(color: ColoresApp.textoSecundario),
                       )
                     else
                       ...lista.map(

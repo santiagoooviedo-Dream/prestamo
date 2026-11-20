@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class TarjetaProgresoPrestamo extends StatelessWidget {
   const TarjetaProgresoPrestamo({super.key});
@@ -9,9 +10,9 @@ class TarjetaProgresoPrestamo extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -21,14 +22,14 @@ class TarjetaProgresoPrestamo extends StatelessWidget {
             children: [
               Text(
                 '2 de 12 cuotas',
-                style: TextStyle(fontSize: 14, color: Color(0xFF17243C)),
+                style: TextStyle(fontSize: 14, color: ColoresApp.textoPrincipal),
               ),
               Text(
                 '16%',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF285FE8),
+                  color: ColoresApp.primario,
                 ),
               ),
             ],
@@ -39,8 +40,8 @@ class TarjetaProgresoPrestamo extends StatelessWidget {
             child: const LinearProgressIndicator(
               value: 2 / 12,
               minHeight: 6,
-              backgroundColor: Color(0xFFE3E9F2),
-              valueColor: AlwaysStoppedAnimation(Color(0xFF285FE8)),
+              backgroundColor: ColoresApp.bordeSuave,
+              valueColor: AlwaysStoppedAnimation(ColoresApp.primario),
             ),
           ),
         ],

@@ -86,13 +86,13 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 6),
             const Text(
               'Gestiona la aplicación desde aquí',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 28),
             Expanded(
@@ -104,8 +104,8 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                         Expanded(
                           child: _TarjetaMenu(
                             icono: Icons.people_outline_rounded,
-                            colorIcono: const Color(0xFF5B8DEF),
-                            fondoIcono: const Color(0xFFE8F0FE),
+                            colorIcono: ColoresApp.primarioClaro,
+                            fondoIcono: ColoresApp.fondoSeleccionado,
                             titulo: 'Usuarios',
                             sub: 'Ver y gestionar usuarios',
                             mostrarPunto: _indicadores?.usuarios == true,
@@ -116,8 +116,8 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                         Expanded(
                           child: _TarjetaMenu(
                             icono: Icons.account_balance_wallet_outlined,
-                            colorIcono: const Color(0xFF3CB371),
-                            fondoIcono: const Color(0xFFE8F8EF),
+                            colorIcono: ColoresApp.exitoMedio,
+                            fondoIcono: ColoresApp.exitoClaro4,
                             titulo: 'Préstamos',
                             sub: 'Aprobar o revisar solicitudes',
                             mostrarPunto: _indicadores?.prestamos == true,
@@ -130,8 +130,8 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                     const SizedBox(height: 14),
                     _TarjetaMenu(
                       icono: Icons.notifications_none_rounded,
-                      colorIcono: const Color(0xFF8B7CF6),
-                      fondoIcono: const Color(0xFFF0EDFF),
+                      colorIcono: ColoresApp.lila,
+                      fondoIcono: ColoresApp.fondoLila,
                       titulo: 'Notificaciones',
                       sub: 'Enviar mensajes a usuarios',
                       anchoCompleto: true,
@@ -155,9 +155,9 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                 icon: const Icon(Icons.menu_book_outlined, size: 20),
                 label: const Text('Manual de administrador'),
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF3F7FF),
-                  side: const BorderSide(color: Color(0xFFD6E3F7)),
-                  foregroundColor: const Color(0xFF2F5FAF),
+                  backgroundColor: ColoresApp.fondoAzulMuyClaro,
+                  side: const BorderSide(color: ColoresApp.bordeSuave3),
+                  foregroundColor: ColoresApp.primarioProfundo,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -178,9 +178,9 @@ class _PantallaAdminMenuState extends State<PantallaAdminMenu>
                   );
                 },
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFFBC4351),
-                  side: const BorderSide(color: Color(0xFFF0C7CC)),
-                  backgroundColor: const Color(0xFFFFF0F2),
+                  foregroundColor: ColoresApp.errorRosado,
+                  side: const BorderSide(color: ColoresApp.errorBorde2),
+                  backgroundColor: ColoresApp.errorFondo,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -227,12 +227,12 @@ class _TarjetaMenu extends StatelessWidget {
         width: anchoCompleto ? double.infinity : null,
         height: 174,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColoresApp.blanco,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
+          border: Border.all(color: ColoresApp.bordeTarjeta),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x0A17243C),
+              color: ColoresApp.sombraMuySuave,
               blurRadius: 16,
               offset: Offset(0, 5),
             ),
@@ -261,7 +261,7 @@ class _TarjetaMenu extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -269,7 +269,7 @@ class _TarjetaMenu extends StatelessWidget {
                     sub,
                     style: const TextStyle(
                       fontSize: 11,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                       height: 1.4,
                     ),
                   ),
@@ -284,11 +284,11 @@ class _TarjetaMenu extends StatelessWidget {
                   width: 14,
                   height: 14,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE53935),
+                    color: ColoresApp.errorFuerte,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
+                    border: Border.all(color: ColoresApp.blanco, width: 2),
                     boxShadow: const [
-                      BoxShadow(color: Color(0x55E53935), blurRadius: 6),
+                      BoxShadow(color: ColoresApp.sombraError, blurRadius: 6),
                     ],
                   ),
                 ),

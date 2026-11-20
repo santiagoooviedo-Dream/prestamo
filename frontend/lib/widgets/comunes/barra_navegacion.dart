@@ -5,6 +5,7 @@ import '../../pantallas/pantalla_inicio.dart';
 import '../../pantallas/pantalla_mis_prestamos.dart';
 import '../../pantallas/pantalla_asistente_virtual.dart';
 import '../../pantallas/pantalla_perfil.dart';
+import '../../nucleo/colores_app.dart';
 
 enum DestinoNav { inicio, prestamos, soporte, perfil }
 
@@ -58,8 +59,8 @@ class _BarraNavegacionState extends State<BarraNavegacion> {
         10 + MediaQuery.paddingOf(context).bottom,
       ),
       decoration: const BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Color(0xFFE1E8F3))),
+        color: ColoresApp.blanco,
+        border: Border(top: BorderSide(color: ColoresApp.bordeTarjeta)),
       ),
       child: Row(
         children: [
@@ -124,7 +125,7 @@ class _Item extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = activo ? const Color(0xFF285FE8) : const Color(0xFF66758D);
+    final color = activo ? ColoresApp.primario : ColoresApp.textoSecundario;
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -138,12 +139,12 @@ class _Item extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: activo
                     ? const LinearGradient(
-                        colors: [Color(0xFFDCE8FF), Color(0xFFEDF3FF)],
+                        colors: [ColoresApp.decoracionAzul, ColoresApp.fondoInicio],
                       )
                     : null,
                 borderRadius: BorderRadius.circular(14),
                 border: activo
-                    ? Border.all(color: const Color(0xFFC5D8FF))
+                    ? Border.all(color: ColoresApp.chipAzul4)
                     : null,
               ),
               child: Center(
@@ -163,7 +164,7 @@ class _Item extends StatelessWidget {
                             width: 8,
                             height: 8,
                             decoration: const BoxDecoration(
-                              color: Color(0xFFE53935),
+                              color: ColoresApp.errorFuerte,
                               shape: BoxShape.circle,
                             ),
                           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/solicitud_admin.dart';
+import '../../nucleo/colores_app.dart';
 
 class TarjetaSolicitudAdmin extends StatelessWidget {
   final SolicitudAdmin solicitud;
@@ -22,15 +23,15 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColoresApp.blanco,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
+          border: Border.all(color: ColoresApp.bordeTarjeta),
         ),
         child: Row(
           children: [
             CircleAvatar(
               radius: 22,
-              backgroundColor: const Color(0xFFE8F0FE),
+              backgroundColor: ColoresApp.fondoSeleccionado,
               child: ClipOval(
                 child: fotoUrl != null && fotoUrl.isNotEmpty
                     ? Image.network(
@@ -53,7 +54,7 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -61,7 +62,7 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
                     '\$${SolicitudAdmin.formatoMonto(s.monto)} · ${s.cuotas} cuotas',
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                     ),
                   ),
                 ],
@@ -70,7 +71,7 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFFFFF4E5),
+                color: ColoresApp.advertenciaFondo,
                 borderRadius: BorderRadius.circular(100),
               ),
               child: const Text(
@@ -78,7 +79,7 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFFA65B0B),
+                  color: ColoresApp.advertenciaProfundo2,
                 ),
               ),
             ),
@@ -93,7 +94,7 @@ class TarjetaSolicitudAdmin extends StatelessWidget {
       inicial,
       style: const TextStyle(
         fontWeight: FontWeight.w700,
-        color: Color(0xFF285FE8),
+        color: ColoresApp.primario,
       ),
     ),
   );

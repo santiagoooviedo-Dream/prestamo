@@ -157,7 +157,7 @@ class _PantallaCodigoRecuperacionState
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF17243C),
+                  color: ColoresApp.textoPrincipal,
                   height: 1.18,
                 ),
               ),
@@ -168,7 +168,7 @@ class _PantallaCodigoRecuperacionState
                 'Ingresa el código que enviamos para restablecer tu contraseña.',
                 style: TextStyle(
                   fontSize: 15,
-                  color: Color(0xFF66758D),
+                  color: ColoresApp.textoSecundario,
                   height: 1.5,
                 ),
               ),

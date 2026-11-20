@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../widgets/prestamos/calendario_cuotas.dart';
 import '../../widgets/prestamos/resumen_estimado.dart';
+import '../../nucleo/colores_app.dart';
 
 class FormularioSolicitudPrestamo extends StatelessWidget {
   final TextEditingController montoCtrl;
@@ -43,7 +44,7 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Color(0xFFDC2626),
+              color: ColoresApp.errorOscuro,
             ),
           )
         else if (monto > 0 && monto < 100000)
@@ -52,13 +53,13 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Color(0xFFDC2626),
+              color: ColoresApp.errorOscuro,
             ),
           )
         else
           const Text(
             'Mínimo \$100.000 · Máximo \$3.000.000',
-            style: TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
+            style: TextStyle(fontSize: 12, color: ColoresApp.textoSuave),
           ),
         const SizedBox(height: 20),
         _etiqueta('Número de cuotas'),
@@ -67,7 +68,7 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
         const SizedBox(height: 6),
         const Text(
           'Mínimo 2 · Máximo 36 cuotas',
-          style: TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
+          style: TextStyle(fontSize: 12, color: ColoresApp.textoSuave),
         ),
         if (menuAbierto) ...[const SizedBox(height: 8), _listaCuotas()],
         if (mostrarResumen) ...[
@@ -90,7 +91,7 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
     style: const TextStyle(
       fontSize: 13,
       fontWeight: FontWeight.w600,
-      color: Color(0xFF17243C),
+      color: ColoresApp.textoPrincipal,
     ),
   );
 
@@ -99,12 +100,12 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
     return Container(
       height: 52,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: invalido
-              ? const Color(0xFFEF4444)
-              : const Color(0xFFE1E8F3),
+              ? ColoresApp.error
+              : ColoresApp.bordeTarjeta,
           width: invalido ? 1.5 : 1,
         ),
       ),
@@ -117,7 +118,7 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF94A0B3),
+                color: ColoresApp.textoSuave,
               ),
             ),
           ),
@@ -127,10 +128,10 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
               keyboardType: TextInputType.number,
               inputFormatters: [SeparadorMilesInputFormatter()],
               onChanged: (_) => alCambiarMonto(),
-              style: const TextStyle(fontSize: 15, color: Color(0xFF17243C)),
+              style: const TextStyle(fontSize: 15, color: ColoresApp.textoPrincipal),
               decoration: const InputDecoration(
                 hintText: '1.000.000',
-                hintStyle: TextStyle(fontSize: 15, color: Color(0xFF94A0B3)),
+                hintStyle: TextStyle(fontSize: 15, color: ColoresApp.textoSuave),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(
                   horizontal: 10,
@@ -151,12 +152,12 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
         height: 52,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColoresApp.blanco,
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
             color: menuAbierto
-                ? const Color(0xFF285FE8)
-                : const Color(0xFFE1E8F3),
+                ? ColoresApp.primario
+                : ColoresApp.bordeTarjeta,
             width: menuAbierto ? 1.5 : 1,
           ),
         ),
@@ -170,14 +171,14 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   color: cuotas == null
-                      ? const Color(0xFF94A0B3)
-                      : const Color(0xFF17243C),
+                      ? ColoresApp.textoSuave
+                      : ColoresApp.textoPrincipal,
                 ),
               ),
             ),
             Icon(
               menuAbierto ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-              color: const Color(0xFF66758D),
+              color: ColoresApp.textoSecundario,
             ),
           ],
         ),
@@ -190,9 +191,9 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
       width: double.infinity,
       constraints: const BoxConstraints(maxHeight: 240),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       clipBehavior: Clip.antiAlias,
       child: ListView.builder(
@@ -205,7 +206,7 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
           final seleccionado = cuotas == valor;
           return Material(
             color: seleccionado
-                ? const Color(0xFFF0F5FF)
+                ? ColoresApp.fondoAzulClaro
                 : Colors.transparent,
             child: InkWell(
               onTap: () => alSeleccionarCuotas(valor),
@@ -218,7 +219,7 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
                     bottom: BorderSide(
                       color: indice == 34
                           ? Colors.transparent
-                          : const Color(0xFFF0F3F8),
+                          : ColoresApp.fondoGris2,
                     ),
                   ),
                 ),
@@ -233,8 +234,8 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
                               ? FontWeight.w600
                               : FontWeight.w400,
                           color: seleccionado
-                              ? const Color(0xFF285FE8)
-                              : const Color(0xFF17243C),
+                              ? ColoresApp.primario
+                              : ColoresApp.textoPrincipal,
                         ),
                       ),
                     ),
@@ -242,7 +243,7 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
                       const Icon(
                         Icons.check,
                         size: 18,
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                       ),
                   ],
                 ),
@@ -258,16 +259,16 @@ class FormularioSolicitudPrestamo extends StatelessWidget {
     return Container(
       height: 52,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: TextField(
         controller: motivoCtrl,
-        style: const TextStyle(fontSize: 15, color: Color(0xFF17243C)),
+        style: const TextStyle(fontSize: 15, color: ColoresApp.textoPrincipal),
         decoration: const InputDecoration(
           hintText: 'Ingresa el motivo',
-          hintStyle: TextStyle(fontSize: 15, color: Color(0xFF94A0B3)),
+          hintStyle: TextStyle(fontSize: 15, color: ColoresApp.textoSuave),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),

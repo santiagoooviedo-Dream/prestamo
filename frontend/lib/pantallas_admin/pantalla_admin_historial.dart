@@ -244,13 +244,13 @@ class _PantallaAdminHistorialState extends State<PantallaAdminHistorial> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
               'Revisa el detalle de cada préstamo.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 18),
             MiniPerfilAdmin(
@@ -285,7 +285,7 @@ class _PantallaAdminHistorialState extends State<PantallaAdminHistorial> {
         child: Text(
           'Este usuario aún no tiene historial de préstamos.',
           textAlign: TextAlign.center,
-          style: TextStyle(color: Color(0xFF66758D)),
+          style: TextStyle(color: ColoresApp.textoSecundario),
         ),
       );
     }

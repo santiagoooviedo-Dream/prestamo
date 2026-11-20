@@ -120,13 +120,13 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 6),
             const Text(
               'Ingresa tu contraseña y el nuevo correo. Te enviaremos un código a tu correo actual para confirmar el cambio.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 24),
             Expanded(
@@ -222,7 +222,7 @@ class _PantallaCambiarCorreoState extends State<PantallaCambiarCorreo> {
                       iconoIzquierdo: const Icon(
                         Icons.check_rounded,
                         size: 20,
-                        color: Color(0xFF22C55E),
+                        color: ColoresApp.exito,
                       ),
                     ),
                     const SizedBox(height: 20),

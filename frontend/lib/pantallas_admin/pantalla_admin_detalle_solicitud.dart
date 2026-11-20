@@ -55,7 +55,7 @@ class PantallaAdminDetalleSolicitud extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -63,7 +63,7 @@ class PantallaAdminDetalleSolicitud extends StatelessWidget {
                     'Revisa la información enviada antes de tomar una decisión.',
                     style: TextStyle(
                       fontSize: 15,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                       height: 1.4,
                     ),
                   ),

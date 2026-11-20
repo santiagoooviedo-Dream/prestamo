@@ -59,14 +59,14 @@ class PantallaCerrarSesion extends StatelessWidget {
               width: 112,
               height: 112,
               decoration: BoxDecoration(
-                color: const Color(0xFFEDF3FF),
+                color: ColoresApp.fondoInicio,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFD6E4FF), width: 6),
+                border: Border.all(color: ColoresApp.chipAzul, width: 6),
               ),
               child: const Icon(
                 Icons.logout_rounded,
                 size: 44,
-                color: Color(0xFF285FE8),
+                color: ColoresApp.primario,
               ),
             ),
             const SizedBox(height: 28),
@@ -76,7 +76,7 @@ class PantallaCerrarSesion extends StatelessWidget {
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 12),
@@ -87,7 +87,7 @@ class PantallaCerrarSesion extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
-                  color: Color(0xFF66758D),
+                  color: ColoresApp.textoSecundario,
                   height: 1.5,
                 ),
               ),
@@ -133,9 +133,9 @@ class _Opcion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = peligro ? const Color(0xFFBC4351) : const Color(0xFF17243C);
-    final bg = peligro ? const Color(0xFFFFF0F2) : const Color(0xFFEDF3FF);
-    final ic = peligro ? const Color(0xFFBC4351) : const Color(0xFF285FE8);
+    final color = peligro ? ColoresApp.errorRosado : ColoresApp.textoPrincipal;
+    final bg = peligro ? ColoresApp.errorFondo : ColoresApp.fondoInicio;
+    final ic = peligro ? ColoresApp.errorRosado : ColoresApp.primario;
 
     return GestureDetector(
       onTap: onTap,
@@ -143,9 +143,9 @@ class _Opcion extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColoresApp.blanco,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
+          border: Border.all(color: ColoresApp.bordeTarjeta),
         ),
         child: Row(
           children: [
@@ -176,7 +176,7 @@ class _Opcion extends StatelessWidget {
                     subtitulo,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                     ),
                   ),
                 ],

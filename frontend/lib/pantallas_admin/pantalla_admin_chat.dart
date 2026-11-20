@@ -328,7 +328,7 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             if (widget.esPagoPersonal || _esPagoPersonalDetectado) ...[
@@ -339,7 +339,7 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8F0FE),
+                  color: ColoresApp.fondoSeleccionado,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -349,7 +349,7 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
               ),
@@ -379,11 +379,11 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                       ),
                       decoration: BoxDecoration(
                         color: m.deUsuario
-                            ? Colors.white
-                            : const Color(0xFF285FE8),
+                            ? ColoresApp.blanco
+                            : ColoresApp.primario,
                         borderRadius: BorderRadius.circular(16),
                         border: m.deUsuario
-                            ? Border.all(color: const Color(0xFFE1E8F3))
+                            ? Border.all(color: ColoresApp.bordeTarjeta)
                             : null,
                       ),
                       child: Builder(
@@ -393,8 +393,8 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                               ? m.texto
                               : _textoSinUrls(m.texto);
                           final colorTxt = m.deUsuario
-                              ? const Color(0xFF17243C)
-                              : Colors.white;
+                              ? ColoresApp.textoPrincipal
+                              : ColoresApp.blanco;
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -421,7 +421,7 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                                       return Container(
                                         height: 140,
                                         alignment: Alignment.center,
-                                        color: const Color(0xFFF3F6FC),
+                                        color: ColoresApp.fondoGrisAzul,
                                         child: const SizedBox(
                                           width: 22,
                                           height: 22,
@@ -434,12 +434,12 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                                     errorBuilder: (_, __, ___) => Container(
                                       height: 80,
                                       alignment: Alignment.center,
-                                      color: const Color(0xFFF3F6FC),
+                                      color: ColoresApp.fondoGrisAzul,
                                       child: const Text(
                                         'No se pudo cargar el comprobante',
                                         style: TextStyle(
                                           fontSize: 12,
-                                          color: Color(0xFF66758D),
+                                          color: ColoresApp.textoSecundario,
                                         ),
                                       ),
                                     ),
@@ -474,9 +474,9 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                     height: 48,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ColoresApp.blanco,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: const Color(0xFFE1E8F3)),
+                      border: Border.all(color: ColoresApp.bordeTarjeta),
                     ),
                     child: TextField(
                       controller: _ctrl,
@@ -485,7 +485,7 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                         hintText: 'Escribe tu mensaje',
                         hintStyle: TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF94A0B3),
+                          color: ColoresApp.textoSuave,
                         ),
                         border: InputBorder.none,
                       ),
@@ -499,12 +499,12 @@ class _PantallaAdminChatState extends State<PantallaAdminChat> {
                     width: 48,
                     height: 48,
                     decoration: const BoxDecoration(
-                      color: Color(0xFF285FE8),
+                      color: ColoresApp.primario,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.send_rounded,
-                      color: Colors.white,
+                      color: ColoresApp.blanco,
                       size: 20,
                     ),
                   ),

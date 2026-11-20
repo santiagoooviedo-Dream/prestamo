@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 /// Degradado azul suave de fondo para toda la app.
 class FondoDegradado {
@@ -9,11 +10,11 @@ class FondoDegradado {
       begin: Alignment.topCenter,
       end: Alignment.bottomCenter,
       colors: [
-        Color(0xFFD6E4FF), // azul un poco más presente arriba
-        Color(0xFFE8F0FE),
-        Color(0xFFF0F5FF),
-        Color(0xFFF5F8FD),
-        Color(0xFFFAFBFD),
+        ColoresApp.chipAzul, // azul un poco más presente arriba
+        ColoresApp.fondoSeleccionado,
+        ColoresApp.fondoAzulClaro,
+        ColoresApp.fondoSuave2,
+        ColoresApp.fondoAlt,
       ],
       stops: [0.0, 0.2, 0.45, 0.75, 1.0],
     ),

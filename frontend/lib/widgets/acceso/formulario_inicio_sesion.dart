@@ -46,7 +46,7 @@ class FormularioInicioSesion extends StatelessWidget {
               width: 180,
               height: 180,
               decoration: BoxDecoration(
-                color: const Color(0xFFE4EDFF)
+                color: ColoresApp.fondoAzulMedio
                     .withValues(alpha: 0.7),
                 shape: BoxShape.circle,
               ),
@@ -92,7 +92,7 @@ class FormularioInicioSesion extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                       height: 1.15,
                     ),
                   ),
@@ -103,7 +103,7 @@ class FormularioInicioSesion extends StatelessWidget {
                     'Ingresa tu cédula y contraseña para iniciar sesión.',
                     style: TextStyle(
                       fontSize: 15,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                       height: 1.4,
                     ),
                   ),
@@ -165,7 +165,7 @@ class FormularioInicioSesion extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                       ),
                     ),
                   ),
@@ -195,7 +195,7 @@ class FormularioInicioSesion extends StatelessWidget {
                   '¿No tienes cuenta?',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF66758D),
+                    color: ColoresApp.textoSecundario,
                   ),
                 ),
               ),
@@ -209,7 +209,7 @@ class FormularioInicioSesion extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
               ),

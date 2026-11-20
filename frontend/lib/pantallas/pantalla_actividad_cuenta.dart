@@ -58,13 +58,13 @@ class _PantallaActividadCuentaState extends State<PantallaActividadCuenta> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 6),
             const Text(
               'Consulta todos los movimientos de tu cuenta.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 16),
             Expanded(

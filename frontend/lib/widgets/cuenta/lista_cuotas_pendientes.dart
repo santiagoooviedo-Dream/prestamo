@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/calendario_pagos_model.dart';
+import '../../nucleo/colores_app.dart';
 
 class ListaCuotasPendientes extends StatelessWidget {
   final List<CuotaPrestamoModel> cuotas;
@@ -21,21 +22,21 @@ class ListaCuotasPendientes extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ColoresApp.blanco,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE1E8F3)),
+            border: Border.all(color: ColoresApp.bordeTarjeta),
           ),
           child: Row(
             children: [
               CircleAvatar(
                 backgroundColor: pagada
-                    ? const Color(0xFFE8F9F0)
-                    : const Color(0xFFEDF3FF),
+                    ? ColoresApp.exitoClaro
+                    : ColoresApp.fondoInicio,
                 child: Icon(
                   pagada ? Icons.check : Icons.calendar_today_outlined,
                   color: pagada
-                      ? const Color(0xFF168261)
-                      : const Color(0xFF285FE8),
+                      ? ColoresApp.exitoProfundo
+                      : ColoresApp.primario,
                 ),
               ),
               const SizedBox(width: 12),
@@ -47,14 +48,14 @@ class ListaCuotasPendientes extends StatelessWidget {
                       'Cuota ${cuota.numero}',
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
+                        color: ColoresApp.textoPrincipal,
                       ),
                     ),
                     Text(
                       cuota.fecha == null
                           ? 'Fecha no disponible'
                           : '${cuota.fecha!.day}/${cuota.fecha!.month}/${cuota.fecha!.year}',
-                      style: const TextStyle(color: Color(0xFF66758D)),
+                      style: const TextStyle(color: ColoresApp.textoSecundario),
                     ),
                   ],
                 ),
@@ -66,7 +67,7 @@ class ListaCuotasPendientes extends StatelessWidget {
                     '\$${formatoMontoCuota(cuota.monto)}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   Text(
@@ -74,8 +75,8 @@ class ListaCuotasPendientes extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       color: pagada
-                          ? const Color(0xFF168261)
-                          : const Color(0xFF285FE8),
+                          ? ColoresApp.exitoProfundo
+                          : ColoresApp.primario,
                     ),
                   ),
                 ],

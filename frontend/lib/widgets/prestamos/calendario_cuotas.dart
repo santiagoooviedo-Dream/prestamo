@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'resumen_estimado.dart';
+import '../../nucleo/colores_app.dart';
 
 class CalendarioCuotas extends StatelessWidget {
   final int monto;
@@ -33,9 +34,9 @@ class CalendarioCuotas extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,7 +49,7 @@ class CalendarioCuotas extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
               ),
@@ -58,7 +59,7 @@ class CalendarioCuotas extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8F0FE),
+                  color: ColoresApp.fondoSeleccionado,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -66,7 +67,7 @@ class CalendarioCuotas extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
               ),
@@ -80,9 +81,9 @@ class CalendarioCuotas extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFFF7F9FC),
+                color: ColoresApp.fondoSuave,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: const Color(0xFFE8EEF6)),
+                border: Border.all(color: ColoresApp.bordeSuave4),
               ),
               child: Row(
                 children: [
@@ -95,7 +96,7 @@ class CalendarioCuotas extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF17243C),
+                            color: ColoresApp.textoPrincipal,
                           ),
                         ),
                         const SizedBox(height: 2),
@@ -103,7 +104,7 @@ class CalendarioCuotas extends StatelessWidget {
                           fFecha(fecha),
                           style: const TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF94A0B3),
+                            color: ColoresApp.textoSuave,
                           ),
                         ),
                       ],
@@ -114,7 +115,7 @@ class CalendarioCuotas extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                 ],

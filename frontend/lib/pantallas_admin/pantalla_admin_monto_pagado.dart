@@ -167,7 +167,7 @@ class _PantallaAdminMontoPagadoState extends State<PantallaAdminMontoPagado> {
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -177,7 +177,7 @@ class _PantallaAdminMontoPagadoState extends State<PantallaAdminMontoPagado> {
                             : 'Información general del préstamo.',
                         style: const TextStyle(
                           fontSize: 15,
-                          color: Color(0xFF66758D),
+                          color: ColoresApp.textoSecundario,
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -185,7 +185,7 @@ class _PantallaAdminMontoPagadoState extends State<PantallaAdminMontoPagado> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(22),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF285FE8),
+                          color: ColoresApp.primario,
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Column(
@@ -197,7 +197,7 @@ class _PantallaAdminMontoPagadoState extends State<PantallaAdminMontoPagado> {
                                   : 'Monto del préstamo',
                               style: const TextStyle(
                                 fontSize: 13,
-                                color: Color(0xFFD6E4FF),
+                                color: ColoresApp.chipAzul,
                               ),
                             ),
                             const SizedBox(height: 6),
@@ -206,7 +206,7 @@ class _PantallaAdminMontoPagadoState extends State<PantallaAdminMontoPagado> {
                               style: const TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.w700,
-                                color: Colors.white,
+                                color: ColoresApp.blanco,
                               ),
                             ),
                           ],
@@ -265,7 +265,7 @@ class _PantallaAdminMontoPagadoState extends State<PantallaAdminMontoPagado> {
                             'Pago validado. La cuota quedó como pagada.',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFF168261),
+                              color: ColoresApp.exitoProfundo,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

@@ -236,13 +236,13 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 6),
             Text(
               'Coordina tu pago personal de $_resumenMonto.',
-              style: const TextStyle(fontSize: 14, color: Color(0xFF66758D)),
+              style: const TextStyle(fontSize: 14, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 16),
             if (_cargando)
@@ -288,12 +288,12 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
                         ),
                         decoration: BoxDecoration(
                           color: m.propio
-                              ? const Color(0xFF285FE8)
-                              : Colors.white,
+                              ? ColoresApp.primario
+                              : ColoresApp.blanco,
                           borderRadius: BorderRadius.circular(16),
                           border: m.propio
                               ? null
-                              : Border.all(color: const Color(0xFFE1E8F3)),
+                              : Border.all(color: ColoresApp.bordeTarjeta),
                         ),
                         child: Text(
                           m.texto,
@@ -301,8 +301,8 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
                             fontSize: 14,
                             height: 1.4,
                             color: m.propio
-                                ? Colors.white
-                                : const Color(0xFF17243C),
+                                ? ColoresApp.blanco
+                                : ColoresApp.textoPrincipal,
                           ),
                         ),
                       ),
@@ -317,9 +317,9 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
                       height: 48,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: ColoresApp.blanco,
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: const Color(0xFFE1E8F3)),
+                        border: Border.all(color: ColoresApp.bordeTarjeta),
                       ),
                       child: TextField(
                         controller: _ctrl,
@@ -328,7 +328,7 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
                           hintText: 'Escribe cuándo puedes pagar…',
                           hintStyle: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF94A0B3),
+                            color: ColoresApp.textoSuave,
                           ),
                           border: InputBorder.none,
                         ),
@@ -342,7 +342,7 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
                       width: 48,
                       height: 48,
                       decoration: const BoxDecoration(
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                         shape: BoxShape.circle,
                       ),
                       child: _enviando
@@ -350,12 +350,12 @@ class _PantallaChatPagoPersonalState extends State<PantallaChatPagoPersonal> {
                               padding: EdgeInsets.all(12),
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: ColoresApp.blanco,
                               ),
                             )
                           : const Icon(
                               Icons.send_rounded,
-                              color: Colors.white,
+                              color: ColoresApp.blanco,
                               size: 20,
                             ),
                     ),

@@ -42,13 +42,13 @@ class PantallaSoporte extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   const SizedBox(height: 8),
                   const Text(
                     'Estamos aquí para ayudarte con tus préstamos y pagos.',
-                    style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+                    style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
                   ),
                   const Spacer(),
                   Center(
@@ -56,17 +56,17 @@ class PantallaSoporte extends StatelessWidget {
                       width: 112,
                       height: 112,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFEDF3FF),
+                        color: ColoresApp.fondoInicio,
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: const Color(0xFFD6E4FF),
+                          color: ColoresApp.chipAzul,
                           width: 6,
                         ),
                       ),
                       child: const Icon(
                         Icons.support_agent_rounded,
                         size: 48,
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                       ),
                     ),
                   ),
@@ -74,7 +74,7 @@ class PantallaSoporte extends StatelessWidget {
                   const Text(
                     'Próximamente podrás chatear con nuestro asistente.',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: Color(0xFF66758D)),
+                    style: TextStyle(fontSize: 14, color: ColoresApp.textoSecundario),
                   ),
                   const SizedBox(height: 24),
                 ],

@@ -20,13 +20,13 @@ class EmblemaCircular extends StatelessWidget {
       height: tamano,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFDCE8FF), Color(0xFFEDF3FF)],
+          colors: [ColoresApp.decoracionAzul, ColoresApp.fondoInicio],
         ),
         shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xA6EDF3FF), width: 6),
+        border: Border.all(color: ColoresApp.fondoInicioTranslucido, width: 6),
         boxShadow: const [
           BoxShadow(
-            color: Color(0x0D17243C),
+            color: ColoresApp.sombraSuave,
             blurRadius: 14,
             offset: Offset(0, 6),
           ),

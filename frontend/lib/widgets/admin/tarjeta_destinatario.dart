@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class TarjetaDestinatario extends StatelessWidget {
   final String nombre;
@@ -28,12 +29,12 @@ class TarjetaDestinatario extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColoresApp.blanco,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: seleccionado
-                ? const Color(0xFF285FE8)
-                : const Color(0xFFE1E8F3),
+                ? ColoresApp.primario
+                : ColoresApp.bordeTarjeta,
             width: seleccionado ? 1.5 : 1,
           ),
         ),
@@ -65,9 +66,9 @@ class TarjetaDestinatario extends StatelessWidget {
                         width: 10,
                         height: 10,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE53935),
+                          color: ColoresApp.errorFuerte,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 1.5),
+                          border: Border.all(color: ColoresApp.blanco, width: 1.5),
                         ),
                       ),
                     ),
@@ -84,14 +85,14 @@ class TarjetaDestinatario extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   Text(
                     correo,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                     ),
                   ),
                 ],
@@ -100,7 +101,7 @@ class TarjetaDestinatario extends StatelessWidget {
             if (seleccionado)
               const Icon(
                 Icons.check_circle,
-                color: Color(0xFF285FE8),
+                color: ColoresApp.primario,
                 size: 22,
               ),
           ],
@@ -112,13 +113,13 @@ class TarjetaDestinatario extends StatelessWidget {
   Widget _avatarInicial(String inicial, bool seleccionado) => Container(
     width: 40,
     height: 40,
-    color: seleccionado ? const Color(0xFF285FE8) : const Color(0xFFE8F0FE),
+    color: seleccionado ? ColoresApp.primario : ColoresApp.fondoSeleccionado,
     alignment: Alignment.center,
     child: Text(
       inicial,
       style: TextStyle(
         fontWeight: FontWeight.w700,
-        color: seleccionado ? Colors.white : const Color(0xFF285FE8),
+        color: seleccionado ? ColoresApp.blanco : ColoresApp.primario,
       ),
     ),
   );

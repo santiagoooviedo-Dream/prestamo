@@ -134,7 +134,7 @@ class _PantallaCambiarFotoState extends State<PantallaCambiarFoto> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
                 height: 1.18,
               ),
             ),
@@ -143,7 +143,7 @@ class _PantallaCambiarFotoState extends State<PantallaCambiarFoto> {
               'Elige cómo quieres agregar tu foto.',
               style: TextStyle(
                 fontSize: 15,
-                color: Color(0xFF66758D),
+                color: ColoresApp.textoSecundario,
                 height: 1.5,
               ),
             ),
@@ -153,10 +153,10 @@ class _PantallaCambiarFotoState extends State<PantallaCambiarFoto> {
                 width: 140,
                 height: 140,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDF3FF),
+                  color: ColoresApp.fondoInicio,
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: const Color(0xFFD6E4FF),
+                    color: ColoresApp.chipAzul,
                     width: 3,
                     strokeAlign: BorderSide.strokeAlignOutside,
                   ),
@@ -166,7 +166,7 @@ class _PantallaCambiarFotoState extends State<PantallaCambiarFoto> {
                     ? const Icon(
                         Icons.photo_camera_rounded,
                         size: 56,
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                       )
                     : Image.memory(_vistaPrevia!, fit: BoxFit.cover),
               ),
@@ -177,7 +177,7 @@ class _PantallaCambiarFotoState extends State<PantallaCambiarFoto> {
                 child: Text(
                   'Al tomarla, guardaremos una copia en la galería del teléfono.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 12, color: Color(0xFF66758D)),
+                  style: TextStyle(fontSize: 12, color: ColoresApp.textoSecundario),
                 ),
               ),
             ],
@@ -236,12 +236,12 @@ class _OpcionFoto extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ColoresApp.blanco,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE1E8F3)),
+            border: Border.all(color: ColoresApp.bordeTarjeta),
             boxShadow: const [
               BoxShadow(
-                color: Color(0x0D17243C),
+                color: ColoresApp.sombraSuave,
                 blurRadius: 12,
                 offset: Offset(0, 4),
               ),
@@ -253,10 +253,10 @@ class _OpcionFoto extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDF3FF),
+                  color: ColoresApp.fondoInicio,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icono, color: const Color(0xFF285FE8), size: 22),
+                child: Icon(icono, color: ColoresApp.primario, size: 22),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -268,7 +268,7 @@ class _OpcionFoto extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
+                        color: ColoresApp.textoPrincipal,
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -276,13 +276,13 @@ class _OpcionFoto extends StatelessWidget {
                       subtitulo,
                       style: const TextStyle(
                         fontSize: 13,
-                        color: Color(0xFF66758D),
+                        color: ColoresApp.textoSecundario,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Color(0xFF94A0B3)),
+              const Icon(Icons.chevron_right, color: ColoresApp.textoSuave),
             ],
           ),
         ),

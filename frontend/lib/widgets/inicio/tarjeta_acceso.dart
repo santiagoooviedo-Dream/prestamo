@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class TarjetaAcceso extends StatelessWidget {
   final IconData icono;
@@ -22,12 +23,12 @@ class TarjetaAcceso extends StatelessWidget {
         height: 174,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColoresApp.blanco,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
+          border: Border.all(color: ColoresApp.bordeTarjeta),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x0D17243C),
+              color: ColoresApp.sombraSuave,
               blurRadius: 16,
               offset: Offset(0, 5),
             ),
@@ -40,10 +41,10 @@ class TarjetaAcceso extends StatelessWidget {
               width: 52,
               height: 52,
               decoration: BoxDecoration(
-                color: const Color(0xFFEDF3FF),
+                color: ColoresApp.fondoInicio,
                 borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(icono, color: const Color(0xFF285FE8), size: 28),
+              child: Icon(icono, color: ColoresApp.primario, size: 28),
             ),
             const Spacer(),
             Text(
@@ -51,7 +52,7 @@ class TarjetaAcceso extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
                 height: 1.2,
               ),
             ),
@@ -60,7 +61,7 @@ class TarjetaAcceso extends StatelessWidget {
               subtitulo,
               style: const TextStyle(
                 fontSize: 11,
-                color: Color(0xFF66758D),
+                color: ColoresApp.textoSecundario,
                 height: 1.4,
               ),
             ),

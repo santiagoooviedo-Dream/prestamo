@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 List<Widget> semanasCalendario() {
   final filas = [
@@ -18,15 +19,15 @@ List<Widget> semanasCalendario() {
           final esProximo = dia == 20;
           final esPagado = dia == 10;
           final fondo = esProximo
-              ? const Color(0xFF285FE8)
+              ? ColoresApp.primario
               : esPagado
-              ? const Color(0xFFDCFCE7)
+              ? ColoresApp.exitoFondo2
               : null;
           final colorTexto = esProximo
-              ? Colors.white
+              ? ColoresApp.blanco
               : esPagado
-              ? const Color(0xFF168261)
-              : const Color(0xFF17243C);
+              ? ColoresApp.exitoProfundo
+              : ColoresApp.textoPrincipal;
           return Container(
             width: 32,
             height: 32,
@@ -71,7 +72,7 @@ class LeyendaCalendario extends StatelessWidget {
         const SizedBox(width: 4),
         Text(
           texto,
-          style: const TextStyle(fontSize: 10, color: Color(0xFF66758D)),
+          style: const TextStyle(fontSize: 10, color: ColoresApp.textoSecundario),
         ),
       ],
     );
@@ -97,11 +98,11 @@ class DetalleCalendario extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
           ),
           Text(
             valor,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+            style: const TextStyle(fontSize: 13, color: ColoresApp.textoPrincipal),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class OpcionMetodo extends StatelessWidget {
   final IconData icono;
@@ -22,22 +23,22 @@ class OpcionMetodo extends StatelessWidget {
         height: 72,
         padding: const EdgeInsets.symmetric(horizontal: 18),
         decoration: BoxDecoration(
-          color: seleccionado ? const Color(0xFFEDF3FF) : Colors.white,
+          color: seleccionado ? ColoresApp.fondoInicio : ColoresApp.blanco,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: seleccionado
-                ? const Color(0xFFD5E3FF)
-                : const Color(0xFFE1E8F3),
+                ? ColoresApp.chipAzul2
+                : ColoresApp.bordeTarjeta,
           ),
         ),
         child: Row(
           children: [
-            Icon(icono, size: 24, color: const Color(0xFF285FE8)),
+            Icon(icono, size: 24, color: ColoresApp.primario),
             const SizedBox(width: 14),
             Expanded(
               child: Text(
                 titulo,
-                style: const TextStyle(fontSize: 16, color: Color(0xFF17243C)),
+                style: const TextStyle(fontSize: 16, color: ColoresApp.textoPrincipal),
               ),
             ),
             Container(
@@ -47,14 +48,14 @@ class OpcionMetodo extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(
                   color: seleccionado
-                      ? const Color(0xFF285FE8)
-                      : const Color(0xFFCCD9F0),
+                      ? ColoresApp.primario
+                      : ColoresApp.bordeBoton,
                   width: 2,
                 ),
-                color: seleccionado ? const Color(0xFF285FE8) : Colors.white,
+                color: seleccionado ? ColoresApp.primario : ColoresApp.blanco,
               ),
               child: seleccionado
-                  ? const Icon(Icons.circle, size: 10, color: Colors.white)
+                  ? const Icon(Icons.circle, size: 10, color: ColoresApp.blanco)
                   : null,
             ),
           ],

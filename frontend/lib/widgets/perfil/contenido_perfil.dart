@@ -87,7 +87,7 @@ class ContenidoPerfil extends StatelessWidget {
                     },
                     child: CircleAvatar(
                       radius: 48,
-                      backgroundColor: const Color(0xFFEDF3FF),
+                      backgroundColor: ColoresApp.fondoInicio,
                       child: ClipOval(
                         child: foto != null && foto.isNotEmpty
                             ? Image.network(
@@ -108,7 +108,7 @@ class ContenidoPerfil extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   const SizedBox(height: 4),
@@ -116,7 +116,7 @@ class ContenidoPerfil extends StatelessWidget {
                     correo,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                     ),
                   ),
                   const SizedBox(height: 28),
@@ -203,7 +203,7 @@ class ContenidoPerfil extends StatelessWidget {
       style: const TextStyle(
         fontSize: 28,
         fontWeight: FontWeight.w700,
-        color: Color(0xFF285FE8),
+        color: ColoresApp.primario,
       ),
     ),
   );
@@ -226,17 +226,17 @@ class _OpcionPerfil extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texto = peligro ? const Color(0xFFBC4351) : const Color(0xFF17243C);
-    final fondo = peligro ? const Color(0xFFFFF0F2) : const Color(0xFFEDF3FF);
-    final acento = peligro ? const Color(0xFFBC4351) : const Color(0xFF285FE8);
+    final texto = peligro ? ColoresApp.errorRosado : ColoresApp.textoPrincipal;
+    final fondo = peligro ? ColoresApp.errorFondo : ColoresApp.fondoInicio;
+    final acento = peligro ? ColoresApp.errorRosado : ColoresApp.primario;
     return GestureDetector(
       onTap: alPresionar,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColoresApp.blanco,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
+          border: Border.all(color: ColoresApp.bordeTarjeta),
         ),
         child: Row(
           children: [
@@ -263,9 +263,9 @@ class _OpcionPerfil extends StatelessWidget {
                         width: 10,
                         height: 10,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE53935),
+                          color: ColoresApp.errorFuerte,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 1.5),
+                          border: Border.all(color: ColoresApp.blanco, width: 1.5),
                         ),
                       ),
                     ),
@@ -276,7 +276,7 @@ class _OpcionPerfil extends StatelessWidget {
             Expanded(
               child: Text(titulo, style: TextStyle(fontSize: 14, color: texto)),
             ),
-            const Icon(Icons.chevron_right, size: 20, color: Color(0xFF94A0B3)),
+            const Icon(Icons.chevron_right, size: 20, color: ColoresApp.textoSuave),
           ],
         ),
       ),

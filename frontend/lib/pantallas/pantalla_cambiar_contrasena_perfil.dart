@@ -103,13 +103,13 @@ class _PantallaCambiarContrasenaPerfilState
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
               'Por tu seguridad, elige una contraseña Segura.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 28),
             Expanded(

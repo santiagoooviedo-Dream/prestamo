@@ -91,7 +91,7 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
       iniciales.isEmpty ? '?' : iniciales,
       style: const TextStyle(
         fontWeight: FontWeight.w700,
-        color: Color(0xFF285FE8),
+        color: ColoresApp.primario,
       ),
     ),
   );
@@ -133,13 +133,13 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
               'Consulta y gestiona las cuentas registradas.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 16),
             TextField(
@@ -147,15 +147,15 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
               decoration: InputDecoration(
                 hintText: 'Buscar por nombre, correo o cédula',
                 filled: true,
-                fillColor: Colors.white,
-                prefixIcon: const Icon(Icons.search, color: Color(0xFF94A0B3)),
+                fillColor: ColoresApp.blanco,
+                prefixIcon: const Icon(Icons.search, color: ColoresApp.textoSuave),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Color(0xFFE1E8F3)),
+                  borderSide: const BorderSide(color: ColoresApp.bordeTarjeta),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
-                  borderSide: const BorderSide(color: Color(0xFFE1E8F3)),
+                  borderSide: const BorderSide(color: ColoresApp.bordeTarjeta),
                 ),
               ),
             ),
@@ -171,7 +171,7 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                           Text(
                             _error!,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(color: Color(0xFFDC2626)),
+                            style: const TextStyle(color: ColoresApp.errorOscuro),
                           ),
                           TextButton(
                             onPressed: _cargar,
@@ -184,7 +184,7 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                   ? const Center(
                       child: Text(
                         'No hay usuarios.',
-                        style: TextStyle(color: Color(0xFF66758D)),
+                        style: TextStyle(color: ColoresApp.textoSecundario),
                       ),
                     )
                   : RefreshIndicator(
@@ -240,10 +240,10 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                             child: Container(
                               padding: const EdgeInsets.all(16),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: ColoresApp.blanco,
                                 borderRadius: BorderRadius.circular(16),
                                 border: Border.all(
-                                  color: const Color(0xFFE1E8F3),
+                                  color: ColoresApp.bordeTarjeta,
                                 ),
                               ),
                               child: Row(
@@ -305,7 +305,7 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                                                     ),
                                                     shape: BoxShape.circle,
                                                     border: Border.all(
-                                                      color: Colors.white,
+                                                      color: ColoresApp.blanco,
                                                       width: 1.5,
                                                     ),
                                                   ),
@@ -327,14 +327,14 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                                           style: const TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w600,
-                                            color: Color(0xFF17243C),
+                                            color: ColoresApp.textoPrincipal,
                                           ),
                                         ),
                                         Text(
                                           correo,
                                           style: const TextStyle(
                                             fontSize: 13,
-                                            color: Color(0xFF66758D),
+                                            color: ColoresApp.textoSecundario,
                                           ),
                                         ),
                                       ],
@@ -342,7 +342,7 @@ class _PantallaAdminUsuariosState extends State<PantallaAdminUsuarios> {
                                   ),
                                   const Icon(
                                     Icons.chevron_right,
-                                    color: Color(0xFF94A0B3),
+                                    color: ColoresApp.textoSuave,
                                   ),
                                 ],
                               ),

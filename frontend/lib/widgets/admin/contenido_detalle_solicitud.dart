@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../models/solicitud_admin.dart';
 import 'tarjeta_blanca_admin.dart';
+import '../../nucleo/colores_app.dart';
 
 class ContenidoDetalleSolicitud extends StatelessWidget {
   final SolicitudAdmin solicitud;
@@ -32,7 +33,7 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFF4E5),
+            color: ColoresApp.advertenciaFondo,
             borderRadius: BorderRadius.circular(100),
           ),
           child: Text(
@@ -41,8 +42,8 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
               fontSize: 12,
               fontWeight: FontWeight.w600,
               color: s.pendiente
-                  ? const Color(0xFFA65B0B)
-                  : const Color(0xFF168261),
+                  ? ColoresApp.advertenciaProfundo2
+                  : ColoresApp.exitoProfundo,
             ),
           ),
         ),
@@ -51,7 +52,7 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.all(20),
           decoration: BoxDecoration(
-            color: const Color(0xFF285FE8),
+            color: ColoresApp.primario,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -59,7 +60,7 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
             children: [
               const Text(
                 'Monto solicitado',
-                style: TextStyle(fontSize: 13, color: Color(0xFFD6E4FF)),
+                style: TextStyle(fontSize: 13, color: ColoresApp.chipAzul),
               ),
               const SizedBox(height: 6),
               Text(
@@ -67,13 +68,13 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: ColoresApp.blanco,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
                 '${s.cuotas} cuotas mensuales',
-                style: const TextStyle(fontSize: 14, color: Color(0xFFD6E4FF)),
+                style: const TextStyle(fontSize: 14, color: ColoresApp.chipAzul),
               ),
             ],
           ),
@@ -88,7 +89,7 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF17243C),
+                  color: ColoresApp.textoPrincipal,
                 ),
               ),
               const SizedBox(height: 8),
@@ -116,7 +117,7 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF17243C),
+                  color: ColoresApp.textoPrincipal,
                 ),
               ),
               const SizedBox(height: 8),
@@ -146,7 +147,7 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF17243C),
+                  color: ColoresApp.textoPrincipal,
                 ),
               ),
               const SizedBox(height: 8),
@@ -167,7 +168,7 @@ class ContenidoDetalleSolicitud extends StatelessWidget {
         const SizedBox(height: 12),
         const Text(
           'Revisa los datos antes de aprobar o rechazar.',
-          style: TextStyle(fontSize: 13, color: Color(0xFF66758D), height: 1.4),
+          style: TextStyle(fontSize: 13, color: ColoresApp.textoSecundario, height: 1.4),
         ),
       ],
     );

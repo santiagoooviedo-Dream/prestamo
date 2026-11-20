@@ -252,7 +252,7 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -261,7 +261,7 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                         'Un administrador lo validará.',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Color(0xFF66758D),
+                          color: ColoresApp.textoSecundario,
                           height: 1.35,
                         ),
                       ),
@@ -270,9 +270,9 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: ColoresApp.blanco,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFE1E8F3)),
+                          border: Border.all(color: ColoresApp.bordeTarjeta),
                         ),
                         child: Column(
                           children: [
@@ -305,9 +305,9 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF0F5FF),
+                          color: ColoresApp.fondoAzulClaro,
                           borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: const Color(0xFFD9E5FA)),
+                          border: Border.all(color: ColoresApp.bordeAviso),
                         ),
                         child: const Text(
                           '1. Abre Nequi y envía el monto exacto al número indicado.\n'
@@ -315,7 +315,7 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                           '3. Súbela aquí y envía. El admin confirmará tu pago.',
                           style: TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF41618E),
+                            color: ColoresApp.textoContexto,
                             height: 1.45,
                           ),
                         ),
@@ -326,7 +326,7 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -340,7 +340,7 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                                   backgroundColor: Colors.black,
                                   appBar: AppBar(
                                     backgroundColor: Colors.black,
-                                    foregroundColor: Colors.white,
+                                    foregroundColor: ColoresApp.blanco,
                                     title: const Text(
                                       'Comprobante',
                                       style: TextStyle(fontSize: 16),
@@ -364,10 +364,10 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                             width: double.infinity,
                             height: 220,
                             decoration: BoxDecoration(
-                              color: const Color(0xFFF3F6FC),
+                              color: ColoresApp.fondoGrisAzul,
                               borderRadius: BorderRadius.circular(14),
                               border: Border.all(
-                                color: const Color(0xFFE1E8F3),
+                                color: ColoresApp.bordeTarjeta,
                               ),
                             ),
                             child: ClipRRect(
@@ -389,7 +389,7 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                             'Toca la imagen para verla completa',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Color(0xFF66758D),
+                              color: ColoresApp.textoSecundario,
                             ),
                           ),
                         ),
@@ -404,8 +404,8 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                               icon: const Icon(Icons.photo_camera_outlined),
                               label: const Text('Cámara'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: const Color(0xFF285FE8),
-                                side: const BorderSide(color: Color(0xFFD0DBF0)),
+                                foregroundColor: ColoresApp.primario,
+                                side: const BorderSide(color: ColoresApp.bordeSuave2),
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),
                                 shape: RoundedRectangleBorder(
@@ -424,8 +424,8 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                               icon: const Icon(Icons.image_outlined),
                               label: const Text('Galería'),
                               style: OutlinedButton.styleFrom(
-                                foregroundColor: const Color(0xFF285FE8),
-                                side: const BorderSide(color: Color(0xFFD0DBF0)),
+                                foregroundColor: ColoresApp.primario,
+                                side: const BorderSide(color: ColoresApp.bordeSuave2),
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 12),
                                 shape: RoundedRectangleBorder(
@@ -468,18 +468,18 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
       height: 140,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: const Color(0xFFF3F6FC),
+        color: ColoresApp.fondoGrisAzul,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.receipt_long_outlined, size: 36, color: Color(0xFF94A0B3)),
+          Icon(Icons.receipt_long_outlined, size: 36, color: ColoresApp.textoSuave),
           SizedBox(height: 8),
           Text(
             'Aún no has subido el comprobante',
-            style: TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+            style: TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
           ),
         ],
       ),
@@ -497,7 +497,7 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
       children: [
         Text(
           label,
-          style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+          style: const TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
         ),
         const SizedBox(width: 8),
         Flexible(
@@ -510,8 +510,8 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
                 fontSize: resaltar ? 18 : 14,
                 fontWeight: FontWeight.w700,
                 color: resaltar
-                    ? const Color(0xFF285FE8)
-                    : const Color(0xFF17243C),
+                    ? ColoresApp.primario
+                    : ColoresApp.textoPrincipal,
               ),
             ),
           ),
@@ -526,7 +526,7 @@ class _PantallaPagoNequiState extends State<PantallaPagoNequi> {
             icon: const Icon(
               Icons.copy_rounded,
               size: 16,
-              color: Color(0xFF285FE8),
+              color: ColoresApp.primario,
             ),
           ),
       ],

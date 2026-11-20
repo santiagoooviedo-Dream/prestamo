@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class TarjetaConversacionAdmin extends StatelessWidget {
   final String nombre;
@@ -20,13 +21,13 @@ class TarjetaConversacionAdmin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color fondo = yaValidado ? const Color(0xFFEAF7F0) : Colors.white;
+    final Color fondo = yaValidado ? ColoresApp.exitoClaro2 : ColoresApp.blanco;
     final Color borde =
-        yaValidado ? const Color(0xFFB7E4C7) : const Color(0xFFE1E8F3);
+        yaValidado ? ColoresApp.exitoBorde : ColoresApp.bordeTarjeta;
     final Color iconoFondo =
-        yaValidado ? const Color(0xFFD1FAE5) : const Color(0xFFE8F0FE);
+        yaValidado ? ColoresApp.exitoFondo : ColoresApp.fondoSeleccionado;
     final Color iconoColor =
-        yaValidado ? const Color(0xFF168261) : const Color(0xFF285FE8);
+        yaValidado ? ColoresApp.exitoProfundo : ColoresApp.primario;
 
     return InkWell(
       borderRadius: BorderRadius.circular(16),
@@ -71,9 +72,9 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                         width: 10,
                         height: 10,
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE53935),
+                          color: ColoresApp.errorFuerte,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 1.5),
+                          border: Border.all(color: ColoresApp.blanco, width: 1.5),
                         ),
                       ),
                     ),
@@ -95,7 +96,7 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF17243C),
+                            color: ColoresApp.textoPrincipal,
                           ),
                         ),
                       ),
@@ -107,7 +108,7 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFD1FAE5),
+                            color: ColoresApp.exitoFondo,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Text(
@@ -115,7 +116,7 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF168261),
+                              color: ColoresApp.exitoProfundo,
                             ),
                           ),
                         )
@@ -127,7 +128,7 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                             vertical: 3,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE8F0FE),
+                            color: ColoresApp.fondoSeleccionado,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: const Text(
@@ -135,7 +136,7 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w600,
-                              color: Color(0xFF285FE8),
+                              color: ColoresApp.primario,
                             ),
                           ),
                         ),
@@ -149,8 +150,8 @@ class TarjetaConversacionAdmin extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       color: yaValidado
-                          ? const Color(0xFF168261)
-                          : const Color(0xFF66758D),
+                          ? ColoresApp.exitoProfundo
+                          : ColoresApp.textoSecundario,
                     ),
                   ),
                 ],
@@ -159,8 +160,8 @@ class TarjetaConversacionAdmin extends StatelessWidget {
             Icon(
               Icons.chevron_right,
               color: yaValidado
-                  ? const Color(0xFF168261)
-                  : const Color(0xFF94A0B3),
+                  ? ColoresApp.exitoProfundo
+                  : ColoresApp.textoSuave,
             ),
           ],
         ),

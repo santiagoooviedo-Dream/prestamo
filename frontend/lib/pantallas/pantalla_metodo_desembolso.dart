@@ -84,7 +84,7 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -92,7 +92,7 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
                         'Selecciona cómo quieres recibir tu préstamo.',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Color(0xFF66758D),
+                          color: ColoresApp.textoSecundario,
                         ),
                       ),
                       const SizedBox(height: 28),
@@ -116,7 +116,7 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF17243C),
+                            color: ColoresApp.textoPrincipal,
                           ),
                         ),
                         const SizedBox(height: 8),
@@ -131,23 +131,23 @@ class _PantallaMetodoDesembolsoState extends State<PantallaMetodoDesembolso> {
                             hintText: '3001234567',
                             prefixText: '+57 ',
                             filled: true,
-                            fillColor: Colors.white,
+                            fillColor: ColoresApp.blanco,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: const BorderSide(
-                                color: Color(0xFFE1E8F3),
+                                color: ColoresApp.bordeTarjeta,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: const BorderSide(
-                                color: Color(0xFFE1E8F3),
+                                color: ColoresApp.bordeTarjeta,
                               ),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(14),
                               borderSide: const BorderSide(
-                                color: Color(0xFF285FE8),
+                                color: ColoresApp.primario,
                                 width: 1.5,
                               ),
                             ),

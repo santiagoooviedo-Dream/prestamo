@@ -40,8 +40,8 @@ class PantallaContrasenaLista extends StatelessWidget {
               child: const LinearProgressIndicator(
                 value: 1,
                 minHeight: 4,
-                backgroundColor: Color(0xFFE3E9F2),
-                valueColor: AlwaysStoppedAnimation(Color(0xFF285FE8)),
+                backgroundColor: ColoresApp.bordeSuave,
+                valueColor: AlwaysStoppedAnimation(ColoresApp.primario),
               ),
             ),
             const Spacer(flex: 2),
@@ -49,14 +49,14 @@ class PantallaContrasenaLista extends StatelessWidget {
               width: 112,
               height: 112,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F9F0),
+                color: ColoresApp.exitoClaro,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFD1FAE5), width: 8),
+                border: Border.all(color: ColoresApp.exitoFondo, width: 8),
               ),
               child: const Icon(
                 Icons.verified_user_outlined,
                 size: 44,
-                color: Color(0xFF22C55E),
+                color: ColoresApp.exito,
               ),
             ),
             const SizedBox(height: 28),
@@ -66,7 +66,7 @@ class PantallaContrasenaLista extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 12),
@@ -77,7 +77,7 @@ class PantallaContrasenaLista extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 15,
-                  color: Color(0xFF66758D),
+                  color: ColoresApp.textoSecundario,
                   height: 1.45,
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../comunes/punto_rojo.dart';
+import '../../nucleo/colores_app.dart';
 
 class AccionRapidaAdmin extends StatelessWidget {
   final IconData icono;
@@ -25,9 +26,9 @@ class AccionRapidaAdmin extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: ColoresApp.blanco,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE1E8F3)),
+            border: Border.all(color: ColoresApp.bordeTarjeta),
           ),
           child: Row(
             children: [
@@ -41,11 +42,11 @@ class AccionRapidaAdmin extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8F0FE),
+                        color: ColoresApp.fondoSeleccionado,
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child:
-                          Icon(icono, color: const Color(0xFF285FE8), size: 22),
+                          Icon(icono, color: ColoresApp.primario, size: 22),
                     ),
                     if (mostrarPunto)
                       Positioned(
@@ -55,9 +56,9 @@ class AccionRapidaAdmin extends StatelessWidget {
                           width: 10,
                           height: 10,
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE53935),
+                            color: ColoresApp.errorFuerte,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 1.5),
+                            border: Border.all(color: ColoresApp.blanco, width: 1.5),
                           ),
                         ),
                       ),
@@ -71,11 +72,11 @@ class AccionRapidaAdmin extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
               ),
-              const Icon(Icons.chevron_right, color: Color(0xFF94A0B3)),
+              const Icon(Icons.chevron_right, color: ColoresApp.textoSuave),
             ],
           ),
         ),

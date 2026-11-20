@@ -19,7 +19,7 @@ class BotonVolver extends StatelessWidget {
           border: Border.all(color: ColoresApp.bordeVolver),
           boxShadow: const [
             BoxShadow(
-              color: Color(0x0A17243C),
+              color: ColoresApp.sombraMuySuave,
               blurRadius: 6,
               offset: Offset(0, 2),
             ),

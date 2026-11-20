@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class CabeceraPerfilUsuario extends StatelessWidget {
   final String nombre;
@@ -30,7 +31,7 @@ class CabeceraPerfilUsuario extends StatelessWidget {
           height: 72,
           child: CircleAvatar(
             radius: 36,
-            backgroundColor: const Color(0xFFE8F0FE),
+            backgroundColor: ColoresApp.fondoSeleccionado,
             child: ClipOval(
               child: fotoUrl != null && fotoUrl.isNotEmpty
                   ? Image.network(
@@ -50,18 +51,18 @@ class CabeceraPerfilUsuario extends StatelessWidget {
           style: const TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.w700,
-            color: Color(0xFF17243C),
+            color: ColoresApp.textoPrincipal,
           ),
         ),
         Text(
           apellidos,
-          style: const TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+          style: const TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
         ),
         if (fechaRegistro.isNotEmpty) ...[
           const SizedBox(height: 4),
           Text(
             'Registro: $fechaRegistro',
-            style: const TextStyle(fontSize: 12, color: Color(0xFF94A0B3)),
+            style: const TextStyle(fontSize: 12, color: ColoresApp.textoSuave),
           ),
         ],
       ],
@@ -74,7 +75,7 @@ class CabeceraPerfilUsuario extends StatelessWidget {
       style: const TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.w700,
-        color: Color(0xFF285FE8),
+        color: ColoresApp.primario,
       ),
     ),
   );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/solicitud_admin.dart';
+import '../../nucleo/colores_app.dart';
 
 class ItemHistorialAdmin {
   final String titulo;
@@ -46,9 +47,9 @@ class TarjetaHistorialAdmin extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: ColoresApp.blanco,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFE1E8F3)),
+          border: Border.all(color: ColoresApp.bordeTarjeta),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +62,7 @@ class TarjetaHistorialAdmin extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                 ),
@@ -74,8 +75,8 @@ class TarjetaHistorialAdmin extends StatelessWidget {
                           horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
                         color: rechazado
-                            ? const Color(0xFFFFF0F2)
-                            : const Color(0xFFEAF7F0),
+                            ? ColoresApp.errorFondo
+                            : ColoresApp.exitoClaro2,
                         borderRadius: BorderRadius.circular(100),
                       ),
                       child: Text(
@@ -84,8 +85,8 @@ class TarjetaHistorialAdmin extends StatelessWidget {
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                           color: rechazado
-                              ? const Color(0xFFBC4351)
-                              : const Color(0xFF168261),
+                              ? ColoresApp.errorRosado
+                              : ColoresApp.exitoProfundo,
                         ),
                       ),
                     );
@@ -99,19 +100,19 @@ class TarjetaHistorialAdmin extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               item.cuotaTexto,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+              style: const TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
             ),
             if (item.fechaInicio != '—' || item.fechaFin != '—') ...[
               const SizedBox(height: 6),
               Text(
                 '${item.fechaInicio}  →  ${item.fechaFin}',
-                style: const TextStyle(fontSize: 12, color: Color(0xFF8A96A8)),
+                style: const TextStyle(fontSize: 12, color: ColoresApp.textoMuted2),
               ),
             ],
           ],

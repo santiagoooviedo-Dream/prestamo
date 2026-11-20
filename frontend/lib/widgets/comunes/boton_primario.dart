@@ -29,17 +29,17 @@ class BotonPrimario extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: activo
-                    ? const [Color(0xFF285FE8), Color(0xFF214EC4)]
+                    ? const [ColoresApp.primario, ColoresApp.primarioMasOscuro]
                     : [
-                        const Color(0xFF285FE8).withValues(alpha: 0.5),
-                        const Color(0xFF214EC4).withValues(alpha: 0.5),
+                        ColoresApp.primario.withValues(alpha: 0.5),
+                        ColoresApp.primarioMasOscuro.withValues(alpha: 0.5),
                       ],
               ),
               borderRadius: BorderRadius.circular(16),
               boxShadow: activo
                   ? const [
                       BoxShadow(
-                        color: Color(0x29285FE8),
+                        color: ColoresApp.sombraBoton,
                         blurRadius: 10,
                         offset: Offset(0, 4),
                       ),
@@ -53,7 +53,7 @@ class BotonPrimario extends StatelessWidget {
                       height: 22,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
-                        color: Colors.white,
+                        color: ColoresApp.blanco,
                       ),
                     )
                   : Text(
@@ -61,7 +61,7 @@ class BotonPrimario extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFFFFFFFF), // SIEMPRE blanco
+                        color: ColoresApp.blanco, // SIEMPRE blanco
                       ),
                     ),
             ),

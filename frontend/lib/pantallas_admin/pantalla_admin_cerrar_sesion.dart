@@ -57,7 +57,7 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
             const Icon(
               Icons.logout_rounded,
               size: 64,
-              color: Color(0xFF285FE8),
+              color: ColoresApp.primario,
             ),
             const SizedBox(height: 20),
             const Text(
@@ -65,14 +65,14 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
               '¿Seguro que deseas salir del panel de administrador?',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const Spacer(flex: 2),
             BotonPrimario(
@@ -94,8 +94,8 @@ class PantallaAdminCerrarSesion extends StatelessWidget {
                   );
                 },
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF285FE8),
-                  side: const BorderSide(color: Color(0xFFD0DBF0)),
+                  foregroundColor: ColoresApp.primario,
+                  side: const BorderSide(color: ColoresApp.bordeSuave2),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),

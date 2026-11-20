@@ -6,6 +6,7 @@ import '../widgets/comunes/barra_navegacion.dart';
 import '../widgets/soporte/chat_widgets.dart';
 import 'pantalla_inicio.dart';
 import 'pantalla_mis_conversaciones.dart';
+import '../nucleo/colores_app.dart';
 
 class PantallaAsistenteVirtual extends StatefulWidget {
   const PantallaAsistenteVirtual({super.key});
@@ -135,10 +136,10 @@ class _PantallaAsistenteVirtualState extends State<PantallaAsistenteVirtual> {
                             height: 48,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: ColoresApp.blanco,
                               borderRadius: BorderRadius.circular(24),
                               border: Border.all(
-                                color: const Color(0xFFE1E8F3),
+                                color: ColoresApp.bordeTarjeta,
                               ),
                             ),
                             alignment: Alignment.centerLeft,
@@ -149,7 +150,7 @@ class _PantallaAsistenteVirtualState extends State<PantallaAsistenteVirtual> {
                                 hintText: 'Escribe tu mensaje',
                                 hintStyle: TextStyle(
                                   fontSize: 14,
-                                  color: Color(0xFF94A0B3),
+                                  color: ColoresApp.textoSuave,
                                 ),
                                 border: InputBorder.none,
                                 isDense: true,
@@ -167,12 +168,12 @@ class _PantallaAsistenteVirtualState extends State<PantallaAsistenteVirtual> {
                             width: 48,
                             height: 48,
                             decoration: const BoxDecoration(
-                              color: Color(0xFF285FE8),
+                              color: ColoresApp.primario,
                               shape: BoxShape.circle,
                             ),
                             child: const Icon(
                               Icons.send_rounded,
-                              color: Colors.white,
+                              color: ColoresApp.blanco,
                               size: 22,
                             ),
                           ),

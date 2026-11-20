@@ -66,13 +66,13 @@ class _PantallaPrestamosAnterioresState
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
+                        color: ColoresApp.textoPrincipal,
                       ),
                     ),
                     const SizedBox(height: 6),
                     const Text(
                       'Revisa tu historial de préstamos.',
-                      style: TextStyle(fontSize: 13, color: Color(0xFF8090A7)),
+                      style: TextStyle(fontSize: 13, color: ColoresApp.textoMuted),
                     ),
                     const SizedBox(height: 18),
                     if (snapshot.hasError)
@@ -155,7 +155,7 @@ class _TituloSeccionHistorial extends StatelessWidget {
       style: const TextStyle(
         fontSize: 15,
         fontWeight: FontWeight.w600,
-        color: Color(0xFF17243C),
+        color: ColoresApp.textoPrincipal,
       ),
     ),
   );
@@ -178,7 +178,7 @@ class _TarjetaSolicitudRechazada extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Material(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           onTap: onTap,
@@ -187,13 +187,13 @@ class _TarjetaSolicitudRechazada extends StatelessWidget {
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE1E8F3)),
+              border: Border.all(color: ColoresApp.bordeTarjeta),
             ),
             child: Row(
               children: [
                 const Icon(
                   Icons.cancel_outlined,
-                  color: Color(0xFFB3261E),
+                  color: ColoresApp.errorMaterial,
                   size: 22,
                 ),
                 const SizedBox(width: 12),
@@ -209,7 +209,7 @@ class _TarjetaSolicitudRechazada extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF17243C),
+                                color: ColoresApp.textoPrincipal,
                               ),
                             ),
                           ),
@@ -221,7 +221,7 @@ class _TarjetaSolicitudRechazada extends StatelessWidget {
                         '\$${formatoMontoPrestamo(solicitud['monto_solicitado'])} · ${solicitud['coutas'] ?? '—'} cuotas',
                         style: const TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -229,7 +229,7 @@ class _TarjetaSolicitudRechazada extends StatelessWidget {
                         'Solicitud: ${formatoFechaPrestamo(fecha)} · ${metodo == 'nequi' ? 'Nequi' : 'Efectivo'}',
                         style: const TextStyle(
                           fontSize: 11,
-                          color: Color(0xFF66758D),
+                          color: ColoresApp.textoSecundario,
                         ),
                       ),
                     ],
@@ -238,7 +238,7 @@ class _TarjetaSolicitudRechazada extends StatelessWidget {
                 const SizedBox(width: 6),
                 const Icon(
                   Icons.chevron_right,
-                  color: Color(0xFF285FE8),
+                  color: ColoresApp.primario,
                   size: 20,
                 ),
               ],
@@ -257,7 +257,7 @@ class _EtiquetaRechazada extends StatelessWidget {
   Widget build(BuildContext context) => Container(
     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
     decoration: BoxDecoration(
-      color: const Color(0xFFFCE8E6),
+      color: ColoresApp.errorFondo2,
       borderRadius: BorderRadius.circular(100),
     ),
     child: const Text(
@@ -265,7 +265,7 @@ class _EtiquetaRechazada extends StatelessWidget {
       style: TextStyle(
         fontSize: 9,
         fontWeight: FontWeight.w600,
-        color: Color(0xFFB3261E),
+        color: ColoresApp.errorMaterial,
       ),
     ),
   );
@@ -282,7 +282,7 @@ class _TarjetaPrestamoAnterior extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Material(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           onTap: onTap,
@@ -291,7 +291,7 @@ class _TarjetaPrestamoAnterior extends StatelessWidget {
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE1E8F3)),
+              border: Border.all(color: ColoresApp.bordeTarjeta),
             ),
             child: Row(
               children: [
@@ -306,7 +306,7 @@ class _TarjetaPrestamoAnterior extends StatelessWidget {
                               'Préstamo personal',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Color(0xFF17243C),
+                                color: ColoresApp.textoPrincipal,
                               ),
                             ),
                           ),
@@ -316,7 +316,7 @@ class _TarjetaPrestamoAnterior extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEAF7F0),
+                              color: ColoresApp.exitoClaro2,
                               borderRadius: BorderRadius.circular(100),
                             ),
                             child: const Text(
@@ -324,7 +324,7 @@ class _TarjetaPrestamoAnterior extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 9,
                                 fontWeight: FontWeight.w600,
-                                color: Color(0xFF168261),
+                                color: ColoresApp.exitoProfundo,
                               ),
                             ),
                           ),
@@ -336,7 +336,7 @@ class _TarjetaPrestamoAnterior extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                       const SizedBox(height: 5),
@@ -344,7 +344,7 @@ class _TarjetaPrestamoAnterior extends StatelessWidget {
                         formatoFechaPrestamo(prestamo['fecha_inicio']),
                         style: const TextStyle(
                           fontSize: 10,
-                          color: Color(0xFF8090A7),
+                          color: ColoresApp.textoMuted,
                         ),
                       ),
                     ],
@@ -353,7 +353,7 @@ class _TarjetaPrestamoAnterior extends StatelessWidget {
                 const SizedBox(width: 8),
                 const Icon(
                   Icons.chevron_right,
-                  color: Color(0xFF285FE8),
+                  color: ColoresApp.primario,
                   size: 20,
                 ),
               ],
@@ -407,30 +407,30 @@ class PantallaDetalleSolicitudRechazada extends StatelessWidget {
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF17243C),
+              color: ColoresApp.textoPrincipal,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Solicitud #${solicitud['id_solicitud'] ?? ''}',
-            style: const TextStyle(fontSize: 14, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 14, color: ColoresApp.textoSecundario),
           ),
           const SizedBox(height: 20),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: const Color(0xFFFCE8E6),
+              color: ColoresApp.errorFondo2,
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Row(
               children: [
-                Icon(Icons.cancel_outlined, color: Color(0xFFB3261E)),
+                Icon(Icons.cancel_outlined, color: ColoresApp.errorMaterial),
                 SizedBox(width: 10),
                 Expanded(
                   child: Text(
                     'El administrador rechazó esta solicitud.',
                     style: TextStyle(
-                      color: Color(0xFF8C1D18),
+                      color: ColoresApp.errorProfundo,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -442,9 +442,9 @@ class PantallaDetalleSolicitudRechazada extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColoresApp.blanco,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE1E8F3)),
+              border: Border.all(color: ColoresApp.bordeTarjeta),
             ),
             child: Column(
               children: [
@@ -482,7 +482,7 @@ class PantallaDetalleSolicitudRechazada extends StatelessWidget {
             'Si necesitas más información sobre la decisión, comunícate con soporte.',
             style: TextStyle(
               fontSize: 13,
-              color: Color(0xFF66758D),
+              color: ColoresApp.textoSecundario,
               height: 1.5,
             ),
           ),
@@ -507,7 +507,7 @@ class _FilaDetalleSolicitud extends StatelessWidget {
         Expanded(
           child: Text(
             etiqueta,
-            style: const TextStyle(fontSize: 12, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 12, color: ColoresApp.textoSecundario),
           ),
         ),
         const SizedBox(width: 12),
@@ -518,7 +518,7 @@ class _FilaDetalleSolicitud extends StatelessWidget {
             style: const TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF17243C),
+              color: ColoresApp.textoPrincipal,
             ),
           ),
         ),
@@ -558,7 +558,7 @@ class _HistorialVacio extends StatelessWidget {
         child: Text(
           'Aún no tienes préstamos completados ni solicitudes rechazadas.',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 14, color: Color(0xFF66758D)),
+          style: TextStyle(fontSize: 14, color: ColoresApp.textoSecundario),
         ),
       ),
     );

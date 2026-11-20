@@ -124,13 +124,13 @@ class _PantallaAdminSolicitudesState extends State<PantallaAdminSolicitudes> {
               style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 6),
             Text(
               sub,
-              style: const TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: const TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 16),
             Expanded(child: _cuerpo()),
@@ -159,7 +159,7 @@ class _PantallaAdminSolicitudesState extends State<PantallaAdminSolicitudes> {
       return const Center(
         child: Text(
           'No hay solicitudes pendientes.',
-          style: TextStyle(color: Color(0xFF66758D)),
+          style: TextStyle(color: ColoresApp.textoSecundario),
         ),
       );
     }

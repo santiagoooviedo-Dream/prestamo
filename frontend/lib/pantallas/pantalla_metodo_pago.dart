@@ -107,7 +107,7 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
                         style: TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -115,7 +115,7 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
                         'Selecciona cómo quieres pagar tu cuota.',
                         style: TextStyle(
                           fontSize: 15,
-                          color: Color(0xFF66758D),
+                          color: ColoresApp.textoSecundario,
                         ),
                       ),
                       const SizedBox(height: 28),
@@ -138,17 +138,17 @@ class _PantallaMetodoPagoState extends State<PantallaMetodoPago> {
                           width: double.infinity,
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFF0F5FF),
+                            color: ColoresApp.fondoAzulClaro,
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
-                              color: const Color(0xFFD9E5FA),
+                              color: ColoresApp.bordeAviso,
                             ),
                           ),
                           child: const Text(
                             'Al elegir pago personal se abrirá un chat con un administrador para acordar cuándo puedes realizar el pago. Él validará el abono cuando lo confirmes.',
                             style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFF41618E),
+                              color: ColoresApp.textoContexto,
                               height: 1.4,
                             ),
                           ),

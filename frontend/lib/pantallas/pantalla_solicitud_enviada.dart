@@ -36,7 +36,7 @@ class PantallaSolicitudEnviada extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
                 Text(
@@ -55,14 +55,14 @@ class PantallaSolicitudEnviada extends StatelessWidget {
               width: 112,
               height: 112,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F9F0),
+                color: ColoresApp.exitoClaro,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFD1FAE5), width: 8),
+                border: Border.all(color: ColoresApp.exitoFondo, width: 8),
               ),
               child: const Icon(
                 Icons.check_rounded,
                 size: 48,
-                color: Color(0xFF22C55E),
+                color: ColoresApp.exito,
               ),
             ),
             const SizedBox(height: 28),
@@ -72,7 +72,7 @@ class PantallaSolicitudEnviada extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ), 
             ),
             const SizedBox(height: 10),
@@ -81,7 +81,7 @@ class PantallaSolicitudEnviada extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
-                color: Color(0xFF66758D),
+                color: ColoresApp.textoSecundario,
                 height: 1.5,
               ),
             ),
@@ -94,7 +94,7 @@ class PantallaSolicitudEnviada extends StatelessWidget {
               const Text(
                 'La solicitud quedó registrada, pero no pudimos enviar el correo de confirmación.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: Color(0xFFB45309)),
+                style: TextStyle(fontSize: 12, color: ColoresApp.advertenciaProfundo),
               ),
             ],
             if (!notificacionCreada) ...[
@@ -102,7 +102,7 @@ class PantallaSolicitudEnviada extends StatelessWidget {
               const Text(
                 'La solicitud quedó registrada, pero no se pudo crear la notificación dentro de la aplicación.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 12, color: Color(0xFFB45309)),
+                style: TextStyle(fontSize: 12, color: ColoresApp.advertenciaProfundo),
               ),
             ],
             const Spacer(flex: 3),

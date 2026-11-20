@@ -96,7 +96,7 @@ class _PantallaProcesandoPagoState extends State<PantallaProcesandoPago> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
                 Text(
@@ -116,20 +116,20 @@ class _PantallaProcesandoPagoState extends State<PantallaProcesandoPago> {
                 width: 112,
                 height: 112,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEDF3FF),
+                  color: ColoresApp.fondoInicio,
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFD6E4FF), width: 6),
+                  border: Border.all(color: ColoresApp.chipAzul, width: 6),
                 ),
                 child: const Padding(
                   padding: EdgeInsets.all(28),
                   child: CircularProgressIndicator(
                     strokeWidth: 3.5,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
               )
             else
-              const Icon(Icons.error_outline, size: 72, color: Color(0xFFEF4444)),
+              const Icon(Icons.error_outline, size: 72, color: ColoresApp.error),
             const SizedBox(height: 28),
             Text(
               _error == null ? 'Procesando pago...' : 'No se pudo completar',
@@ -137,14 +137,14 @@ class _PantallaProcesandoPagoState extends State<PantallaProcesandoPago> {
               style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 10),
             Text(
               _error ?? 'Estamos validando tu transacción.',
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: const TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             if (_error != null) ...[
               const SizedBox(height: 24),

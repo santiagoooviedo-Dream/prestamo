@@ -9,6 +9,7 @@ import '../../pantallas/pantalla_prestamos_anteriores.dart';
 import '../../pantallas/pantalla_solicitar_prestamo.dart';
 import '../comunes/boton_primario.dart';
 import '../comunes/boton_volver.dart';
+import '../../nucleo/colores_app.dart';
 
 class ListaMisPrestamos extends StatelessWidget {
   final double top;
@@ -53,7 +54,7 @@ class ListaMisPrestamos extends StatelessWidget {
               style: TextStyle(
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF41618E),
+                color: ColoresApp.textoContexto,
                 letterSpacing: 0.3,
               ),
             ),
@@ -65,7 +66,7 @@ class ListaMisPrestamos extends StatelessWidget {
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF17243C),
+            color: ColoresApp.textoPrincipal,
           ),
         ),
         const SizedBox(height: 16),
@@ -163,7 +164,7 @@ class _TarjetaPrestamoActual extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF285FE8), Color(0xFF214EC4)],
+                colors: [ColoresApp.primario, ColoresApp.primarioMasOscuro],
               ),
               borderRadius: BorderRadius.circular(16),
             ),
@@ -172,7 +173,7 @@ class _TarjetaPrestamoActual extends StatelessWidget {
               children: [
                 const Text(
                   'Préstamo actual',
-                  style: TextStyle(fontSize: 12, color: Color(0xFFE4EDFF)),
+                  style: TextStyle(fontSize: 12, color: ColoresApp.fondoAzulMedio),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -180,20 +181,20 @@ class _TarjetaPrestamoActual extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                    color: ColoresApp.blanco,
                   ),
                 ),
-                const Divider(color: Color(0x66FFFFFF), height: 18),
+                const Divider(color: ColoresApp.blancoTranslucido, height: 18),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       'Cuotas pagadas',
-                      style: TextStyle(fontSize: 11, color: Color(0xFFE4EDFF)),
+                      style: TextStyle(fontSize: 11, color: ColoresApp.fondoAzulMedio),
                     ),
                     Text(
                       total == 0 ? '—' : '$pagadas de $total',
-                      style: const TextStyle(fontSize: 11, color: Colors.white),
+                      style: const TextStyle(fontSize: 11, color: ColoresApp.blanco),
                     ),
                   ],
                 ),
@@ -214,9 +215,9 @@ class _TarjetaPrestamoActual extends StatelessWidget {
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: ColoresApp.blanco,
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: const Color(0xFFE1E8F3)),
+              border: Border.all(color: ColoresApp.bordeTarjeta),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -229,7 +230,7 @@ class _TarjetaPrestamoActual extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                     ),
@@ -253,8 +254,8 @@ class _TarjetaPrestamoActual extends StatelessWidget {
                   child: LinearProgressIndicator(
                     value: progreso,
                     minHeight: 5,
-                    backgroundColor: const Color(0xFFE3E9F2),
-                    valueColor: const AlwaysStoppedAnimation(Color(0xFF285FE8)),
+                    backgroundColor: ColoresApp.bordeSuave,
+                    valueColor: const AlwaysStoppedAnimation(ColoresApp.primario),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -264,7 +265,7 @@ class _TarjetaPrestamoActual extends StatelessWidget {
                       : '$pagadas de $total cuotas pagadas',
                   style: const TextStyle(
                     fontSize: 11,
-                    color: Color(0xFF66758D),
+                    color: ColoresApp.textoSecundario,
                   ),
                 ),
               ],
@@ -284,7 +285,7 @@ class _AccesoHistorial extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: ColoresApp.blanco,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
         onTap: onTap,
@@ -293,19 +294,19 @@ class _AccesoHistorial extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: const Color(0xFFE1E8F3)),
+            border: Border.all(color: ColoresApp.bordeTarjeta),
           ),
           child: const Row(
             children: [
-              Icon(Icons.history_rounded, color: Color(0xFF285FE8), size: 20),
+              Icon(Icons.history_rounded, color: ColoresApp.primario, size: 20),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
                   'Préstamos anteriores',
-                  style: TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+                  style: TextStyle(fontSize: 13, color: ColoresApp.textoPrincipal),
                 ),
               ),
-              Icon(Icons.chevron_right, color: Color(0xFF94A0B3), size: 20),
+              Icon(Icons.chevron_right, color: ColoresApp.textoSuave, size: 20),
             ],
           ),
         ),
@@ -347,9 +348,9 @@ class _TarjetaSolicitud extends StatelessWidget {
       margin: const EdgeInsets.only(top: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -362,7 +363,7 @@ class _TarjetaSolicitud extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
               ),
@@ -372,12 +373,12 @@ class _TarjetaSolicitud extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             '\$${formatoMontoPrestamo(solicitud['monto_solicitado'])} · ${solicitud['coutas'] ?? '—'} cuotas',
-            style: const TextStyle(fontSize: 14, color: Color(0xFF17243C)),
+            style: const TextStyle(fontSize: 14, color: ColoresApp.textoPrincipal),
           ),
           const SizedBox(height: 4),
           Text(
             'Desembolso: ${metodo == 'nequi' ? 'Nequi · ${solicitud['telefono_nequi'] ?? ''}' : 'Efectivo'}',
-            style: const TextStyle(fontSize: 12, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 12, color: ColoresApp.textoSecundario),
           ),
         ],
       ),
@@ -395,8 +396,8 @@ class _Etiqueta extends StatelessWidget {
     final normalizado = texto.isEmpty ? 'Pendiente' : texto;
     final completado = normalizado.toLowerCase() == 'completado';
     final color = completado
-        ? const Color(0xFF168261)
-        : const Color(0xFF285FE8);
+        ? ColoresApp.exitoProfundo
+        : ColoresApp.primario;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
@@ -428,11 +429,11 @@ class _FilaDato extends StatelessWidget {
       children: [
         Text(
           etiqueta,
-          style: const TextStyle(fontSize: 11, color: Color(0xFF8090A7)),
+          style: const TextStyle(fontSize: 11, color: ColoresApp.textoMuted),
         ),
         Text(
           valor,
-          style: const TextStyle(fontSize: 11, color: Color(0xFF17243C)),
+          style: const TextStyle(fontSize: 11, color: ColoresApp.textoPrincipal),
         ),
       ],
     );
@@ -478,7 +479,7 @@ class _EstadoVacio extends StatelessWidget {
       child: Text(
         'Todavía no tienes préstamos activos.',
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14, color: Color(0xFF66758D)),
+        style: TextStyle(fontSize: 14, color: ColoresApp.textoSecundario),
       ),
     ),
   );

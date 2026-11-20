@@ -27,7 +27,7 @@ class PantallaAdminBienvenida extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
                 Text(
@@ -46,7 +46,7 @@ class PantallaAdminBienvenida extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(20, 40, 20, 28),
               decoration: BoxDecoration(
-                color: const Color(0xFFEDF3FF),
+                color: ColoresApp.fondoInicio,
                 borderRadius: BorderRadius.circular(28),
               ),
               child: Column(
@@ -56,11 +56,11 @@ class PantallaAdminBienvenida extends StatelessWidget {
                     height: 96,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: ColoresApp.blanco,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: const [
                         BoxShadow(
-                          color: Color(0x33285FE8),
+                          color: ColoresApp.sombraBotonMedia,
                           blurRadius: 16,
                           offset: Offset(0, 8),
                         ),
@@ -77,7 +77,7 @@ class PantallaAdminBienvenida extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF285FE8),
+                      color: ColoresApp.primario,
                       letterSpacing: 1.2,
                     ),
                   ),
@@ -88,7 +88,7 @@ class PantallaAdminBienvenida extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 34,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                 ],
@@ -100,7 +100,7 @@ class PantallaAdminBienvenida extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
-                color: Color(0xFF66758D),
+                color: ColoresApp.textoSecundario,
                 height: 1.5,
               ),
             ),
@@ -110,23 +110,23 @@ class PantallaAdminBienvenida extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFEAF1FF), Color(0xFFF2F6FF)],
+                  colors: [ColoresApp.blobSuave, ColoresApp.fondoAzulClaro2],
                 ),
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFD9E5FA)),
+                border: Border.all(color: ColoresApp.bordeAviso),
               ),
               child: const Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(Icons.shield_outlined,
-                      size: 20, color: Color(0xFF285FE8)),
+                      size: 20, color: ColoresApp.primario),
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'Tu seguridad es importante para nosotros. Cuidamos tu información en cada paso.',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Color(0xFF66758D),
+                        color: ColoresApp.textoSecundario,
                         height: 1.5,
                       ),
                     ),

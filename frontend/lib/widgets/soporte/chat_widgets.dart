@@ -38,13 +38,13 @@ class CabeceraAsistente extends StatelessWidget {
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF17243C),
+            color: ColoresApp.textoPrincipal,
           ),
         ),
         const SizedBox(height: 6),
         const Text(
           'Estamos aquí para resolver tus dudas.',
-          style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+          style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
         ),
         if (alVerAnteriores != null) ...[
           const SizedBox(height: 10),
@@ -53,21 +53,21 @@ class CabeceraAsistente extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: const Color(0xFFEDF3FF),
+                color: ColoresApp.fondoInicio,
                 borderRadius: BorderRadius.circular(100),
-                border: Border.all(color: const Color(0xFFD6E4FF)),
+                border: Border.all(color: ColoresApp.chipAzul),
               ),
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.history_rounded, size: 16, color: Color(0xFF285FE8)),
+                  Icon(Icons.history_rounded, size: 16, color: ColoresApp.primario),
                   SizedBox(width: 6),
                   Text(
                     'Ver conversaciones anteriores',
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF285FE8),
+                      color: ColoresApp.primario,
                     ),
                   ),
                 ],
@@ -139,9 +139,9 @@ class BurbujaChat extends StatelessWidget {
           maxWidth: MediaQuery.sizeOf(context).width * 0.78,
         ),
         decoration: BoxDecoration(
-          color: propio ? const Color(0xFF285FE8) : Colors.white,
+          color: propio ? ColoresApp.primario : ColoresApp.blanco,
           borderRadius: BorderRadius.circular(16),
-          border: propio ? null : Border.all(color: const Color(0xFFE1E8F3)),
+          border: propio ? null : Border.all(color: ColoresApp.bordeTarjeta),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,7 +152,7 @@ class BurbujaChat extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   height: 1.4,
-                  color: propio ? Colors.white : const Color(0xFF17243C),
+                  color: propio ? ColoresApp.blanco : ColoresApp.textoPrincipal,
                 ),
               ),
             if (urls.isNotEmpty) ...[
@@ -178,8 +178,8 @@ class BurbujaChat extends StatelessWidget {
                               height: 120,
                               alignment: Alignment.center,
                               color: propio
-                                  ? const Color(0x33214EC4)
-                                  : const Color(0xFFF3F6FC),
+                                  ? ColoresApp.sombraPrimarioOscuro
+                                  : ColoresApp.fondoGrisAzul,
                               child: const SizedBox(
                                 width: 24,
                                 height: 24,
@@ -196,7 +196,7 @@ class BurbujaChat extends StatelessWidget {
                                 fontSize: 12,
                                 color: propio
                                     ? Colors.white70
-                                    : const Color(0xFF66758D),
+                                    : ColoresApp.textoSecundario,
                               ),
                             ),
                           ),
@@ -210,7 +210,7 @@ class BurbujaChat extends StatelessWidget {
                 'Toca la imagen para ampliarla',
                 style: TextStyle(
                   fontSize: 11,
-                  color: propio ? Colors.white70 : const Color(0xFF94A0B3),
+                  color: propio ? Colors.white70 : ColoresApp.textoSuave,
                 ),
               ),
             ],
@@ -231,7 +231,7 @@ class _VisorImagenChat extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        foregroundColor: Colors.white,
+        foregroundColor: ColoresApp.blanco,
         title: const Text('Comprobante', style: TextStyle(fontSize: 16)),
       ),
       body: Center(
@@ -265,16 +265,16 @@ class SugerenciaChat extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          color: const Color(0xFFEDF3FF),
+          color: ColoresApp.fondoInicio,
           borderRadius: BorderRadius.circular(100),
-          border: Border.all(color: const Color(0xFFD5E3FF)),
+          border: Border.all(color: ColoresApp.chipAzul2),
         ),
         child: Text(
           texto,
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w500,
-            color: Color(0xFF285FE8),
+            color: ColoresApp.primario,
           ),
         ),
       ),

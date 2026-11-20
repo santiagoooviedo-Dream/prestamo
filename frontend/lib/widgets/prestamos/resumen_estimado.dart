@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class ResumenEstimado extends StatelessWidget {
   final int monto;
@@ -66,9 +67,9 @@ class ResumenEstimado extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -81,7 +82,7 @@ class ResumenEstimado extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
               ),
@@ -91,7 +92,7 @@ class ResumenEstimado extends StatelessWidget {
                   vertical: 4,
                 ),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE8F0FE),
+                  color: ColoresApp.fondoSeleccionado,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
@@ -99,7 +100,7 @@ class ResumenEstimado extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
               ),
@@ -108,7 +109,7 @@ class ResumenEstimado extends StatelessWidget {
           const SizedBox(height: 14),
           const Text(
             'Simulación con interés simple del 10 % sobre el monto solicitado. Confirma si la tasa es total, mensual o anual antes de solicitar.',
-            style: TextStyle(fontSize: 12, color: Color(0xFF94A0B3), height: 1.35),
+            style: TextStyle(fontSize: 12, color: ColoresApp.textoSuave, height: 1.35),
           ),
           const SizedBox(height: 14),
           _fila('Monto solicitado', '\$${formato(monto)}', grande: true),
@@ -135,7 +136,7 @@ class ResumenEstimado extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: grande ? 14 : 13,
-              color: const Color(0xFF66758D),
+              color: ColoresApp.textoSecundario,
               fontWeight: grande ? FontWeight.w600 : FontWeight.w400,
             ),
           ),
@@ -145,7 +146,7 @@ class ResumenEstimado extends StatelessWidget {
           style: TextStyle(
             fontSize: grande ? 15 : 13,
             fontWeight: FontWeight.w700,
-            color: const Color(0xFF17243C),
+            color: ColoresApp.textoPrincipal,
           ),
         ),
       ],

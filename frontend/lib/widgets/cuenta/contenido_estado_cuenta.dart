@@ -4,6 +4,7 @@ import '../../models/cuenta_model.dart';
 import '../../pantallas/pantalla_actividad_cuenta.dart';
 import '../../pantallas/pantalla_calendario_pagos.dart';
 import '../comunes/boton_primario.dart';
+import '../../nucleo/colores_app.dart';
 
 class ContenidoEstadoCuenta extends StatelessWidget {
   final CuentaEstado estado;
@@ -27,11 +28,11 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF285FE8),
+                  color: ColoresApp.primario,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: const [
                     BoxShadow(
-                      color: Color(0x33285FE8),
+                      color: ColoresApp.sombraBotonMedia,
                       blurRadius: 18,
                       offset: Offset(0, 8),
                     ),
@@ -44,7 +45,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                       'Monto total',
                       style: TextStyle(
                         fontSize: 13,
-                        color: Color(0xFFD6E4FF),
+                        color: ColoresApp.chipAzul,
                       ),
                     ),
                     const SizedBox(height: 6),
@@ -53,7 +54,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.w700,
-                        color: Colors.white,
+                        color: ColoresApp.blanco,
                         height: 1.1,
                       ),
                     ),
@@ -68,7 +69,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                                 'Cuotas pagadas',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Color(0xFFD6E4FF),
+                                  color: ColoresApp.chipAzul,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -79,7 +80,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                                  color: ColoresApp.blanco,
                                 ),
                               ),
                             ],
@@ -93,7 +94,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                                 'Próximo pago',
                                 style: TextStyle(
                                   fontSize: 12,
-                                  color: Color(0xFFD6E4FF),
+                                  color: ColoresApp.chipAzul,
                                 ),
                               ),
                               const SizedBox(height: 4),
@@ -104,7 +105,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.white,
+                                  color: ColoresApp.blanco,
                                 ),
                               ),
                             ],
@@ -125,7 +126,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF17243C),
+                        color: ColoresApp.textoPrincipal,
                       ),
                     ),
                   ),
@@ -143,7 +144,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                       ),
                     ),
                   ),
@@ -155,7 +156,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                   padding: EdgeInsets.symmetric(vertical: 20),
                   child: Text(
                     'Aún no hay movimientos en tu cuenta.',
-                    style: TextStyle(fontSize: 14, color: Color(0xFF66758D)),
+                    style: TextStyle(fontSize: 14, color: ColoresApp.textoSecundario),
                   ),
                 )
               else
@@ -165,16 +166,16 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                 width: double.infinity,
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF0F5FF),
+                  color: ColoresApp.fondoAzulClaro,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFFD9E5FA)),
+                  border: Border.all(color: ColoresApp.bordeAviso),
                 ),
                 child: const Row(
                   children: [
                     Icon(
                       Icons.shield_outlined,
                       size: 18,
-                      color: Color(0xFF285FE8),
+                      color: ColoresApp.primario,
                     ),
                     SizedBox(width: 10),
                     Expanded(
@@ -182,7 +183,7 @@ class ContenidoEstadoCuenta extends StatelessWidget {
                         'Consulta el calendario de pagos para ver todas tus fechas importantes.',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Color(0xFF66758D),
+                          color: ColoresApp.textoSecundario,
                           height: 1.35,
                         ),
                       ),
@@ -218,8 +219,8 @@ class _ItemActividad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorMonto = movimiento.positivo
-        ? const Color(0xFF168261)
-        : const Color(0xFFC47A00);
+        ? ColoresApp.exitoProfundo
+        : ColoresApp.advertenciaOscuro;
     final signo = movimiento.positivo ? '+' : '-';
 
     return Padding(
@@ -230,13 +231,13 @@ class _ItemActividad extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: const Color(0xFFEDF3FF),
+              color: ColoresApp.fondoInicio,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               iconoMovimiento(movimiento.tipoIcono),
               size: 20,
-              color: const Color(0xFF285FE8),
+              color: ColoresApp.primario,
             ),
           ),
           const SizedBox(width: 12),
@@ -249,7 +250,7 @@ class _ItemActividad extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -257,7 +258,7 @@ class _ItemActividad extends StatelessWidget {
                   movimiento.descripcion,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF66758D),
+                    color: ColoresApp.textoSecundario,
                   ),
                 ),
               ],
@@ -279,7 +280,7 @@ class _ItemActividad extends StatelessWidget {
                 formatoFechaCortaCuenta(movimiento.fechaDate),
                 style: const TextStyle(
                   fontSize: 11,
-                  color: Color(0xFF94A0B3),
+                  color: ColoresApp.textoSuave,
                 ),
               ),
             ],

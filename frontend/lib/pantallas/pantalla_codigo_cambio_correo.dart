@@ -105,16 +105,16 @@ class _PantallaCodigoCambioCorreoState
                       CircleAvatar(
                         radius: 56,
                         backgroundColor: _actualizado
-                            ? const Color(0xFFE8F9F0)
-                            : const Color(0xFFEDF3FF),
+                            ? ColoresApp.exitoClaro
+                            : ColoresApp.fondoInicio,
                         child: Icon(
                           _actualizado
                               ? Icons.mark_email_read_outlined
                               : Icons.mail_outline_rounded,
                           size: 48,
                           color: _actualizado
-                              ? const Color(0xFF22C55E)
-                              : const Color(0xFF285FE8),
+                              ? ColoresApp.exito
+                              : ColoresApp.primario,
                         ),
                       ),
                       const SizedBox(height: 28),
@@ -126,7 +126,7 @@ class _PantallaCodigoCambioCorreoState
                         style: const TextStyle(
                           fontSize: 28,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF17243C),
+                          color: ColoresApp.textoPrincipal,
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -137,7 +137,7 @@ class _PantallaCodigoCambioCorreoState
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 15,
-                          color: Color(0xFF66758D),
+                          color: ColoresApp.textoSecundario,
                           height: 1.5,
                         ),
                       ),

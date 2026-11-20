@@ -94,7 +94,7 @@ class _PantallaValidandoSolicitudState
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF285FE8),
+                    color: ColoresApp.primario,
                   ),
                 ),
                 Text(
@@ -113,21 +113,21 @@ class _PantallaValidandoSolicitudState
               width: 112,
               height: 112,
               decoration: BoxDecoration(
-                color: const Color(0xFFEDF3FF),
+                color: ColoresApp.fondoInicio,
                 shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFD6E4FF), width: 6),
+                border: Border.all(color: ColoresApp.chipAzul, width: 6),
               ),
               child: _error == null
                   ? const Padding(
                       padding: EdgeInsets.all(28),
                       child: CircularProgressIndicator(
                         strokeWidth: 3.5,
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                       ),
                     )
                   : const Icon(
                       Icons.error_outline,
-                      color: Color(0xFFB42318),
+                      color: ColoresApp.errorMaterial2,
                       size: 48,
                     ),
             ),
@@ -138,7 +138,7 @@ class _PantallaValidandoSolicitudState
               style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
                 height: 1.25,
               ),
             ),
@@ -146,7 +146,7 @@ class _PantallaValidandoSolicitudState
             Text(
               _error ?? 'Estamos registrando tu solicitud de préstamo.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const Spacer(flex: 3),
             if (_error != null)

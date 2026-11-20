@@ -10,6 +10,7 @@ import 'pantalla_solicitar_prestamo.dart';
 import 'pantalla_notificaciones.dart';
 import '../models/notificacion_model.dart';
 import '../widgets/comunes/punto_rojo.dart';
+import '../nucleo/colores_app.dart';
 
 class PantallaInicio extends StatelessWidget {
   const PantallaInicio({super.key});
@@ -37,7 +38,7 @@ class PantallaInicio extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          color: Color(0xFF285FE8),
+                          color: ColoresApp.primario,
                         ),
                       ),
                       // Icono de notificaciones (mismo que en perfil)
@@ -64,7 +65,7 @@ class PantallaInicio extends StatelessWidget {
                                   child: const Icon(
                                     Icons.notifications_none_rounded,
                                     size: 26,
-                                    color: Color(0xFF41618E),
+                                    color: ColoresApp.textoContexto,
                                   ),
                                 );
                               },
@@ -82,10 +83,10 @@ class PantallaInicio extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFFE1EBFF), Color(0xFFF0F5FF)],
+                        colors: [ColoresApp.chipAzul3, ColoresApp.fondoAzulClaro],
                       ),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFFD5E3FF)),
+                      border: Border.all(color: ColoresApp.chipAzul2),
                     ),
                     child: const Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +96,7 @@ class PantallaInicio extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF17243C),
+                            color: ColoresApp.textoPrincipal,
                             height: 1.18,
                           ),
                         ),
@@ -104,7 +105,7 @@ class PantallaInicio extends StatelessWidget {
                           '¿Qué te gustaría hacer hoy?',
                           style: TextStyle(
                             fontSize: 15,
-                            color: Color(0xFF66758D),
+                            color: ColoresApp.textoSecundario,
                             height: 1.5,
                           ),
                         ),

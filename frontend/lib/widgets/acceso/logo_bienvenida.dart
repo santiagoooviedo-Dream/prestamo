@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class LogoBienvenida extends StatelessWidget {
   const LogoBienvenida({super.key});
@@ -9,7 +10,7 @@ class LogoBienvenida extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 32),
       decoration: BoxDecoration(
-        color: const Color(0xFFEDF3FF),
+        color: ColoresApp.fondoInicio,
         borderRadius: BorderRadius.circular(28),
       ),
       child: Column(
@@ -23,14 +24,14 @@ class LogoBienvenida extends StatelessWidget {
               width: 96,
               height: 96,
               decoration: BoxDecoration(
-                color: const Color(0xFF285FE8),
+                color: ColoresApp.primario,
                 borderRadius: BorderRadius.circular(24),
               ),
               child: const Center(
                 child: Text(
                   'TP',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: ColoresApp.blanco,
                     fontSize: 34,
                     fontWeight: FontWeight.w800,
                   ),
@@ -44,7 +45,7 @@ class LogoBienvenida extends StatelessWidget {
             style: TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF285FE8),
+              color: ColoresApp.primario,
               letterSpacing: 1,
             ),
           ),

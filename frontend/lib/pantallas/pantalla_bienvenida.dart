@@ -5,6 +5,7 @@ import '../widgets/comunes/boton_secundario.dart';
 import '../widgets/acceso/logo_bienvenida.dart';
 import 'pantalla_registro.dart';
 import 'pantalla_iniciar_sesion.dart';
+import '../nucleo/colores_app.dart';
 
 class PantallaBienvenida extends StatelessWidget {
   const PantallaBienvenida({super.key});
@@ -25,7 +26,7 @@ class PantallaBienvenida extends StatelessWidget {
               width: 200,
               height: 200,
               decoration: BoxDecoration(
-                color: const Color(0xFFE4EDFF).withValues(alpha: 0.65),
+                color: ColoresApp.fondoAzulMedio.withValues(alpha: 0.65),
                 shape: BoxShape.circle,
               ),
             ),
@@ -37,7 +38,7 @@ class PantallaBienvenida extends StatelessWidget {
               width: 160,
               height: 160,
               decoration: BoxDecoration(
-                color: const Color(0xFFEAF1FF).withValues(alpha: 0.5),
+                color: ColoresApp.blobSuave.withValues(alpha: 0.5),
                 shape: BoxShape.circle,
               ),
             ),
@@ -56,7 +57,7 @@ class PantallaBienvenida extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                       ),
                     ),
                     Text(
@@ -64,7 +65,7 @@ class PantallaBienvenida extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF41618E),
+                        color: ColoresApp.textoContexto,
                         letterSpacing: 0.5,
                       ),
                     ),
@@ -79,7 +80,7 @@ class PantallaBienvenida extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 38,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                     height: 1.15,
                   ),
                 ),
@@ -89,7 +90,7 @@ class PantallaBienvenida extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w400,
-                    color: Color(0xFF66758D),
+                    color: ColoresApp.textoSecundario,
                     height: 1.5,
                   ),
                 ),
@@ -99,10 +100,10 @@ class PantallaBienvenida extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [Color(0xFFEAF1FF), Color(0xFFF2F6FF)],
+                      colors: [ColoresApp.blobSuave, ColoresApp.fondoAzulClaro2],
                     ),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFFD9E5FA)),
+                    border: Border.all(color: ColoresApp.bordeAviso),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +111,7 @@ class PantallaBienvenida extends StatelessWidget {
                       Icon(
                         Icons.verified_user_outlined,
                         size: 20,
-                        color: const Color(0xFF285FE8).withValues(alpha: 0.9),
+                        color: ColoresApp.primario.withValues(alpha: 0.9),
                       ),
                       const SizedBox(width: 12),
                       const Expanded(
@@ -118,7 +119,7 @@ class PantallaBienvenida extends StatelessWidget {
                           'Tu seguridad es importante para nosotros. Cuidamos tu información en cada paso.',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF66758D),
+                            color: ColoresApp.textoSecundario,
                             height: 1.5,
                           ),
                         ),

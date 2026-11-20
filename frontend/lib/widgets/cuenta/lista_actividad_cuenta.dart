@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/cuenta_model.dart';
+import '../../nucleo/colores_app.dart';
 
 class ListaActividadCuenta extends StatefulWidget {
   final List<MovimientoCuenta> movimientos;
@@ -59,7 +60,7 @@ class _ListaActividadCuentaState extends State<ListaActividadCuenta> {
           style: TextStyle(
             fontSize: 13,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF17243C),
+            color: ColoresApp.textoPrincipal,
           ),
         ),
         const SizedBox(height: 8),
@@ -68,22 +69,22 @@ class _ListaActividadCuentaState extends State<ListaActividadCuenta> {
           onChanged: (_) => setState(() {}),
           decoration: InputDecoration(
             hintText: 'Movimientos o referencias',
-            hintStyle: const TextStyle(fontSize: 14, color: Color(0xFF94A0B3)),
-            prefixIcon: const Icon(Icons.search, color: Color(0xFF94A0B3)),
+            hintStyle: const TextStyle(fontSize: 14, color: ColoresApp.textoSuave),
+            prefixIcon: const Icon(Icons.search, color: ColoresApp.textoSuave),
             filled: true,
-            fillColor: Colors.white,
+            fillColor: ColoresApp.blanco,
             contentPadding: const EdgeInsets.symmetric(vertical: 14),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Color(0xFFE1E8F3)),
+              borderSide: const BorderSide(color: ColoresApp.bordeTarjeta),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Color(0xFFE1E8F3)),
+              borderSide: const BorderSide(color: ColoresApp.bordeTarjeta),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Color(0xFF285FE8)),
+              borderSide: const BorderSide(color: ColoresApp.primario),
             ),
           ),
         ),
@@ -93,7 +94,7 @@ class _ListaActividadCuentaState extends State<ListaActividadCuenta> {
               ? const Center(
                   child: Text(
                     'No hay movimientos para mostrar.',
-                    style: TextStyle(color: Color(0xFF66758D)),
+                    style: TextStyle(color: ColoresApp.textoSecundario),
                   ),
                 )
               : ListView.builder(
@@ -114,7 +115,7 @@ class _ListaActividadCuentaState extends State<ListaActividadCuenta> {
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF17243C),
+                                    color: ColoresApp.textoPrincipal,
                                   ),
                                 ),
                               ),
@@ -122,7 +123,7 @@ class _ListaActividadCuentaState extends State<ListaActividadCuenta> {
                                 '${items.length} movimiento${items.length == 1 ? '' : 's'}',
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  color: Color(0xFF94A0B3),
+                                  color: ColoresApp.textoSuave,
                                 ),
                               ),
                             ],
@@ -148,17 +149,17 @@ class _TarjetaMovimiento extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorMonto = movimiento.positivo
-        ? const Color(0xFF168261)
-        : const Color(0xFFC47A00);
+        ? ColoresApp.exitoProfundo
+        : ColoresApp.advertenciaOscuro;
     final signo = movimiento.positivo ? '+' : '-';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: Row(
         children: [
@@ -166,13 +167,13 @@ class _TarjetaMovimiento extends StatelessWidget {
             width: 42,
             height: 42,
             decoration: BoxDecoration(
-              color: const Color(0xFFEDF3FF),
+              color: ColoresApp.fondoInicio,
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               iconoMovimiento(movimiento.tipoIcono),
               size: 20,
-              color: const Color(0xFF285FE8),
+              color: ColoresApp.primario,
             ),
           ),
           const SizedBox(width: 12),
@@ -185,7 +186,7 @@ class _TarjetaMovimiento extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -193,7 +194,7 @@ class _TarjetaMovimiento extends StatelessWidget {
                   movimiento.descripcion,
                   style: const TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF66758D),
+                    color: ColoresApp.textoSecundario,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -201,7 +202,7 @@ class _TarjetaMovimiento extends StatelessWidget {
                   formatoFechaHoraCuenta(movimiento.fechaDate),
                   style: const TextStyle(
                     fontSize: 11,
-                    color: Color(0xFF94A0B3),
+                    color: ColoresApp.textoSuave,
                   ),
                 ),
               ],

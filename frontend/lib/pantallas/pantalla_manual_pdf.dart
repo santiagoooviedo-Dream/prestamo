@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pdfrx/pdfrx.dart';
+import '../nucleo/colores_app.dart';
 
 class PantallaManualPdf extends StatelessWidget {
   final String assetPath;
@@ -14,17 +15,17 @@ class PantallaManualPdf extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F6FB),
+      backgroundColor: ColoresApp.fondoGrisAzul2,
       appBar: AppBar(
         title: Text(titulo),
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF17243C),
+        backgroundColor: ColoresApp.blanco,
+        foregroundColor: ColoresApp.textoPrincipal,
         elevation: 0,
       ),
       body: PdfViewer.asset(
         assetPath,
         params: const PdfViewerParams(
-          backgroundColor: Color(0xFFF3F6FB),
+          backgroundColor: ColoresApp.fondoGrisAzul2,
           loadingBannerBuilder: _cargando,
           errorBannerBuilder: _error,
         ),
@@ -52,7 +53,7 @@ class PantallaManualPdf extends StatelessWidget {
         child: Text(
           'No se pudo cargar el documento PDF. Intenta de nuevo.',
           textAlign: TextAlign.center,
-          style: TextStyle(color: Color(0xFF66758D)),
+          style: TextStyle(color: ColoresApp.textoSecundario),
         ),
       ),
     );

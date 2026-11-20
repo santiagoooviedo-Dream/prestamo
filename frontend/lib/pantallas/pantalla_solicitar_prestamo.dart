@@ -156,13 +156,13 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 6),
             const Text(
               'Completa la información para continuar.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 20),
             Expanded(
@@ -196,15 +196,15 @@ class _PantallaSolicitarPrestamoState extends State<PantallaSolicitarPrestamo> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF4E5),
+                    color: ColoresApp.advertenciaFondo,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFF0D9B5)),
+                    border: Border.all(color: ColoresApp.advertenciaBorde),
                   ),
                   child: Text(
                     _bloqueoMsg!,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF8A5A12),
+                      color: ColoresApp.advertenciaTexto,
                       height: 1.4,
                     ),
                   ),

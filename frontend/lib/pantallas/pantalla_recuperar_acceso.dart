@@ -83,7 +83,7 @@ class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
               width: 180,
               height: 180,
               decoration: BoxDecoration(
-                color: const Color(0xFFE4EDFF)
+                color: ColoresApp.fondoAzulMedio
                     .withValues(alpha: 0.7),
                 shape: BoxShape.circle,
               ),
@@ -129,7 +129,7 @@ class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                       height: 1.15,
                     ),
                   ),
@@ -140,7 +140,7 @@ class _PantallaRecuperarAccesoState extends State<PantallaRecuperarAcceso> {
                     'Ingresa tu correo y te enviaremos un código para restablecer tu contraseña.',
                     style: TextStyle(
                       fontSize: 15,
-                      color: Color(0xFF66758D),
+                      color: ColoresApp.textoSecundario,
                       height: 1.4,
                     ),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../nucleo/colores_app.dart';
 
 class SeccionVerificacionRegistro extends StatelessWidget {
   final String correo;
@@ -21,14 +22,14 @@ class SeccionVerificacionRegistro extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
           decoration: BoxDecoration(
-            color: const Color(0xFFE8F0FE),
+            color: ColoresApp.fondoSeleccionado,
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
             children: [
               const Text(
                 'Código enviado a:',
-                style: TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+                style: TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
               ),
               const SizedBox(height: 4),
               Text(
@@ -36,7 +37,7 @@ class SeccionVerificacionRegistro extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF285FE8),
+                  color: ColoresApp.primario,
                 ),
               ),
             ],
@@ -50,7 +51,7 @@ class SeccionVerificacionRegistro extends StatelessWidget {
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF17243C),
+              color: ColoresApp.textoPrincipal,
             ),
           ),
         ),
@@ -70,13 +71,13 @@ class SeccionVerificacionRegistro extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: Color(0xFF17243C),
+                  color: ColoresApp.textoPrincipal,
                 ),
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 decoration: InputDecoration(
                   counterText: '',
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: ColoresApp.blanco,
                   contentPadding: EdgeInsets.zero,
                   border: _borde(),
                   enabledBorder: _borde(),
@@ -98,20 +99,20 @@ class SeccionVerificacionRegistro extends StatelessWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
           decoration: BoxDecoration(
-            color: const Color(0xFFE8F0FE),
+            color: ColoresApp.fondoSeleccionado,
             borderRadius: BorderRadius.circular(14),
           ),
           child: const Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.shield_outlined, size: 18, color: Color(0xFF285FE8)),
+              Icon(Icons.shield_outlined, size: 18, color: ColoresApp.primario),
               SizedBox(width: 10),
               Expanded(
                 child: Text(
                   '¿No lo ves? Revisa spam o espera unos minutos y vuelve a intentarlo.',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF5B7AA8),
+                    color: ColoresApp.textoAzulado2,
                     height: 1.35,
                   ),
                 ),
@@ -127,7 +128,7 @@ class SeccionVerificacionRegistro extends StatelessWidget {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(
-        color: enfocado ? const Color(0xFF285FE8) : const Color(0xFFD5DFEF),
+        color: enfocado ? ColoresApp.primario : ColoresApp.bordeInput,
         width: enfocado ? 1.5 : 1,
       ),
     );

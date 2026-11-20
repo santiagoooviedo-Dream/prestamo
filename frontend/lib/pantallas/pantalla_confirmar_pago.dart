@@ -55,13 +55,13 @@ class PantallaConfirmarPago extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 8),
             const Text(
               'Revisa los detalles antes de continuar.',
-              style: TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 24),
             Container(
@@ -69,7 +69,7 @@ class PantallaConfirmarPago extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF214EC4), Color(0xFF2865D8)],
+                  colors: [ColoresApp.primarioMasOscuro, ColoresApp.primarioOscuro],
                 ),
                 borderRadius: BorderRadius.circular(20),
               ),
@@ -77,7 +77,7 @@ class PantallaConfirmarPago extends StatelessWidget {
                 children: [
                   Text(
                     'Monto a pagar',
-                    style: TextStyle(fontSize: 13, color: Color(0xFFE4EDFF)),
+                    style: TextStyle(fontSize: 13, color: ColoresApp.fondoAzulMedio),
                   ),
                   SizedBox(height: 8),
                   Text(
@@ -85,13 +85,13 @@ class PantallaConfirmarPago extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.w700,
-                      color: Colors.white,
+                      color: ColoresApp.blanco,
                     ),
                   ),
                   SizedBox(height: 8),
                   Text(
                     'Cuota 3 de 12',
-                    style: TextStyle(fontSize: 14, color: Color(0xFFE4EDFF)),
+                    style: TextStyle(fontSize: 14, color: ColoresApp.fondoAzulMedio),
                   ),
                 ],
               ),
@@ -101,9 +101,9 @@ class PantallaConfirmarPago extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: ColoresApp.blanco,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE1E8F3)),
+                border: Border.all(color: ColoresApp.bordeTarjeta),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -113,7 +113,7 @@ class PantallaConfirmarPago extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF17243C),
+                      color: ColoresApp.textoPrincipal,
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -137,7 +137,7 @@ class PantallaConfirmarPago extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF285FE8),
+                        color: ColoresApp.primario,
                       ),
                     ),
                   ),
@@ -186,11 +186,11 @@ class _Fila extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
           ),
           Text(
             valor,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+            style: const TextStyle(fontSize: 13, color: ColoresApp.textoPrincipal),
           ),
         ],
       ),

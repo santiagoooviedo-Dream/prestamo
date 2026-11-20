@@ -374,7 +374,7 @@ class _PantallaAdminConversacionesState
               style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF17243C),
+                color: ColoresApp.textoPrincipal,
               ),
             ),
             const SizedBox(height: 8),
@@ -382,7 +382,7 @@ class _PantallaAdminConversacionesState
               widget.idUsuarioFiltro != null
                   ? 'Solo chats de este usuario transferidos al administrador.'
                   : 'Solo chats transferidos al administrador y pagos personales.',
-              style: const TextStyle(fontSize: 15, color: Color(0xFF66758D)),
+              style: const TextStyle(fontSize: 15, color: ColoresApp.textoSecundario),
             ),
             const SizedBox(height: 16),
             Expanded(child: _cuerpo()),
@@ -411,7 +411,7 @@ class _PantallaAdminConversacionesState
       return const Center(
         child: Text(
           'No hay conversaciones con el administrador.',
-          style: TextStyle(color: Color(0xFF66758D)),
+          style: TextStyle(color: ColoresApp.textoSecundario),
         ),
       );
     }

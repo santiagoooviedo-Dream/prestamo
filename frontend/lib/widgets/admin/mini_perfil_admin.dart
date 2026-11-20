@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class MiniPerfilAdmin extends StatelessWidget {
   final String nombre;
@@ -22,9 +23,9 @@ class MiniPerfilAdmin extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: ColoresApp.blanco,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE1E8F3)),
+        border: Border.all(color: ColoresApp.bordeTarjeta),
       ),
       child: Row(
         children: [
@@ -32,7 +33,7 @@ class MiniPerfilAdmin extends StatelessWidget {
             width: 44,
             height: 44,
             decoration: const BoxDecoration(
-              color: Color(0xFFE8F0FE),
+              color: ColoresApp.fondoSeleccionado,
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -41,7 +42,7 @@ class MiniPerfilAdmin extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF285FE8),
+                  color: ColoresApp.primario,
                 ),
               ),
             ),
@@ -56,12 +57,12 @@ class MiniPerfilAdmin extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF17243C),
+                    color: ColoresApp.textoPrincipal,
                   ),
                 ),
                 Text(
                   apellidos,
-                  style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+                  style: const TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
                 ),
               ],
             ),

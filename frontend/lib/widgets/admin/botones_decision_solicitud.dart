@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../models/solicitud_admin.dart';
 import '../../nucleo/api_service.dart';
 import 'dialogo_carga_admin.dart';
+import '../../nucleo/colores_app.dart';
 
 class BotonesDecisionSolicitud extends StatelessWidget {
   final SolicitudAdmin solicitud;
@@ -92,8 +93,8 @@ class BotonesDecisionSolicitud extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () => _aprobar(context),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF285FE8),
-                  foregroundColor: Colors.white,
+                  backgroundColor: ColoresApp.primario,
+                  foregroundColor: ColoresApp.blanco,
                   elevation: 0,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -113,9 +114,9 @@ class BotonesDecisionSolicitud extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: () => _rechazar(context),
                 style: OutlinedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFF0F2),
-                  foregroundColor: const Color(0xFFBC4351),
-                  side: const BorderSide(color: Color(0xFFF0D5DB)),
+                  backgroundColor: ColoresApp.errorFondo,
+                  foregroundColor: ColoresApp.errorRosado,
+                  side: const BorderSide(color: ColoresApp.errorBorde3),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),

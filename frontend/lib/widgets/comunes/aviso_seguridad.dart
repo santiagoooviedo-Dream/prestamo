@@ -12,7 +12,7 @@ class AvisoSeguridad extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFEAF1FF), Color(0xFFF2F6FF)],
+          colors: [ColoresApp.blobSuave, ColoresApp.fondoAzulClaro2],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: ColoresApp.bordeAviso),

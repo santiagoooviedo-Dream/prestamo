@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../nucleo/colores_app.dart';
 
 class FilaDetallePrestamo extends StatelessWidget {
   final String label;
@@ -19,11 +20,11 @@ class FilaDetallePrestamo extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF66758D)),
+            style: const TextStyle(fontSize: 13, color: ColoresApp.textoSecundario),
           ),
           Text(
             valor,
-            style: const TextStyle(fontSize: 13, color: Color(0xFF17243C)),
+            style: const TextStyle(fontSize: 13, color: ColoresApp.textoPrincipal),
           ),
         ],
       ),

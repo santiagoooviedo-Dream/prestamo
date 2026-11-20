@@ -81,14 +81,14 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
                 width: 112,
                 height: 112,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFF0F2),
+                  color: ColoresApp.errorFondo,
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFF4C9CE), width: 6),
+                  border: Border.all(color: ColoresApp.errorBorde, width: 6),
                 ),
                 child: const Icon(
                   Icons.delete_forever_rounded,
                   size: 48,
-                  color: Color(0xFFBC4351),
+                  color: ColoresApp.errorRosado,
                 ),
               ),
               const SizedBox(height: 28),
@@ -98,7 +98,7 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
                 style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF17243C),
+                  color: ColoresApp.textoPrincipal,
                 ),
               ),
               const SizedBox(height: 12),
@@ -109,7 +109,7 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
-                    color: Color(0xFF66758D),
+                    color: ColoresApp.textoSecundario,
                     height: 1.5,
                   ),
                 ),
@@ -120,16 +120,16 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
                   width: double.infinity,
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF0F2),
+                    color: ColoresApp.errorFondo,
                     borderRadius: BorderRadius.circular(14),
-                    border: Border.all(color: const Color(0xFFF4C9CE)),
+                    border: Border.all(color: ColoresApp.errorBorde),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Icon(
                         Icons.info_outline_rounded,
-                        color: Color(0xFFBC4351),
+                        color: ColoresApp.errorRosado,
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -137,7 +137,7 @@ class _PantallaEliminarCuentaState extends State<PantallaEliminarCuenta> {
                           _bloqueoEliminacion!,
                           style: const TextStyle(
                             fontSize: 13,
-                            color: Color(0xFF8F303B),
+                            color: ColoresApp.errorRosadoOscuro,
                             height: 1.4,
                           ),
                         ),
@@ -200,23 +200,23 @@ class _OpcionConfirmacion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = bloqueado
-        ? const Color(0xFF66758D)
+        ? ColoresApp.textoSecundario
         : peligro
-        ? const Color(0xFFBC4351)
-        : const Color(0xFF17243C);
+        ? ColoresApp.errorRosado
+        : ColoresApp.textoPrincipal;
     final fondo = bloqueado
-        ? const Color(0xFFF1F4F8)
+        ? ColoresApp.fondoGris
         : peligro
-        ? const Color(0xFFFFF0F2)
-        : const Color(0xFFEDF3FF);
+        ? ColoresApp.errorFondo
+        : ColoresApp.fondoInicio;
     final acento = bloqueado
-        ? const Color(0xFF8190A5)
+        ? ColoresApp.textoMuted3
         : peligro
-        ? const Color(0xFFBC4351)
-        : const Color(0xFF285FE8);
+        ? ColoresApp.errorRosado
+        : ColoresApp.primario;
 
     return Material(
-      color: Colors.white,
+      color: ColoresApp.blanco,
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: alPresionar,
@@ -226,7 +226,7 @@ class _OpcionConfirmacion extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: const Color(0xFFE1E8F3)),
+            border: Border.all(color: ColoresApp.bordeTarjeta),
           ),
           child: Row(
             children: [
@@ -265,7 +265,7 @@ class _OpcionConfirmacion extends StatelessWidget {
                       subtitulo,
                       style: const TextStyle(
                         fontSize: 13,
-                        color: Color(0xFF66758D),
+                        color: ColoresApp.textoSecundario,
                       ),
                     ),
                   ],
